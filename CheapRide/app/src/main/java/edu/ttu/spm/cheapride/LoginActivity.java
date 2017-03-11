@@ -333,23 +333,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = "";
+            String serverUrl = "http://172.20.3.207:8080/login";
             HashMap<String, String> postParams = new HashMap<>();
 
             postParams.put("username", "test");
             postParams.put("password", "test");
 
             performPostCall(serverUrl, postParams);
-
-
-            // TODO: attempt authentication against a network service.
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
 
             // TODO: register the new account here.
             return true;
