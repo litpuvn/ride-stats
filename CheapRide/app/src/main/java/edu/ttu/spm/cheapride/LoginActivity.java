@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -63,6 +64,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int READ_TIMEOUT = 30; // seconds
+    private static final int CONNECTION_TIMEOUT = 30; // seconds
 
     private final String TAG = "post json example";
     private Context context;
@@ -114,6 +117,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        context = this;
     }
 
     private void populateAutoComplete() {
@@ -328,50 +333,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            String serverUrl = "";
+            HashMap<String, String> postParams = new HashMap<>();
+
+            postParams.put("username", "test");
+            postParams.put("password", "test");
+
+            performPostCall(serverUrl, postParams);
+
+
             // TODO: attempt authentication against a network service.
-
-            try {
-                String url = "http://api.cheapride.org/cheapride";
-                // 1. create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-               // 2. make POST request to the given URL
-                HttpPost httpPost = new HttpPost(url);
-
-                String json = "";
-                // 3. build jsonObject
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.accumulate("usename", "test");
-                jsonObject.accumulate("password", "password");
-
-                // 4. convert JSONObject to JSON to String
-
-                // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-               // ObjectMapper mapper = new ObjectMapper();
-                // json = mapper.writeValueAsString(person);
-
-                // 5. set json to StringEntity
-                 StringEntity se = new StringEntity(json);
-             // 6. set httpPost Entity
-                httpPost.setEntity(se);
-
-              // 7. Set some headers to inform server about the type of the content   
-               httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-
-                // 8. Execute POST request to the given URL
-               HttpResponse httpResponse = httpclient.execute(httpPost);
-                // 9. receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            catch (JSONException je) {
-                return false;
-            }
-
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
@@ -414,10 +385,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 url = new URL(requestURL);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(context.getResources().getInteger(
-                        R.integer.maximum_timeout_to_server));
-                conn.setConnectTimeout(context.getResources().getInteger(
-                        R.integer.maximum_timeout_to_server));
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
@@ -431,11 +400,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
              */
 
                 JSONObject root = new JSONObject();
-                //
-                String token = Static.getPrefsToken(context);
-
-                root.put("securityInfo", Static.getSecurityInfo(context));
-                root.put("advertisementId", advertisementId);
+                root.put("username", postDataParams.get("username"));
+                root.put("password", postDataParams.get("password"));
 
                 Log.e(TAG, "12 - root : " + root.toString());
 
