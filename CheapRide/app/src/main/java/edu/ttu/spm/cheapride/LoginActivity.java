@@ -3,6 +3,7 @@ package edu.ttu.spm.cheapride;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +31,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -39,6 +49,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -52,6 +64,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
+    private final String TAG = "post json example";
+    private Context context;
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -387,6 +401,71 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+
+
+        public String performPostCall(String requestURL,
+                                      HashMap<String, String> postDataParams) {
+
+            URL url;
+            String response = "";
+            try {
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(context.getResources().getInteger(
+                        R.integer.maximum_timeout_to_server));
+                conn.setConnectTimeout(context.getResources().getInteger(
+                        R.integer.maximum_timeout_to_server));
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                Log.e(TAG, "11 - url : " + requestURL);
+
+            /*
+             * JSON
+             */
+
+                JSONObject root = new JSONObject();
+                //
+                String token = Static.getPrefsToken(context);
+
+                root.put("securityInfo", Static.getSecurityInfo(context));
+                root.put("advertisementId", advertisementId);
+
+                Log.e(TAG, "12 - root : " + root.toString());
+
+                String str = root.toString();
+                byte[] outputBytes = str.getBytes("UTF-8");
+                OutputStream os = conn.getOutputStream();
+                os.write(outputBytes);
+
+                int responseCode = conn.getResponseCode();
+
+                Log.e(TAG, "13 - responseCode : " + responseCode);
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    Log.e(TAG, "14 - HTTP_OK");
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    response = "";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
         }
     }
 }
