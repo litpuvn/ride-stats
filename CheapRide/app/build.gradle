@@ -19,6 +19,12 @@ android {
     }
 
     useLibrary 'org.apache.http.legacy'
+
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
 }
 
 dependencies {
@@ -32,5 +38,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:9.8.0'
 
     testCompile 'junit:junit:4.12'
-
+    testCompile "org.mockito:mockito-core:2.+"
 }
