@@ -68,19 +68,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-
                 >
-
-                <Button
-                    android:id="@+id/email_sign_in_button"
-                    style="?android:textAppearanceSmall"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/action_sign_in"
-                    android:layout_margin="5dp"
-                    android:textStyle="bold" />
-
                 <Button
                     android:id="@+id/cancel"
                     android:layout_margin="5dp"
@@ -92,6 +80,15 @@
                     android:text="@string/action_cancel_sign_in"
                     android:textStyle="bold" />
 
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/action_sign_in"
+                    android:layout_margin="5dp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
