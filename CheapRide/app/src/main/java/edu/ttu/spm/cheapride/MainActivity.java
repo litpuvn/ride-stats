@@ -131,6 +131,9 @@ public class MainActivity extends AppCompatActivity
 
     public void onRegisterClicked(View v) {
         System.out.println("register clicked");
+
+        Intent intent = new Intent(getApplicationContext(), activity_registration.class);
+        startActivity(intent);
     }
 
     @Override
