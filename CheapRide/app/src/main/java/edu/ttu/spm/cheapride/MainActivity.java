@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,6 +62,13 @@ public class MainActivity extends AppCompatActivity
 
     private PlaceAutocompleteFragment autocompleteFragment;
 
+    private static final int LOGIN_REQUEST = 0;
+
+    private TextView loginTextView;
+    private TextView registerTextView;
+    private TextView loginSeparatorTextView;
+    private TextView welcomeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -90,6 +98,11 @@ public class MainActivity extends AppCompatActivity
 
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        loginTextView = (TextView) findViewById(R.id.login);
+        registerTextView = (TextView) findViewById(R.id.register);
+        loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
+        welcomeTextView = (TextView) findViewById(R.id.welcome_message);
 
     }
 
@@ -125,8 +138,29 @@ public class MainActivity extends AppCompatActivity
     public void onLoginClicked(View v) {
         System.out.println("Login clicked");
 
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivityForResult(loginIntent, LOGIN_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == LOGIN_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                loginTextView.setVisibility(View.INVISIBLE);
+                registerTextView.setVisibility(View.INVISIBLE);
+                loginSeparatorTextView.setVisibility(View.INVISIBLE);
+                welcomeTextView.setText("Hello, test");
+                welcomeTextView.setVisibility(View.VISIBLE);
+            }
+            else {
+                welcomeTextView.setText("");
+                welcomeTextView.setVisibility(View.INVISIBLE);
+
+            }
+        }
     }
 
     public void onRegisterClicked(View v) {

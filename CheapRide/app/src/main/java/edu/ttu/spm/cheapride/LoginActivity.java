@@ -346,7 +346,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             postParams.put("username", "test");
             postParams.put("password", "test");
 
-            performPostCall(serverUrl, postParams);
+//            performPostCall(serverUrl, postParams);
 
             // TODO: register the new account here.
             return true;
@@ -358,7 +358,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+
+                LoginActivity loginActivity = (LoginActivity) context;
+                loginActivity.setResult(RESULT_OK);
                 finish();
+
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
