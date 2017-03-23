@@ -343,8 +343,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String serverUrl = "http://172.20.3.207:8080/login";
             HashMap<String, String> postParams = new HashMap<>();
 
-            postParams.put("username", mEmail);
-            postParams.put("password", mPassword);
+            postParams.put("username", "test");
+            postParams.put("password", "test");
 
             performPostCall(serverUrl, postParams);
 

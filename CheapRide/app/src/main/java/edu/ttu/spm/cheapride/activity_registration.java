@@ -104,8 +104,9 @@ public class activity_registration extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 String email = register_email.getText().toString();
                 String password = register_password.getText().toString();
+                String rePassword = reregister_password.getText().toString();
 
-                mAuthTask = new UserRegisterTask(email, password);
+                mAuthTask = new UserRegisterTask(email, password,rePassword);
                 mAuthTask.execute((Void) null);
             }
 
@@ -147,10 +148,12 @@ public class activity_registration extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
+        private final String mRePassword;
 
-        UserRegisterTask(String email, String password) {
+        UserRegisterTask(String email, String password, String rePassword) {
             mEmail = email;
             mPassword = password;
+            mRePassword = rePassword;
         }
 
         @Override
@@ -160,6 +163,7 @@ public class activity_registration extends AppCompatActivity {
 
             postParams.put("username", mEmail);
             postParams.put("password", mPassword);
+            postParams.put("rePassword", mRePassword);
 
             performPostCall(serverUrl, postParams);
 
@@ -174,7 +178,7 @@ public class activity_registration extends AppCompatActivity {
             if (success) {
                 finish();
             } else {
-                register_password.setError(getString(R.string.error_incorrect_password));
+                //register_password.setError(getString(R.string.error_incorrect_password));
                 register_password.requestFocus();
             }
         }
@@ -212,6 +216,7 @@ public class activity_registration extends AppCompatActivity {
                 JSONObject root = new JSONObject();
                 root.put("username", postDataParams.get("username"));
                 root.put("password", postDataParams.get("password"));
+                root.put("rePassword", postDataParams.get("rePassword"));
 
                 Log.e(TAG, "12 - root : " + root.toString());
 
