@@ -178,7 +178,7 @@ public class activity_registration extends AppCompatActivity {
             if (success) {
                 finish();
             } else {
-                //register_password.setError(getString(R.string.error_incorrect_password));
+                register_password.setError("Your Email has been used");
                 register_password.requestFocus();
             }
         }
