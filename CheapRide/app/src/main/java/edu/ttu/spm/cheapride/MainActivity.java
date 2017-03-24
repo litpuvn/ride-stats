@@ -2,6 +2,8 @@ package edu.ttu.spm.cheapride;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -144,15 +146,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent loginResponse) {
         // Check which request we're responding to
         if (requestCode == LOGIN_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+
+                String response = loginResponse.getStringExtra("response");
+                System.out.println("My response: " + response);
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                String formattedDate = df.format(c.getTime());
+
                 loginTextView.setVisibility(View.INVISIBLE);
                 registerTextView.setVisibility(View.INVISIBLE);
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
-                welcomeTextView.setText("Hello, test");
+                welcomeTextView.setText("Hello, Today is " + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
             }
             else {
