@@ -33,9 +33,10 @@ public class activity_registration extends AppCompatActivity {
     private Button register_cancel;
 
     private activity_registration.UserRegisterTask mAuthTask = null;
-    private static final int READ_TIMEOUT = 30; // seconds
-    private static final int CONNECTION_TIMEOUT = 30; // seconds
-    private final String TAG = "post json example";
+    private static final int READ_TIMEOUT = 30000; // seconds
+    private static final int CONNECTION_TIMEOUT = 30000; // seconds
+    private final String TAG = "REGISTER";
+    private static final String REGISTER_URL =  MainActivity.BASE_URL + "/register";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,14 +159,13 @@ public class activity_registration extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = "http://172.20.3.207:8080/register";
             HashMap<String, String> postParams = new HashMap<>();
 
             postParams.put("username", mEmail);
             postParams.put("password", mPassword);
             postParams.put("rePassword", mRePassword);
 
-            performPostCall(serverUrl, postParams);
+            performPostCall(REGISTER_URL, postParams);
 
             // TODO: register the new account here.
             return true;
