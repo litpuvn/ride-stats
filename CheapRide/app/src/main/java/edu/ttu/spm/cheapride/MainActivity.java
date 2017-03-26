@@ -2,6 +2,8 @@ package edu.ttu.spm.cheapride;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,6 +64,13 @@ public class MainActivity extends AppCompatActivity
 
     private PlaceAutocompleteFragment autocompleteFragment;
 
+    private static final int LOGIN_REQUEST = 0;
+
+    private TextView loginTextView;
+    private TextView registerTextView;
+    private TextView loginSeparatorTextView;
+    private TextView welcomeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -90,6 +100,11 @@ public class MainActivity extends AppCompatActivity
 
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        loginTextView = (TextView) findViewById(R.id.login);
+        registerTextView = (TextView) findViewById(R.id.register);
+        loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
+        welcomeTextView = (TextView) findViewById(R.id.welcome_message);
 
     }
 
@@ -125,8 +140,36 @@ public class MainActivity extends AppCompatActivity
     public void onLoginClicked(View v) {
         System.out.println("Login clicked");
 
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivityForResult(loginIntent, LOGIN_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent loginResponse) {
+        // Check which request we're responding to
+        if (requestCode == LOGIN_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                String response = loginResponse.getStringExtra("response");
+                System.out.println("My response: " + response);
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                String formattedDate = df.format(c.getTime());
+
+                loginTextView.setVisibility(View.INVISIBLE);
+                registerTextView.setVisibility(View.INVISIBLE);
+                loginSeparatorTextView.setVisibility(View.INVISIBLE);
+                welcomeTextView.setText("Hello, Today is " + formattedDate);
+                welcomeTextView.setVisibility(View.VISIBLE);
+            }
+            else {
+                welcomeTextView.setText("");
+                welcomeTextView.setVisibility(View.INVISIBLE);
+
+            }
+        }
     }
 
     public void onRegisterClicked(View v) {

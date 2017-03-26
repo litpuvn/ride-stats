@@ -61,15 +61,20 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+//    private final static String LOGIN_URL = "http://cheapride-api.dtag.vn:8080/cheapRide/login";
+    private final static String LOGIN_URL = "http://10.161.27.210:8080/cheapRide/login";
+
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final int READ_TIMEOUT = 30; // seconds
-    private static final int CONNECTION_TIMEOUT = 30; // seconds
+    private static final int READ_TIMEOUT = 30000; // seconds
+    private static final int CONNECTION_TIMEOUT = 30000; // seconds
 
-    private final String TAG = "post json example";
+    private final String TAG = "LoginActivity";
     private Context context;
+
+    private JSONObject loginResponse;
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -340,16 +345,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = "http://172.20.3.207:8080/login";
             HashMap<String, String> postParams = new HashMap<>();
 
-            postParams.put("username", "test");
-            postParams.put("password", "test");
+            postParams.put("username", mEmail);
+            postParams.put("password", mPassword);
 
-            performPostCall(serverUrl, postParams);
+            return performPostCall(LOGIN_URL, postParams).length() > 0;
 
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override
@@ -358,9 +360,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+
+                LoginActivity loginActivity = (LoginActivity) context;
+                Intent resultIntent = new Intent();
+                String response = loginResponse != null ? loginResponse.toString() : null;
+                resultIntent.putExtra("response", response);
+                loginActivity.setResult(RESULT_OK, resultIntent);
                 finish();
+
+
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError(getString(R.string.error_not_authorized_access));
                 mPasswordView.requestFocus();
             }
         }
@@ -420,6 +430,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     while ((line = br.readLine()) != null) {
                         response += line;
                     }
+
+                    loginResponse = new JSONObject(response);
+
                 } else {
                     Log.e(TAG, "14 - False - HTTP_OK");
                     response = "";
