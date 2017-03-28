@@ -61,18 +61,7 @@ public class activity_registration extends AppCompatActivity {
                     if(register_email.getText().toString().trim().length()<4){
                         Toast.makeText(activity_registration.this, "Email address too short", Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
-
-        });
-        register_email.setOnFocusChangeListener(new OnFocusChangeListener()
-        {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
-                if(!hasFocus){
-                    if(!isEmailValid(register_email.getText().toString())){
+                    else if(!isEmailValid(register_email.getText().toString())){
                         Toast.makeText(activity_registration.this, "Email is not validation", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -89,24 +78,14 @@ public class activity_registration extends AppCompatActivity {
                     if(register_password.getText().toString().trim().length()<6){
                         Toast.makeText(activity_registration.this, "Password can not shorter than 6 letter", Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
-
-        });
-        register_password.setOnFocusChangeListener(new OnFocusChangeListener()
-        {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
-                if(!hasFocus){
-                    if(!isPasswordValid(register_password.getText().toString())){
+                    else if(!isPasswordValid(register_password.getText().toString())){
                         Toast.makeText(activity_registration.this, "Password have one number and one letter", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
         });
+
         reregister_password.setOnFocusChangeListener(new OnFocusChangeListener()
         {
 
