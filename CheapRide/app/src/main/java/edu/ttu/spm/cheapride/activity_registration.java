@@ -200,7 +200,7 @@ public class activity_registration extends AppCompatActivity {
             performPostCall(serverUrl, postParams);
 
             // TODO: register the new account here.
-            return true;
+            return performPostCall(serverUrl, postParams).length() > 0;
         }
 
         @Override
@@ -212,8 +212,8 @@ public class activity_registration extends AppCompatActivity {
                 finish();
 
             } else {
-                register_password.setError("Your Email has been used");
-                register_password.requestFocus();
+                register_email.setError("Your Email has been used");
+                register_email.requestFocus();
             }
         }
 

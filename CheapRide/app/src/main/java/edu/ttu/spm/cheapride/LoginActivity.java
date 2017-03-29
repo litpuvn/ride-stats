@@ -61,7 +61,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-//    private final static String LOGIN_URL = "http://cheapride-api.dtag.vn:8080/cheapRide/login";
+    //    private final static String LOGIN_URL = "http://cheapride-api.dtag.vn:8080/cheapRide/login";
     private final static String LOGIN_URL = MainActivity.BASE_URL + "/login";
 
     /**
