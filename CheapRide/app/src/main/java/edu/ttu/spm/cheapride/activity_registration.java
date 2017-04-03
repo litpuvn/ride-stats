@@ -58,7 +58,10 @@ public class activity_registration extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
-                    if(register_email.getText().toString().trim().length()<4){
+                    if(register_email.getText().toString().trim().equals("")){
+                        Toast.makeText(activity_registration.this, "Email can not be empty", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(register_email.getText().toString().trim().length()<4){
                         Toast.makeText(activity_registration.this, "Email address too short", Toast.LENGTH_SHORT).show();
                     }
                     else if(!isEmailValid(register_email.getText().toString())){
@@ -76,7 +79,7 @@ public class activity_registration extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
                     if(register_password.getText().toString().trim().length()<6){
-                        Toast.makeText(activity_registration.this, "Password can not shorter than 6 letter", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity_registration.this, "Password can not shorter than 6 letters", Toast.LENGTH_SHORT).show();
                     }
                     else if(!isPasswordValid(register_password.getText().toString())){
                         Toast.makeText(activity_registration.this, "Password have one number and one letter", Toast.LENGTH_SHORT).show();
@@ -180,27 +183,28 @@ public class activity_registration extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
-        private final String mRePassword;
+        //private final String mRePassword;
 
         UserRegisterTask(String email, String password, String rePassword) {
             mEmail = email;
             mPassword = password;
-            mRePassword = rePassword;
+            //mRePassword = rePassword;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = "http://192.168.1.73:8080/cheapRide/register";
+            String serverUrl = "http://10.161.21.188:8080/cheapRide/register";
             HashMap<String, String> postParams = new HashMap<>();
 
             postParams.put("username", mEmail);
             postParams.put("password", mPassword);
-            postParams.put("rePassword", mRePassword);
+            //postParams.put("rePassword", mRePassword);
 
-            performPostCall(serverUrl, postParams);
+            //performPostCall(serverUrl, postParams);
 
             // TODO: register the new account here.
             return performPostCall(serverUrl, postParams).length() > 0;
+            //return true;
         }
 
         @Override
@@ -250,7 +254,7 @@ public class activity_registration extends AppCompatActivity {
                 JSONObject root = new JSONObject();
                 root.put("username", postDataParams.get("username"));
                 root.put("password", postDataParams.get("password"));
-                root.put("rePassword", postDataParams.get("rePassword"));
+                //root.put("rePassword", postDataParams.get("rePassword"));
 
                 Log.e(TAG, "12 - root : " + root.toString());
 
@@ -263,7 +267,7 @@ public class activity_registration extends AppCompatActivity {
 
                 Log.e(TAG, "13 - responseCode : " + responseCode);
 
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                if (responseCode == HttpsURLConnection.HTTP_CREATED) {
                     Log.e(TAG, "14 - HTTP_OK");
 
                     String line;
