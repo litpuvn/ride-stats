@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity
     private TextView loginSeparatorTextView;
     private TextView welcomeTextView;
 
+    private EstimateManager estimateManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity
         loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
 
+        estimateManager = new EstimateManager();
     }
 
     /**

@@ -23,7 +23,6 @@ public class EstimateManager extends AbstractNetworkRequest {
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    private static final int REQUEST_READ_CONTACTS = 0;
     private static final int READ_TIMEOUT = 30000; // seconds
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
 
