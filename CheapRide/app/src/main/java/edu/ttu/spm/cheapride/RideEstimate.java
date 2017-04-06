@@ -9,12 +9,18 @@ public class RideEstimate {
     private long pickupEstimate; // seconds
     private String rideRequestId;
 
+    private RideEstimate() {
+
+    }
+
     public RideEstimate(long time, double cost, long pickupEstimate, String rideRequestId) {
         this.time = time;
         this.cost = cost;
         this.pickupEstimate = pickupEstimate;
         this.rideRequestId = rideRequestId;
     }
+
+
 
     public long getTime() {
         return time;

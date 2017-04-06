@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, mMap, mDefaultLocation, DEFAULT_ZOOM));
+        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mDefaultLocation, DEFAULT_ZOOM));
 
     }
 

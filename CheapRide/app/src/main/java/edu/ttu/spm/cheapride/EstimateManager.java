@@ -5,6 +5,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -28,7 +30,7 @@ public class EstimateManager extends AbstractNetworkRequest {
 
     private RequestEstimateTask requestEstimateTask;
 
-    public void attemptEstimate(Location origin, Location destination) {
+    public void attemptEstimate(LatLng origin, LatLng destination) {
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         showProgress(true);
@@ -53,17 +55,17 @@ public class EstimateManager extends AbstractNetworkRequest {
      */
     public class RequestEstimateTask extends AsyncTask<Void, Void, Boolean> {
 
-        private Location origin;
-        private Location destination;
+        private LatLng origin;
+        private LatLng destination;
 
-        RequestEstimateTask(Location origin, Location destination) {
+        RequestEstimateTask(LatLng origin, LatLng destination) {
             this.origin = origin;
             this.destination = destination;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            HashMap<String, Location> postParams = new HashMap<>();
+            HashMap<String, LatLng> postParams = new HashMap<>();
 
             postParams.put("origin", origin);
             postParams.put("destination", destination);
@@ -102,7 +104,7 @@ public class EstimateManager extends AbstractNetworkRequest {
 
 
         public String performPostCall(String requestURL,
-                                      HashMap<String, Location> postDataParams) {
+                                      HashMap<String, LatLng> postDataParams) {
 
             URL url;
             String responseStr = "";
@@ -126,12 +128,12 @@ public class EstimateManager extends AbstractNetworkRequest {
 
                 JSONObject root = new JSONObject();
                 JSONObject originJson = new JSONObject();
-                originJson.put("lat", origin.getLatitude());
-                originJson.put("lon", origin.getLongitude());
+                originJson.put("lat", origin.latitude);
+                originJson.put("lon", origin.longitude);
 
                 JSONObject destinationJson = new JSONObject();
-                destinationJson.put("lat", destination.getLatitude());
-                destinationJson.put("lon", destination.getLongitude());
+                destinationJson.put("lat", destination.latitude);
+                destinationJson.put("lon", destination.longitude);
 
                 root.put("origin", originJson);
                 root.put("destination", destinationJson);
