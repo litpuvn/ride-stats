@@ -193,7 +193,7 @@ public class activity_registration extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = "http://10.161.21.188:8080/cheapRide/register";
+            String serverUrl = MainActivity.BASE_URL + "/register";
             HashMap<String, String> postParams = new HashMap<>();
 
             postParams.put("username", mEmail);

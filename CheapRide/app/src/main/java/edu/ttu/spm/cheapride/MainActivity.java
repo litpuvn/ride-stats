@@ -6,6 +6,7 @@ import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,14 +39,25 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-//    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
+    //    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
+    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -67,11 +80,20 @@ public class MainActivity extends AppCompatActivity
     private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final int LOGIN_REQUEST = 0;
+    private static final int LOGOUT_REQUEST = 0;
+
+    private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int READ_TIMEOUT = 30000; // seconds
+    private static final int CONNECTION_TIMEOUT = 30000; // seconds
 
     private TextView loginTextView;
+    private TextView logoutTextView;
     private TextView registerTextView;
     private TextView loginSeparatorTextView;
     private TextView welcomeTextView;
+
+    private JSONObject logoutResponse;
+    private MainActivity.UserLogoutTask mAuthTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +169,21 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void onLogoutClicked(View v) {
+        System.out.println("Logout clicked");
+// Step 1. httt post logout to server
+        // Step 2. display login screen
+
+        logoutResponse = LoginActivity.loginResponse;
+
+        String token = logoutResponse.toString();
+
+        mAuthTask = new UserLogoutTask(token);
+        mAuthTask.execute((Void) null);
+
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent loginResponse) {
         // Check which request we're responding to
@@ -165,8 +202,7 @@ public class MainActivity extends AppCompatActivity
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
                 welcomeTextView.setText("Hello, Today is " + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 welcomeTextView.setText("");
                 welcomeTextView.setVisibility(View.INVISIBLE);
 
@@ -242,6 +278,104 @@ public class MainActivity extends AppCompatActivity
 
     private void moveCamemra() {
 
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public class UserLogoutTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mToken;
+
+        UserLogoutTask(String token) {
+            mToken = token;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String serverUrl = "http://10.161.81.191:8080/cheapRide/login";
+            HashMap<String, String> postParams = new HashMap<>();
+
+            postParams.put("token", mToken);
+
+            // TODO: register the new account here.
+            return performPostCall(serverUrl, postParams).length() > 0;
+            //return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                Toast.makeText(MainActivity.this, "logged out", Toast.LENGTH_SHORT).show();
+                finish();
+
+            } else {
+                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
+
+
+        public String performPostCall(String requestURL,
+                                      HashMap<String, String> postDataParams) {
+
+            URL url;
+            String response = "";
+            try {
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                Log.e(TAG, "11 - url : " + requestURL);
+
+            /*
+             * JSON
+             */
+
+                JSONObject root = new JSONObject();
+                root.put("token", postDataParams.get("token"));
+
+                Log.e(TAG, "12 - root : " + root.toString());
+
+                String str = root.toString();
+                byte[] outputBytes = str.getBytes("UTF-8");
+                OutputStream os = conn.getOutputStream();
+                os.write(outputBytes);
+
+                int responseCode = conn.getResponseCode();
+
+                Log.e(TAG, "13 - responseCode : " + responseCode);
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    Log.e(TAG, "14 - HTTP_OK");
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    response = "";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
     }
 }
 

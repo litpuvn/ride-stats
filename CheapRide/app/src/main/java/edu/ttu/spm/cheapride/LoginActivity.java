@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private final String TAG = "LoginActivity";
     private Context context;
 
-    private JSONObject loginResponse;
+    static public JSONObject loginResponse;
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
