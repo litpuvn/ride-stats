@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener {
 
     //    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
+    public static final String BASE_URL = "http://10.161.18.204:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -200,11 +200,13 @@ public class MainActivity extends AppCompatActivity
                 loginTextView.setVisibility(View.INVISIBLE);
                 registerTextView.setVisibility(View.INVISIBLE);
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
+                //logoutTextView.setVisibility(View.VISIBLE);
                 welcomeTextView.setText("Hello, Today is " + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
             } else {
                 welcomeTextView.setText("");
                 welcomeTextView.setVisibility(View.INVISIBLE);
+               // logoutTextView.setVisibility(View.INVISIBLE);
 
             }
         }
