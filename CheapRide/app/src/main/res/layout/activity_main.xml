@@ -26,12 +26,20 @@
             android:orientation="horizontal">
 
             <TextView
+                android:text="@string/logout"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:onClick="onLogoutClicked"
+                android:id="@+id/logout" />
+
+            <TextView
                 android:text="@string/login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:onClick="onLoginClicked"
-
                 android:id="@+id/login" />
 
             <TextView
