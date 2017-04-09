@@ -1,4 +1,4 @@
-package edu.ttu.spm.cheapride;
+package edu.ttu.spm.cheapride.model;
 
 
 import org.json.JSONObject;

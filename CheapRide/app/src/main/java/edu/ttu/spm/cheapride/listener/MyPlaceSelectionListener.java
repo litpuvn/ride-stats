@@ -1,4 +1,4 @@
-package edu.ttu.spm.cheapride;
+package edu.ttu.spm.cheapride.listener;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import edu.ttu.spm.cheapride.handler.EstimateHandler;
+
 
 public class MyPlaceSelectionListener implements PlaceSelectionListener {
 
@@ -31,10 +33,10 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
     private GoogleMap mMap;
     private int zoomLevel;
     private LatLng currentLocation;
-    private EstimateManager estimateManager;
+    private EstimateHandler estimateManager;
     private Context mContext;
 
-    public MyPlaceSelectionListener(Context mContext, EstimateManager estimateManager, GoogleMap mMap, LatLng currentLocation, int zoomLevel) {
+    public MyPlaceSelectionListener(Context mContext, EstimateHandler estimateManager, GoogleMap mMap, LatLng currentLocation, int zoomLevel) {
         this.mContext = mContext;
         this.mMap = mMap;
         this.zoomLevel = zoomLevel;

@@ -1,4 +1,4 @@
-package edu.ttu.spm.cheapride;
+package edu.ttu.spm.cheapride.handler;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +19,12 @@ import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class EstimateManager extends AbstractNetworkRequest {
+import edu.ttu.spm.cheapride.AbstractNetworkRequest;
+import edu.ttu.spm.cheapride.MainActivity;
+
+public class EstimateHandler extends AbstractNetworkRequest {
     private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/estimate";
-    private final String TAG = "EstimateManager";
+    private final String TAG = "EstimateHandler";
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -30,7 +33,7 @@ public class EstimateManager extends AbstractNetworkRequest {
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
     private Context mContext;
 
-    public EstimateManager(Context mContext) {
+    public EstimateHandler(Context mContext) {
         this.mContext = mContext;
     }
 
