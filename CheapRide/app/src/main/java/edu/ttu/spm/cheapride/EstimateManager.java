@@ -1,5 +1,6 @@
 package edu.ttu.spm.cheapride;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -27,6 +28,11 @@ public class EstimateManager extends AbstractNetworkRequest {
      */
     private static final int READ_TIMEOUT = 30000; // seconds
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
+    private Context mContext;
+
+    public EstimateManager(Context mContext) {
+        this.mContext = mContext;
+    }
 
     private RequestEstimateTask requestEstimateTask;
 
@@ -79,20 +85,23 @@ public class EstimateManager extends AbstractNetworkRequest {
 //            mAuthTask = null;
 //            showProgress(false);
 //
-//            if (success) {
-//
+            if (success) {
+                MainActivity main = (MainActivity)mContext;
+                main.activateComparisonChart();
+
+
 //                LoginActivity loginActivity = (LoginActivity) context;
 //                Intent resultIntent = new Intent();
 //                String response = loginResponse != null ? loginResponse.toString() : null;
 //                resultIntent.putExtra("response", response);
 //                loginActivity.setResult(RESULT_OK, resultIntent);
 //                finish();
-//
-//
-//            } else {
+
+
+            } else {
 //                mPasswordView.setError(getString(R.string.error_not_authorized_access));
 //                mPasswordView.requestFocus();
-//            }
+            }
         }
 
         @Override
@@ -107,67 +116,67 @@ public class EstimateManager extends AbstractNetworkRequest {
                                       HashMap<String, LatLng> postDataParams) {
 
             URL url;
-            String responseStr = "";
-            try {
-                url = new URL(requestURL);
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                conn.setRequestProperty("Content-Type", "application/json");
-
-                Log.e(TAG, "11 - url : " + requestURL);
-
-            /*
-             * JSON
-             */
-
-                JSONObject root = new JSONObject();
-                JSONObject originJson = new JSONObject();
-                originJson.put("lat", origin.latitude);
-                originJson.put("lon", origin.longitude);
-
-                JSONObject destinationJson = new JSONObject();
-                destinationJson.put("lat", destination.latitude);
-                destinationJson.put("lon", destination.longitude);
-
-                root.put("origin", originJson);
-                root.put("destination", destinationJson);
-
-                Log.e(TAG, "ride request : " + root.toString());
-
-                String str = root.toString();
-                byte[] outputBytes = str.getBytes("UTF-8");
-                OutputStream os = conn.getOutputStream();
-                os.write(outputBytes);
-
-                int responseCode = conn.getResponseCode();
-
-                Log.e(TAG, "responseCode : " + responseCode);
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    Log.e(TAG, "HTTP_OK");
-
-                    String line;
-                    BufferedReader br = new BufferedReader(new InputStreamReader(
-                            conn.getInputStream()));
-                    while ((line = br.readLine()) != null) {
-                        responseStr += line;
-                    }
-
-                    response = new JSONObject(responseStr);
-
-                } else {
-                    Log.e(TAG, "14 - False - HTTP_OK");
-                    responseStr = "";
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String responseStr = "test";
+//            try {
+//                url = new URL(requestURL);
+//
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setReadTimeout(READ_TIMEOUT);
+//                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+//                conn.setRequestMethod("POST");
+//                conn.setDoInput(true);
+//                conn.setDoOutput(true);
+//
+//                conn.setRequestProperty("Content-Type", "application/json");
+//
+//                Log.e(TAG, "11 - url : " + requestURL);
+//
+//            /*
+//             * JSON
+//             */
+//
+//                JSONObject root = new JSONObject();
+//                JSONObject originJson = new JSONObject();
+//                originJson.put("lat", origin.latitude);
+//                originJson.put("lon", origin.longitude);
+//
+//                JSONObject destinationJson = new JSONObject();
+//                destinationJson.put("lat", destination.latitude);
+//                destinationJson.put("lon", destination.longitude);
+//
+//                root.put("origin", originJson);
+//                root.put("destination", destinationJson);
+//
+//                Log.e(TAG, "ride request : " + root.toString());
+//
+//                String str = root.toString();
+//                byte[] outputBytes = str.getBytes("UTF-8");
+//                OutputStream os = conn.getOutputStream();
+//                os.write(outputBytes);
+//
+//                int responseCode = conn.getResponseCode();
+//
+//                Log.e(TAG, "responseCode : " + responseCode);
+//
+//                if (responseCode == HttpsURLConnection.HTTP_OK) {
+//                    Log.e(TAG, "HTTP_OK");
+//
+//                    String line;
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(
+//                            conn.getInputStream()));
+//                    while ((line = br.readLine()) != null) {
+//                        responseStr += line;
+//                    }
+//
+//                    response = new JSONObject(responseStr);
+//
+//                } else {
+//                    Log.e(TAG, "14 - False - HTTP_OK");
+//                    responseStr = "";
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             return responseStr;
         }

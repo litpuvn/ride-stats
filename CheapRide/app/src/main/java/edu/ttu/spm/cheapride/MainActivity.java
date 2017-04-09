@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity
 
     private EstimateManager estimateManager;
 
-    private HorizontalBarChart chart;
-    private ProgressBar progressBar;
+    private View comparisonChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +118,10 @@ public class MainActivity extends AppCompatActivity
         registerTextView = (TextView) findViewById(R.id.register);
         loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
+        comparisonChart = findViewById(R.id.comparison_chart);
 
 
-
-        estimateManager = new EstimateManager();
+        estimateManager = new EstimateManager(this);
     }
 
     /**
@@ -151,6 +150,10 @@ public class MainActivity extends AppCompatActivity
 
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mDefaultLocation, DEFAULT_ZOOM));
 
+    }
+
+    public void activateComparisonChart() {
+        this.comparisonChart.setVisibility(View.VISIBLE);
     }
 
 

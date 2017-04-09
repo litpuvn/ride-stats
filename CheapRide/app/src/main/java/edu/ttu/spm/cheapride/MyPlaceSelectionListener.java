@@ -58,6 +58,7 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
 
         this.estimateManager.attemptEstimate(origin, destination);
 
+
         GoogleDirection.withServerKey(serverKey)
                 .from(origin)
                 .to(destination)
