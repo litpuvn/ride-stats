@@ -29,6 +29,7 @@ import com.google.android.gms.location.LocationServices;
 
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
+import edu.ttu.spm.cheapride.model.RideEstimate;
 
 
 public class MainActivity extends AppCompatActivity
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void activateComparisonChart() {
+    public void activateComparisonChart(RideEstimate rideEstimate) {
         this.comparisonChart.setVisibility(View.VISIBLE);
     }
 
