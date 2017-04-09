@@ -25,14 +25,14 @@ import android.os.StrictMode;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Toast;
 
-public class activity_registration extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity {
     private EditText register_email;
     private EditText register_password;
     private EditText reregister_password;
     private Button register_submit;
     private Button register_cancel;
 
-    private activity_registration.UserRegisterTask mAuthTask = null;
+    private RegistrationActivity.UserRegisterTask mAuthTask = null;
     private static final int READ_TIMEOUT = 30000; // seconds
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
     private final String TAG = "post json example";
@@ -59,13 +59,13 @@ public class activity_registration extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
                     if(register_email.getText().toString().trim().equals("")){
-                        Toast.makeText(activity_registration.this, "Email can not be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Email can not be empty", Toast.LENGTH_SHORT).show();
                     }
                     else if(register_email.getText().toString().trim().length()<4){
-                        Toast.makeText(activity_registration.this, "Email address too short", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Email address too short", Toast.LENGTH_SHORT).show();
                     }
                     else if(!isEmailValid(register_email.getText().toString())){
-                        Toast.makeText(activity_registration.this, "Email is not validation", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Email is not validation", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -79,10 +79,10 @@ public class activity_registration extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
                     if(register_password.getText().toString().trim().length()<6){
-                        Toast.makeText(activity_registration.this, "Password can not shorter than 6 letters", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Password can not shorter than 6 letters", Toast.LENGTH_SHORT).show();
                     }
                     else if(!isPasswordValid(register_password.getText().toString())){
-                        Toast.makeText(activity_registration.this, "Password have one number and one letter", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Password have one number and one letter", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class activity_registration extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
                     if(!reregister_password.getText().toString().trim().equals(register_password.getText().toString().trim())){
-                        Toast.makeText(activity_registration.this, "Confirm password not match", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Confirm password not match", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -164,11 +164,11 @@ public class activity_registration extends AppCompatActivity {
     }
     private boolean checkEdit(){
         if(register_email.getText().toString().trim().equals("")){
-            Toast.makeText(activity_registration.this, "Email can not be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegistrationActivity.this, "Email can not be empty", Toast.LENGTH_SHORT).show();
         }else if(register_password.getText().toString().trim().equals("")){
-            Toast.makeText(activity_registration.this, "Password can not be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegistrationActivity.this, "Password can not be empty", Toast.LENGTH_SHORT).show();
         }else if(!register_password.getText().toString().trim().equals(reregister_password.getText().toString().trim())){
-            Toast.makeText(activity_registration.this, "Confirm password not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegistrationActivity.this, "Confirm password not match", Toast.LENGTH_SHORT).show();
         }else{
             return true;
         }
@@ -212,7 +212,7 @@ public class activity_registration extends AppCompatActivity {
             mAuthTask = null;
 
             if (success) {
-                Toast.makeText(activity_registration.this, "Registration success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegistrationActivity.this, "Registration success", Toast.LENGTH_SHORT).show();
                 finish();
 
             } else {
