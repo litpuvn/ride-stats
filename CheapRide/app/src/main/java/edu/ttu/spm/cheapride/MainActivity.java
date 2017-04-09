@@ -5,37 +5,30 @@ import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import edu.ttu.spm.cheapride.handler.EstimateHandler;
+import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 
 
 public class MainActivity extends AppCompatActivity
@@ -73,6 +66,10 @@ public class MainActivity extends AppCompatActivity
     private TextView loginSeparatorTextView;
     private TextView welcomeTextView;
 
+    private EstimateHandler estimateManager;
+
+    private View comparisonChart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -107,7 +104,10 @@ public class MainActivity extends AppCompatActivity
         registerTextView = (TextView) findViewById(R.id.register);
         loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
+        comparisonChart = findViewById(R.id.comparison_chart);
 
+
+        estimateManager = new EstimateHandler(this);
     }
 
     /**
@@ -134,8 +134,12 @@ public class MainActivity extends AppCompatActivity
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, mMap, mDefaultLocation, DEFAULT_ZOOM));
+        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mDefaultLocation, DEFAULT_ZOOM));
 
+    }
+
+    public void activateComparisonChart() {
+        this.comparisonChart.setVisibility(View.VISIBLE);
     }
 
 
