@@ -2,6 +2,7 @@ package edu.ttu.spm.cheapride;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.RideEstimate;
+import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 
 public class MainActivity extends AppCompatActivity
@@ -70,6 +73,12 @@ public class MainActivity extends AppCompatActivity
     private EstimateHandler estimateManager;
 
     private View comparisonChart;
+    private TextView uberArrivalTime;
+    private TextView lyftArrivalTime;
+    private TextView uberCost;
+    private TextView lyftCost;
+
+    private static final int CHART_MAX_WIDTH = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +116,11 @@ public class MainActivity extends AppCompatActivity
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
         comparisonChart = findViewById(R.id.comparison_chart);
 
+        uberArrivalTime = (TextView) findViewById(R.id.uber_arrival);
+        lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
+        uberCost = (TextView) findViewById(R.id.lyft_arrival);
+        lyftCost = (TextView) findViewById(R.id.lyft_arrival);
+
 
         estimateManager = new EstimateHandler(this);
     }
@@ -139,7 +153,24 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void activateComparisonChart(RideEstimate rideEstimate) {
+    public void activateComparisonChart(RideEstimateDTO rideEstimateDto) {
+
+        Resources resources = this.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float pxRatio = ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+        double uberTimeWidth = rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
+        double lyftTimeWidth = rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
+
+        this.uberArrivalTime.setWidth((int)(uberTimeWidth * pxRatio));
+        this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime() / 60));
+        this.lyftArrivalTime.setWidth((int)(lyftTimeWidth * pxRatio));
+
+        double uberCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberCost() / rideEstimateDto.getTotalCost())) : 0;
+        double lyftCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftCost() / rideEstimateDto.getTotalCost())) : 0;
+        this.uberCost.setWidth((int) (uberCostWidth * pxRatio));
+        this.lyftCost.setWidth((int) (lyftCostWidth * pxRatio));
+
         this.comparisonChart.setVisibility(View.VISIBLE);
     }
 

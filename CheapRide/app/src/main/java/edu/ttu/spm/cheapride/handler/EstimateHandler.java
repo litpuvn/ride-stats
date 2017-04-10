@@ -22,6 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
 import edu.ttu.spm.cheapride.AbstractNetworkRequest;
 import edu.ttu.spm.cheapride.MainActivity;
 import edu.ttu.spm.cheapride.model.RideEstimate;
+import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 public class EstimateHandler extends AbstractNetworkRequest {
     private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/estimate";
@@ -91,8 +92,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
 //
             if (success) {
                 MainActivity main = (MainActivity)mContext;
-                RideEstimate rideEstimate = RideEstimate.createFromJson(response);
-                main.activateComparisonChart(rideEstimate);
+                RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
+                main.activateComparisonChart(rideEstimateDto);
 
 
 //                LoginActivity loginActivity = (LoginActivity) context;
