@@ -39,7 +39,11 @@ public class RideEstimate {
     }
 
     public static RideEstimate createFromJson(JSONObject json) {
-        RideEstimate rideEst = new RideEstimate();
+        long time = Math.round(600*Math.random());
+        double cost = 20*Math.random();
+        long pickup = Math.round(600*Math.random());
+        String rideRequestId = "Request-" + Math.round(9*Math.random()) + "-" + Math.round(9*Math.random()) + "-" + Math.round(9*Math.random());
+        RideEstimate rideEst = new RideEstimate(time, cost, pickup, rideRequestId);
 
         return rideEst;
     }
