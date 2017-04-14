@@ -13,7 +13,7 @@ public abstract class AbstractNetworkRequest {
     protected JSONObject response;
 
     public abstract String performPostCall(String requestURL,
-                                  HashMap<String, String> postDataParams);
+                                  HashMap<Object, Object> postDataParams);
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

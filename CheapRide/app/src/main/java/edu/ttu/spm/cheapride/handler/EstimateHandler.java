@@ -49,10 +49,70 @@ public class EstimateHandler extends AbstractNetworkRequest {
         requestEstimateTask.execute((Void) null);
     }
 
+    public String performPostCall(String requestURL, HashMap<Object, Object> params) {
+        LatLng pickup = (LatLng)params.get("origin");
+        LatLng destination = (LatLng)params.get("destination");
 
-    @Override
-    public String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
-        return null;
+        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
+                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude ;
+
+        String responseStr = "";
+        URL url;
+
+        try {
+            url = new URL(requestStr);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(READ_TIMEOUT);
+            conn.setConnectTimeout(CONNECTION_TIMEOUT);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("token", "test");
+
+            Log.e(TAG, "11 - url : " + requestURL);
+
+            /*
+             * JSON
+             */
+
+            JSONObject root = new JSONObject();
+
+
+            Log.e(TAG, "12 - root : " + root.toString());
+
+            String str = root.toString();
+            byte[] outputBytes = str.getBytes("UTF-8");
+            OutputStream os = conn.getOutputStream();
+            os.write(outputBytes);
+
+            int responseCode = conn.getResponseCode();
+
+            Log.e(TAG, "13 - responseCode : " + responseCode);
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                Log.e(TAG, "14 - HTTP_OK");
+
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    responseStr += line;
+                }
+
+                response = new JSONObject(responseStr);
+
+            } else {
+                Log.e(TAG, "14 - False - HTTP_OK");
+                responseStr = "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return responseStr;
     }
 
     @Override
@@ -76,7 +136,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            HashMap<String, LatLng> postParams = new HashMap<>();
+            HashMap<Object, Object> postParams = new HashMap<>();
 
             postParams.put("origin", origin);
             postParams.put("destination", destination);
@@ -116,75 +176,5 @@ public class EstimateHandler extends AbstractNetworkRequest {
             showProgress(false);
         }
 
-
-
-        public String performPostCall(String requestURL,
-                                      HashMap<String, LatLng> postDataParams) {
-
-            URL url;
-            String responseStr = "test";
-//            try {
-//                url = new URL(requestURL);
-//
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setReadTimeout(READ_TIMEOUT);
-//                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-//                conn.setRequestMethod("POST");
-//                conn.setDoInput(true);
-//                conn.setDoOutput(true);
-//
-//                conn.setRequestProperty("Content-Type", "application/json");
-//
-//                Log.e(TAG, "11 - url : " + requestURL);
-//
-//            /*
-//             * JSON
-//             */
-//
-//                JSONObject root = new JSONObject();
-//                JSONObject originJson = new JSONObject();
-//                originJson.put("lat", origin.latitude);
-//                originJson.put("lon", origin.longitude);
-//
-//                JSONObject destinationJson = new JSONObject();
-//                destinationJson.put("lat", destination.latitude);
-//                destinationJson.put("lon", destination.longitude);
-//
-//                root.put("origin", originJson);
-//                root.put("destination", destinationJson);
-//
-//                Log.e(TAG, "ride request : " + root.toString());
-//
-//                String str = root.toString();
-//                byte[] outputBytes = str.getBytes("UTF-8");
-//                OutputStream os = conn.getOutputStream();
-//                os.write(outputBytes);
-//
-//                int responseCode = conn.getResponseCode();
-//
-//                Log.e(TAG, "responseCode : " + responseCode);
-//
-//                if (responseCode == HttpsURLConnection.HTTP_OK) {
-//                    Log.e(TAG, "HTTP_OK");
-//
-//                    String line;
-//                    BufferedReader br = new BufferedReader(new InputStreamReader(
-//                            conn.getInputStream()));
-//                    while ((line = br.readLine()) != null) {
-//                        responseStr += line;
-//                    }
-//
-//                    response = new JSONObject(responseStr);
-//
-//                } else {
-//                    Log.e(TAG, "14 - False - HTTP_OK");
-//                    responseStr = "";
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-            return responseStr;
-        }
     }
 }
