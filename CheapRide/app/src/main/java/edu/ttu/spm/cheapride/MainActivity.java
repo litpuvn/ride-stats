@@ -1,11 +1,13 @@
 package edu.ttu.spm.cheapride;
 
+import android.*;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener {
 
     public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-//    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
+    //    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
 
     private GoogleApiClient mGoogleApiClient;
+    private LatLng mCurrentLocation;
 
     private PlaceAutocompleteFragment autocompleteFragment;
 
@@ -146,10 +151,12 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+
+
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mDefaultLocation, DEFAULT_ZOOM));
+        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
     }
 
@@ -239,46 +246,38 @@ public class MainActivity extends AppCompatActivity
      * Gets the current location of the device, and positions the map's camera.
      */
     private void getDeviceLocation() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //User has previously accepted this permission
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            }
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            //Not in api-23, no need to prompt
+            mMap.setMyLocationEnabled(true);
         }
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        if (mLocationPermissionGranted) {
-            mLastKnownLocation = LocationServices.FusedLocationApi
-                    .getLastLocation(mGoogleApiClient);
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            double lat = mLastLocation.getLatitude();
+            double lng = mLastLocation.getLongitude();
+
+            mCurrentLocation =  new LatLng(lat, lng);
+            //mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("Your Location"));
+            //mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+        }
+        else
+        {
+            Toast.makeText(this, "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
         }
 
-        // Set the map's camera position to the current location of the device.
-        if (mCameraPosition != null) {
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        } else if (mLastKnownLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(mLastKnownLocation.getLatitude(),
-                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "Current location is null. Using defaults.");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
     }
 
     private void moveCamemra() {
 
     }
+
 }
 
 
