@@ -1,6 +1,7 @@
 package edu.ttu.spm.cheapride.model;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RideEstimateDTO {
@@ -47,11 +48,24 @@ public class RideEstimateDTO {
 
 
     public static RideEstimateDTO createFromJson(JSONObject ride) {
-        RideEstimate uber = RideEstimate.createFromJson(null);
-        RideEstimate lyft = RideEstimate.createFromJson(null);
+        RideEstimate uber;
+        RideEstimate lyft;
 
-        RideEstimateDTO dto = new RideEstimateDTO(uber, lyft);
-        return dto;
+        try {
+            uber = RideEstimate.createFromJson(ride.getJSONObject("uber"));
+         }
+        catch (JSONException je) {
+            uber = null;
+        }
+
+        try {
+            lyft = RideEstimate.createFromJson(ride.getJSONObject("lyft"));
+        }
+        catch (JSONException je) {
+            lyft = null;
+        }
+
+        return new RideEstimateDTO(uber, lyft);
     }
 
 
