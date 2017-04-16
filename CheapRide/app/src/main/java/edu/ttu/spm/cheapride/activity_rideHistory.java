@@ -27,7 +27,7 @@ public class activity_rideHistory extends AppCompatActivity {
     private void insertRow(){
         String numberTitle = "  No. ";
         String dateTitle = "  Date  ";
-        String provideTitle = "   Provide   ";
+        String provideTitle = "   Provider   ";
         String pickupTitle = "      Pickup      ";
         String destinationTitle = "      Destination      ";
         String feeTitle = "  Fee  ";
