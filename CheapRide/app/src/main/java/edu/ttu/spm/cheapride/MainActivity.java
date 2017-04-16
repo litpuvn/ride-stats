@@ -158,6 +158,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void onHistoryClicked(View v) {
+        System.out.println("History clicked");
+
+        Intent intent = new Intent(getApplicationContext(), activity_rideHistory.class);
+        startActivity(intent);
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent loginResponse) {
         // Check which request we're responding to

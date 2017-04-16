@@ -16,6 +16,7 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="history">history</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="vertical_separator">|</string>
