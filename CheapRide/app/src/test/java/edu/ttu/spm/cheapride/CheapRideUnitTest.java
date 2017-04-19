@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ExampleUnitTest {
+public class CheapRideUnitTest {
 
 
     @Mock
@@ -34,27 +34,20 @@ public class ExampleUnitTest {
     Context mMockContext;
     @Mock
     LoginActivity mLogin;
-//    @Test
-//    public void addition_isCorrect() throws Exception {
-//        assertEquals(4, 2 + 2);
-//    }
 
     @Test
-    public void login_isCorrect() throws Exception {
+    public void testEmailValid() {
+        String validMail = "cheapride@ttu.edu";
+        LoginActivity login = new LoginActivity();
+        boolean valid = login.isEmailValid(validMail);
+        assertTrue(valid);
+    }
 
-//        mEmailView.setText("cheapridettu.edu");
-//        mPasswordView.setText("admin");
-//
-//        when(mLogin.findViewById(R.id.email)).thenReturn(mEmailView);
-//        when(mLogin.findViewById(R.id.password)).thenReturn(mPasswordView);
-//
-//
-//        LoginActivity login = new LoginActivity();
-//        login.attemptLogin();
-//
-//        String myError = mEmailView.getError().toString();
-//        assertEquals(myError, "This email address is invalid");
+    @Test
+    public void testEmailNotValid() {
+        String validMail = "cheapride@ttuedu";
 
-        assertEquals(4, 2 + 2);
+        LoginActivity login = new LoginActivity();
+        assertFalse(login.isEmailValid(validMail));
     }
 }

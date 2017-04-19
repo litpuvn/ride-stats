@@ -25,7 +25,7 @@ import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 public class EstimateHandler extends AbstractNetworkRequest {
-    private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/estimate";
+    private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/getEstimate";
     private final String TAG = "EstimateHandler";
 
     /**
@@ -53,9 +53,9 @@ public class EstimateHandler extends AbstractNetworkRequest {
         LatLng pickup = (LatLng)params.get("origin");
         LatLng destination = (LatLng)params.get("destination");
 
-        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
-                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude ;
-
+//        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
+//                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude ;
+        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
         String responseStr = "";
         URL url;
 
@@ -66,30 +66,11 @@ public class EstimateHandler extends AbstractNetworkRequest {
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
             conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-
-            conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("token", "test");
 
             Log.e(TAG, "11 - url : " + requestURL);
-
-            /*
-             * JSON
-             */
-
-            JSONObject root = new JSONObject();
-
-
-            Log.e(TAG, "12 - root : " + root.toString());
-
-            String str = root.toString();
-            byte[] outputBytes = str.getBytes("UTF-8");
-            OutputStream os = conn.getOutputStream();
-            os.write(outputBytes);
-
             int responseCode = conn.getResponseCode();
-
+            System.out.println("Request URL: " + requestStr);
             Log.e(TAG, "13 - responseCode : " + responseCode);
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
@@ -142,6 +123,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
             postParams.put("destination", destination);
 
             return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
+//            return true;
 
         }
 
