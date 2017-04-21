@@ -122,8 +122,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             postParams.put("origin", origin);
             postParams.put("destination", destination);
 
-            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
-//            return true;
+//            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
+            return true;
 
         }
 

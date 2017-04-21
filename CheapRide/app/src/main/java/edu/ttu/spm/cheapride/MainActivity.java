@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity
 
         uberArrivalTime = (TextView) findViewById(R.id.uber_arrival);
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
-        uberCost = (TextView) findViewById(R.id.lyft_arrival);
-        lyftCost = (TextView) findViewById(R.id.lyft_arrival);
+        uberCost = (TextView) findViewById(R.id.uber_cost);
+        lyftCost = (TextView) findViewById(R.id.lyft_cost);
 
 
         estimateManager = new EstimateHandler(this);
@@ -172,11 +172,14 @@ public class MainActivity extends AppCompatActivity
         this.uberArrivalTime.setWidth((int)(uberTimeWidth * pxRatio));
         this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime() / 60));
         this.lyftArrivalTime.setWidth((int)(lyftTimeWidth * pxRatio));
+        this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime() / 60));
 
         double uberCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberCost() / rideEstimateDto.getTotalCost())) : 0;
         double lyftCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftCost() / rideEstimateDto.getTotalCost())) : 0;
         this.uberCost.setWidth((int) (uberCostWidth * pxRatio));
+        this.uberCost.setText(String.valueOf(rideEstimateDto.getUberCost()));
         this.lyftCost.setWidth((int) (lyftCostWidth * pxRatio));
+        this.lyftCost.setText(String.valueOf(rideEstimateDto.getLyftCost()));
 
         this.comparisonChart.setVisibility(View.VISIBLE);
     }
