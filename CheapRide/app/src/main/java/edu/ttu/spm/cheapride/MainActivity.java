@@ -166,16 +166,17 @@ public class MainActivity extends AppCompatActivity
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float pxRatio = ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
-        double uberTimeWidth = rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
-        double lyftTimeWidth = rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
+        double uberTimeWidth = this.getUberTimeWidth(rideEstimateDto);
+        double lyftTimeWidth = this.getLyftTimeWidth(rideEstimateDto);
 
         this.uberArrivalTime.setWidth((int)(uberTimeWidth * pxRatio));
         this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime() / 60));
         this.lyftArrivalTime.setWidth((int)(lyftTimeWidth * pxRatio));
         this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime() / 60));
 
-        double uberCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberCost() / rideEstimateDto.getTotalCost())) : 0;
-        double lyftCostWidth = rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftCost() / rideEstimateDto.getTotalCost())) : 0;
+        double uberCostWidth = this.getUberCostWidth(rideEstimateDto);
+        double lyftCostWidth = this.getLyftCostWidth(rideEstimateDto);
+
         this.uberCost.setWidth((int) (uberCostWidth * pxRatio));
         this.uberCost.setText(String.valueOf(rideEstimateDto.getUberCost()));
         this.lyftCost.setWidth((int) (lyftCostWidth * pxRatio));
@@ -183,6 +184,24 @@ public class MainActivity extends AppCompatActivity
 
         this.comparisonChart.setVisibility(View.VISIBLE);
     }
+
+    public double getUberTimeWidth(RideEstimateDTO rideEstimateDto) {
+        return rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
+    }
+
+    public double getUberCostWidth(RideEstimateDTO rideEstimateDto) {
+        return rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getUberCost() / rideEstimateDto.getTotalCost())) : 0;
+    }
+
+    public double getLyftCostWidth(RideEstimateDTO rideEstimateDto) {
+        return rideEstimateDto.getTotalCost() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftCost() / rideEstimateDto.getTotalCost())) : 0;
+    }
+
+    public double getLyftTimeWidth(RideEstimateDTO rideEstimateDto) {
+        return rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
+    }
+
+
 
 
     public void onLoginClicked(View v) {
