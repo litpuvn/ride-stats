@@ -24,6 +24,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -286,8 +287,12 @@ public class MainActivity extends AppCompatActivity
             double lng = mLastLocation.getLongitude();
 
             mCurrentLocation =  new LatLng(lat, lng);
-            //mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("Your Location"));
-            //mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+            mMap.animateCamera(zoom);
+
         }
         else
         {

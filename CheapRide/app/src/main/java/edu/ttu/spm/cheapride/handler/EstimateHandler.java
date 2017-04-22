@@ -58,7 +58,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
 //        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
         String responseStr = "";
         URL url;
-
+        System.out.println("Request: " + requestStr);
         try {
             url = new URL(requestStr);
 

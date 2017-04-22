@@ -234,6 +234,7 @@ public class RegistrationActivity extends AppCompatActivity {
             URL url;
             String response = "";
             try {
+                System.out.println("register request: " + requestURL);
                 url = new URL(requestURL);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
