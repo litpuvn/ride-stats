@@ -19,11 +19,15 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import edu.ttu.spm.cheapride.MainActivity;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 
 
@@ -35,6 +39,9 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
     private LatLng currentLocation;
     private EstimateHandler estimateManager;
     private Context mContext;
+    private Marker destinationMarker;
+
+    private ArrayList<Polyline> routes = new ArrayList<>();
 
     public MyPlaceSelectionListener(Context mContext, EstimateHandler estimateManager, GoogleMap mMap, LatLng currentLocation, int zoomLevel) {
         this.mContext = mContext;
@@ -50,8 +57,17 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
         Log.i(TAG, "Place: " + place.getName());
         Log.i(TAG, "Place LatLng: " + place.getLatLng().toString());
 
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+
+        for (Iterator<Polyline> i = routes.iterator(); i.hasNext();) {
+            Polyline item = i.next();
+            item.remove();
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), this.zoomLevel));
-        mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+        destinationMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
 
 
         String serverKey = "AIzaSyCOlafJC7QHMEiBqCfd0cDmdbLU1ZwkdHA";
@@ -78,7 +94,9 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
                             Leg leg = route.getLegList().get(0);
                             ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                             PolylineOptions polylineOptions = DirectionConverter.createPolyline(mContext, directionPositionList, 5, Color.RED);
-                            mMap.addPolyline(polylineOptions);
+                            Polyline tmpRoute = mMap.addPolyline(polylineOptions);
+
+                            routes.add(tmpRoute);
                         }
                     }
 

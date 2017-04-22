@@ -1,17 +1,17 @@
 package edu.ttu.spm.cheapride;
 
-import android.*;
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -36,16 +36,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
-import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
+        LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    private static final int LOCATION_REQUEST = 1340;
+
+    //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
+    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
 //        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
@@ -85,6 +92,7 @@ public class MainActivity extends AppCompatActivity
     private TextView lyftCost;
 
     private static final int CHART_MAX_WIDTH = 100;
+    private TrackGPS gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +136,6 @@ public class MainActivity extends AppCompatActivity
         lyftCost = (TextView) findViewById(R.id.lyft_cost);
 
 
-        estimateManager = new EstimateHandler(this);
     }
 
     /**
@@ -155,7 +162,17 @@ public class MainActivity extends AppCompatActivity
 
 
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+//        getDeviceLocation();
+
+        estimateManager = new EstimateHandler(this);
+
+        if (!canAccessLocation()) {
+            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+        }
+        else {
+            gps = new TrackGPS(this);
+            this.displayLocation(gps.getLatitude(), gps.getLongitude());
+        }
 
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -247,6 +264,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public LatLng getCurrentLocation() {
+        return this.mCurrentLocation;
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -265,6 +286,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void displayCurrentLocation() {
+        mCurrentLocation =  new LatLng(gps.getLatitude(), gps.getLongitude());
+
+        this.displayLocation(gps.getLatitude(), gps.getLongitude());
+    }
+
+    private void displayLocation(double lat, double lng) {
+        mCurrentLocation =  new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+        mMap.animateCamera(zoom);
+    }
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -301,10 +336,59 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void moveCamemra() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        Log.d(TAG, "location permission result");
+        switch(requestCode) {
+
+            case LOCATION_REQUEST:
+                gps = new TrackGPS(this);
+                this.displayLocation(gps.getLatitude(), gps.getLongitude());
+                Log.d(TAG, "longtitude: " + gps.getLongitude() + "; latitude: " + gps.getLatitude());
+
+                break;
+        }
+    }
+
+    private boolean canAccessLocation() {
+        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
+    }
+
+    private boolean hasPermission(String perm) {
+        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(this, perm));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        gps.stopUsingGPS();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "Location changed");
+
+        gps.setLocation(location);
+        this.displayLocation(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
 
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
 
 
