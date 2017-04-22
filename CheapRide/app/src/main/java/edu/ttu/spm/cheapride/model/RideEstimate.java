@@ -33,14 +33,14 @@ public class RideEstimate {
 
     public static RideEstimate createFromJson(JSONObject json) throws JSONException {
 
-        return createRandomRideEstimate();
-//        double cost = json.getDouble("cost");
-//        long pickup = (long)json.getDouble("time");
-//        String rideRequestId = json.getString("rideRequestId");
-//
-//        RideEstimate rideEst = new RideEstimate(cost, pickup, rideRequestId);
-//
-//        return rideEst;
+//        return createRandomRideEstimate();
+        double cost = json.getDouble("cost");
+        long pickup = (long)json.getDouble("time");
+        String rideRequestId = json.getString("rideRequestId");
+
+        RideEstimate rideEst = new RideEstimate(cost, pickup, rideRequestId);
+
+        return rideEst;
     }
 
 

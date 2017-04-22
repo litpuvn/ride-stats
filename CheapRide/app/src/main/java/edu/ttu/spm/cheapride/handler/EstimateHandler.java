@@ -53,9 +53,9 @@ public class EstimateHandler extends AbstractNetworkRequest {
         LatLng pickup = (LatLng)params.get("origin");
         LatLng destination = (LatLng)params.get("destination");
 
-//        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
-//                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude ;
-        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
+        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
+                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude ;
+//        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
         String responseStr = "";
         URL url;
 
@@ -122,8 +122,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             postParams.put("origin", origin);
             postParams.put("destination", destination);
 
-//            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
-            return true;
+            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
+//            return true;
 
         }
 

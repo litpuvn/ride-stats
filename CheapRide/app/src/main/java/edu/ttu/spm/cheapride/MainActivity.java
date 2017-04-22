@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-//    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
+    public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
+//        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";

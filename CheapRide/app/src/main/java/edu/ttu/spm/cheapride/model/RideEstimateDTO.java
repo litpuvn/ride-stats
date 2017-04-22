@@ -63,7 +63,7 @@ public class RideEstimateDTO {
             uber = uberJson != null ? RideEstimate.createFromJson(uberJson) :  RideEstimate.createEmptyRideEstimate();
          }
         catch (JSONException je) {
-            uber = null;
+            uber = RideEstimate.createEmptyRideEstimate();
         }
 
         try {
@@ -71,7 +71,7 @@ public class RideEstimateDTO {
             lyft = lyftJson != null ? RideEstimate.createFromJson(lyftJson) :  RideEstimate.createEmptyRideEstimate();
         }
         catch (JSONException je) {
-            lyft = null;
+            lyft =  RideEstimate.createEmptyRideEstimate();
         }
 
         return new RideEstimateDTO(uber, lyft);
