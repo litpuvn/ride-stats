@@ -66,6 +66,10 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
             item.remove();
         }
 
+        mMap.clear();
+        MainActivity m = (MainActivity)mContext;
+        m.displayCurrentLocation();
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), this.zoomLevel));
         destinationMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
 
