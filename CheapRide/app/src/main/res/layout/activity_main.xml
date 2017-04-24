@@ -121,7 +121,8 @@
                             android:width="90dp"
                             android:height="15dp"
                             android:layout_gravity="end"
-                            android:background="#CCCC00"
+                            android:background="#000000"
+                            android:alpha="0.6"
                             />
 
                         <TextView
@@ -130,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:width="30dp"
                             android:height="15dp"
-                            android:background="#FF0000"
+                            android:background="#ff00bf"
                             android:layout_gravity="end"
                             android:gravity="end"
                             />
@@ -158,8 +159,8 @@
                             android:layout_height="wrap_content"
                             android:width="20dp"
                             android:height="15dp"
-                            android:background="#CCCC00"
-
+                            android:background="#000000"
+                            android:alpha="0.6"
                             />
 
                         <TextView
@@ -168,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:width="80dp"
                             android:height="15dp"
-                            android:background="#FF0000"
+                            android:background="#ff00bf"
 
                             />
                     </LinearLayout>
