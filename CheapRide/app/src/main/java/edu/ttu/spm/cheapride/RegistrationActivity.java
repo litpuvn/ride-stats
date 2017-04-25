@@ -78,11 +78,11 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 // TODO Auto-generated method stub
                 if(!hasFocus){
-                    if(register_password.getText().toString().trim().length()<6){
-                        Toast.makeText(RegistrationActivity.this, "Password can not shorter than 6 letters", Toast.LENGTH_SHORT).show();
+                    if(register_password.getText().toString().trim().length()<8){
+                        Toast.makeText(RegistrationActivity.this, "Password can not shorter than 8 letters", Toast.LENGTH_SHORT).show();
                     }
                     else if(!isPasswordValid(register_password.getText().toString())){
-                        Toast.makeText(RegistrationActivity.this, "Password have one number and one letter", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Password must includes 1 number and 1 special", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -136,31 +136,18 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
     }
+    //check the Email validation
     private boolean isEmailValid(String email) {
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             return true;
         }
         return false;
     }
+    //check the password validation
     public boolean isPasswordValid(String password) {
-        int numOfLetters = 0;
-        int numOfDigits = 0;
 
-        byte[] bytes = password.getBytes();
-        for (byte tempByte : bytes) {
-            char tempChar = (char) tempByte;
-            if (Character.isDigit(tempChar)) {
-                numOfDigits++;
-            }
+        return password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$");
 
-            if (Character.isLetter(tempChar)) {
-                numOfLetters++;
-            }
-        }
-        if ((numOfDigits!=0)&&(numOfLetters!=0)){
-            return true;
-        }
-        return false;
     }
     private boolean checkEdit(){
         if(register_email.getText().toString().trim().equals("")){
