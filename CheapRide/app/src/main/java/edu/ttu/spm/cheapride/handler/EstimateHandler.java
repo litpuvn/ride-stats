@@ -131,24 +131,14 @@ public class EstimateHandler extends AbstractNetworkRequest {
         protected void onPostExecute(final Boolean success) {
 //            mAuthTask = null;
 //            showProgress(false);
-//
             if (success) {
                 MainActivity main = (MainActivity)mContext;
                 RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
                 main.activateComparisonChart(rideEstimateDto);
 
 
-//                LoginActivity loginActivity = (LoginActivity) context;
-//                Intent resultIntent = new Intent();
-//                String response = loginResponse != null ? loginResponse.toString() : null;
-//                resultIntent.putExtra("response", response);
-//                loginActivity.setResult(RESULT_OK, resultIntent);
-//                finish();
-
-
             } else {
-//                mPasswordView.setError(getString(R.string.error_not_authorized_access));
-//                mPasswordView.requestFocus();
+
             }
         }
 
