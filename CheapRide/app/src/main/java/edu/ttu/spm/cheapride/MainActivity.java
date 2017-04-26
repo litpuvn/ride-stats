@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity
     private TextView uberCost;
     private TextView lyftCost;
 
-    Spinner carTypeSelection;
+    private Spinner carTypeSelection;
 
     private static final int CHART_MAX_WIDTH = 100;
     private TrackGPS gps;
@@ -217,9 +217,10 @@ public class MainActivity extends AppCompatActivity
         this.lyftCost.setText(String.valueOf(rideEstimateDto.getLyftCost()));
 
         this.comparisonChart.setVisibility(View.VISIBLE);
-        this.rideBooking.setVisibility(View.VISIBLE);
 
-
+//        if (LoginActivity.isLogin) {
+            this.rideBooking.setVisibility(View.VISIBLE);
+//        }
     }
 
     public double getUberTimeWidth(RideEstimateDTO rideEstimateDto) {
@@ -267,10 +268,13 @@ public class MainActivity extends AppCompatActivity
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
                 welcomeTextView.setText("Hello, Today is " + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
+
+                LoginActivity.isLogin = true;
             }
             else {
                 welcomeTextView.setText("");
                 welcomeTextView.setVisibility(View.INVISIBLE);
+                LoginActivity.isLogin = false;
 
             }
         }
