@@ -33,7 +33,6 @@ public class EstimateHandler extends AbstractNetworkRequest {
      */
     private static final int READ_TIMEOUT = 30000; // seconds
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
-    private Context mContext;
 
     public EstimateHandler(Context mContext) {
         this.mContext = mContext;
