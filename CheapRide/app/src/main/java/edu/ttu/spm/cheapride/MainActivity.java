@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
     private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final int LOGIN_REQUEST = 0;
-    private static final String[] CAR_TYPES = {"Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
+    private static final String[] CAR_TYPES = {"Any", "Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
 
     private TextView loginTextView;
     private TextView registerTextView;
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity
     private EstimateHandler estimateManager;
 
     private View comparisonChart;
+    private View rideBooking;
     private TextView uberArrivalTime;
     private TextView lyftArrivalTime;
     private TextView uberCost;
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
         comparisonChart = findViewById(R.id.comparison_chart);
+        rideBooking = findViewById(R.id.ride_booking);
 
         uberArrivalTime = (TextView) findViewById(R.id.uber_arrival);
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
@@ -215,6 +217,9 @@ public class MainActivity extends AppCompatActivity
         this.lyftCost.setText(String.valueOf(rideEstimateDto.getLyftCost()));
 
         this.comparisonChart.setVisibility(View.VISIBLE);
+        this.rideBooking.setVisibility(View.VISIBLE);
+
+
     }
 
     public double getUberTimeWidth(RideEstimateDTO rideEstimateDto) {
