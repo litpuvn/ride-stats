@@ -33,7 +33,6 @@ public class EstimateHandler extends AbstractNetworkRequest {
      */
     private static final int READ_TIMEOUT = 30000; // seconds
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
-    private Context mContext;
 
     public EstimateHandler(Context mContext) {
         this.mContext = mContext;
@@ -131,24 +130,14 @@ public class EstimateHandler extends AbstractNetworkRequest {
         protected void onPostExecute(final Boolean success) {
 //            mAuthTask = null;
 //            showProgress(false);
-//
             if (success) {
                 MainActivity main = (MainActivity)mContext;
                 RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
                 main.activateComparisonChart(rideEstimateDto);
 
 
-//                LoginActivity loginActivity = (LoginActivity) context;
-//                Intent resultIntent = new Intent();
-//                String response = loginResponse != null ? loginResponse.toString() : null;
-//                resultIntent.putExtra("response", response);
-//                loginActivity.setResult(RESULT_OK, resultIntent);
-//                finish();
-
-
             } else {
-//                mPasswordView.setError(getString(R.string.error_not_authorized_access));
-//                mPasswordView.requestFocus();
+
             }
         }
 
