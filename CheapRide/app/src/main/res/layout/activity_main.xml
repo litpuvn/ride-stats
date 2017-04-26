@@ -113,8 +113,8 @@
                     android:layout_height="wrap_content"
                     >
                     <Button
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
+                        android:layout_width="90dp"
+                        android:layout_height="30dp"
                         android:text="@string/book_uber"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -123,8 +123,8 @@
                         />
                     <Button
                         android:layout_marginTop="2dp"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
+                        android:layout_width="90dp"
+                        android:layout_height="30dp"
                         android:text="@string/book_lyft"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
