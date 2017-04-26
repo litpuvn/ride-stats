@@ -17,6 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
         LocationListener,
+        AdapterView.OnItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final int LOGIN_REQUEST = 0;
+    private static final String[] CAR_TYPES = {"Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
 
     private TextView loginTextView;
     private TextView registerTextView;
@@ -90,6 +95,8 @@ public class MainActivity extends AppCompatActivity
     private TextView lyftArrivalTime;
     private TextView uberCost;
     private TextView lyftCost;
+
+    Spinner carTypeSelection;
 
     private static final int CHART_MAX_WIDTH = 100;
     private TrackGPS gps;
@@ -136,6 +143,13 @@ public class MainActivity extends AppCompatActivity
         lyftCost = (TextView) findViewById(R.id.lyft_cost);
 
 
+        carTypeSelection = (Spinner)findViewById(R.id.carType);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_spinner_item,CAR_TYPES);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carTypeSelection.setAdapter(adapter);
+        carTypeSelection.setOnItemSelectedListener(this);
     }
 
     /**
@@ -387,6 +401,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+
+        switch (position) {
+            case 0:
+                // Whatever you want to happen when the first item gets selected
+                break;
+            case 1:
+                // Whatever you want to happen when the second item gets selected
+                break;
+            case 2:
+                // Whatever you want to happen when the thrid item gets selected
+                break;
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }
