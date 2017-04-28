@@ -37,6 +37,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
@@ -82,6 +86,18 @@ public class MainActivity extends AppCompatActivity
 
     private static final int LOGIN_REQUEST = 0;
     private static final String[] CAR_TYPES = {"Any", "Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
+    private static final Map<Integer, String> CAR_TYPE_MAP;
+
+    static {
+        Hashtable<Integer, String> tmp = new Hashtable<>();
+        tmp.put(0, "");
+        tmp.put(1, "share");
+        tmp.put(2, "4_seats");
+        tmp.put(3, "6_or_more_seats");
+        tmp.put(4, "luxury_4_seats");
+
+        CAR_TYPE_MAP = Collections.unmodifiableMap(tmp);
+    }
 
     private TextView loginTextView;
     private TextView registerTextView;
@@ -102,6 +118,7 @@ public class MainActivity extends AppCompatActivity
     private static final int CHART_MAX_WIDTH = 100;
     private TrackGPS gps;
 
+    private int selectedCarType = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -416,23 +433,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
-        switch (position) {
-            case 0:
-                // Whatever you want to happen when the first item gets selected
-                break;
-            case 1:
-                // Whatever you want to happen when the second item gets selected
-                break;
-            case 2:
-                // Whatever you want to happen when the thrid item gets selected
-                break;
-
-        }
+       this.selectedCarType = position;
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public String getSelectedCarTypeAsString() {
+        if (this.selectedCarType <= 0 || this.selectedCarType >= CAR_TYPES.length) {
+            this.selectedCarType = 0;
+        }
+
+        return CAR_TYPE_MAP.get(this.selectedCarType);
     }
 }
 
