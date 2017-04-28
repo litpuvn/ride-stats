@@ -12,6 +12,37 @@
 
     <!-- Login progress -->
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/startDate_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Start Date"
+            android:ems="10"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/endDate_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="End Date"
+            android:ems="10"
+            android:inputType="date" />
+
+        <Button
+            android:id="@+id/submit_history"
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,53 +55,6 @@
                 android:id="@+id/history_table"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <!--<TableRow-->
-                    <!--android:id="@+id/history_title"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent">-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_No."-->
-                <!--android:layout_width="30dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="No." />-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_date"-->
-                <!--android:layout_width="40dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:text="Date" />-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_provider"-->
-                <!--android:layout_width="60dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:text="Provider" />-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_pickup"-->
-                <!--android:layout_width="90dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:text="Pickup" />-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_distination"-->
-                <!--android:layout_width="90dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:text="Distination" />-->
-
-                    <!--<TextView-->
-                <!--android:id="@+id/history_fee"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:text="Fee" />-->
-                <!--</TableRow>-->
 
             </TableLayout>
         </HorizontalScrollView>

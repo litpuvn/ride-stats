@@ -1,10 +1,16 @@
 package edu.ttu.spm.cheapride;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,6 +21,21 @@ import static java.security.AccessController.getContext;
 
 public class activity_rideHistory extends AppCompatActivity {
 
+    private EditText startDate;
+    private EditText endDate;
+
+    int year_start;
+    int month_start;
+    int day_start;
+
+    int year_end;
+    int month_end;
+    int day_end;
+
+    static final int DIALOG_ID = 0;
+
+    private Button date_submit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +44,42 @@ public class activity_rideHistory extends AppCompatActivity {
        //insert new rows
         insertRow();
     }
+
+    public void showDialogOnTextViewClick(){
+        startDate = (EditText)findViewById(R.id.startDate_history);
+        endDate = (EditText)findViewById(R.id.endDate_history);
+
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogOnTextViewClick();
+            }
+        });
+
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogOnTextViewClick();
+            }
+        });
+    }
+
+    //@Override
+    protected Dialog onCreateDialog(){
+        return new DatePickerDialog(this,datePickerListener,year_start,month_start,day_start);
+    }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener
+            =new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            year_start = year;
+            month_start = month;
+            day_start = dayOfMonth;
+
+
+        }
+    };
 
     private void insertRow(){
         String numberTitle = "  No. ";
