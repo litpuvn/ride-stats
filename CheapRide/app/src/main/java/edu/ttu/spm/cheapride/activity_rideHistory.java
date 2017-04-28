@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TableLayout;
@@ -16,7 +18,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import static edu.ttu.spm.cheapride.R.id.history_table;
+import static edu.ttu.spm.cheapride.R.id.submit_history;
 import static edu.ttu.spm.cheapride.R.id.wrap_content;
 import static java.security.AccessController.getContext;
 
@@ -42,6 +47,9 @@ public class activity_rideHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history);
 
+        //set default date
+        setDefaultDate();
+
         //show the date picker
         showDialogOnTextViewClick();
 
@@ -49,9 +57,28 @@ public class activity_rideHistory extends AppCompatActivity {
         insertRow();
     }
 
+    public void setDefaultDate(){
+
+        //get current date
+        final Calendar cal = Calendar.getInstance();
+
+        year_start = cal.get(Calendar.YEAR);
+        month_start = cal.get(Calendar.MONTH);
+        day_start = cal.get(Calendar.DAY_OF_MONTH);
+
+        year_end = cal.get(Calendar.YEAR);
+        month_end = cal.get(Calendar.MONTH);
+        day_end = cal.get(Calendar.DAY_OF_MONTH);
+
+    }
+
     public void showDialogOnTextViewClick(){
         startDate = (EditText)findViewById(R.id.startDate_history);
         endDate = (EditText)findViewById(R.id.endDate_history);
+        date_submit = (Button) findViewById(R.id.submit_history);
+
+        startDate.setInputType(InputType.TYPE_NULL);
+        endDate.setInputType(InputType.TYPE_NULL);
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +93,13 @@ public class activity_rideHistory extends AppCompatActivity {
             public void onClick(View v) {
                 DIALOG_ID = 2;
                 showDialog(DIALOG_ID);
+            }
+        });
+
+        date_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
