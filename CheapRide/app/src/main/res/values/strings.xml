@@ -22,4 +22,6 @@
     <string name="vertical_separator">|</string>
     <string name="search_hint">Enter a place</string>
     <string name="search_button">Search</string>
+    <string name="book_uber">Book Uber</string>
+    <string name="book_lyft">Book Lyft</string>
 </resources>
