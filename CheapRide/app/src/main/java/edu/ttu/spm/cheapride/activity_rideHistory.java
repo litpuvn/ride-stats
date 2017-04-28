@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static edu.ttu.spm.cheapride.R.id.history_table;
 import static edu.ttu.spm.cheapride.R.id.wrap_content;
@@ -32,7 +33,7 @@ public class activity_rideHistory extends AppCompatActivity {
     int month_end;
     int day_end;
 
-    static final int DIALOG_ID = 0;
+    int DIALOG_ID = 0;
 
     private Button date_submit;
 
@@ -41,7 +42,10 @@ public class activity_rideHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history);
 
-       //insert new rows
+        //show the date picker
+        showDialogOnTextViewClick();
+
+        //insert new rows
         insertRow();
     }
 
@@ -52,32 +56,57 @@ public class activity_rideHistory extends AppCompatActivity {
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogOnTextViewClick();
+                DIALOG_ID = 1;
+                showDialog(DIALOG_ID);
             }
         });
 
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogOnTextViewClick();
+                DIALOG_ID = 2;
+                showDialog(DIALOG_ID);
             }
         });
     }
 
     //@Override
-    protected Dialog onCreateDialog(){
-        return new DatePickerDialog(this,datePickerListener,year_start,month_start,day_start);
+    protected Dialog onCreateDialog(int id){
+        if (id == 1)
+            return new DatePickerDialog(this,datePickerListener,year_start,month_start,day_start);
+        if (id ==2)
+            return new DatePickerDialog(this,datePickerListener,year_end,month_end,day_end);
+        return null;
     }
 
     private DatePickerDialog.OnDateSetListener datePickerListener
             =new DatePickerDialog.OnDateSetListener() {
         @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            year_start = year;
-            month_start = month;
-            day_start = dayOfMonth;
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            if(DIALOG_ID == 1) {
+                year_start = year;
+                month_start = month + 1;
+                day_start = day;
+                String showStartTime = month_start + "/" + day_start + "/" + year_start;
 
+                //show date on the text view
+                startDate.setText(showStartTime);
+                return;
+            }
+            if(DIALOG_ID ==2){
+                year_end = year;
+                month_end = month;
+                day_end = day;
+                String showEndTime = month_end + "/" + day_end + "/" + year_end;
 
+                //show date on the text view
+                endDate.setText(showEndTime);
+                return;
+            }
+            else {
+                Toast.makeText(activity_rideHistory.this, "Date Picker Error", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
     };
 
