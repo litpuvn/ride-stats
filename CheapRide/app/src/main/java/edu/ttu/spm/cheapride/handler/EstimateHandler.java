@@ -28,6 +28,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
     private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/getEstimate";
     private final String TAG = "EstimateHandler";
 
+    private RideEstimateDTO rideEstimateResponse;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -101,6 +102,10 @@ public class EstimateHandler extends AbstractNetworkRequest {
 
     }
 
+    public RideEstimateDTO getRideEstimateResponse() {
+        return this.rideEstimateResponse;
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -122,8 +127,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             postParams.put("origin", origin);
             postParams.put("destination", destination);
 
-            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
-//            return true;
+//            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
+            return true;
 
         }
 
@@ -134,8 +139,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             if (success) {
                 MainActivity main = (MainActivity)mContext;
                 RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
+                rideEstimateResponse = rideEstimateDto;
                 main.activateComparisonChart(rideEstimateDto);
-
 
             } else {
 
