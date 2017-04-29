@@ -38,15 +38,15 @@
 
         <Button
             android:id="@+id/submit_history"
-            android:layout_width="86dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="SUBMIT" />
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="395dp">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -60,5 +60,31 @@
             </TableLayout>
         </HorizontalScrollView>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/pageCounter_history"
+            android:layout_width="189dp"
+            android:layout_height="match_parent"
+            android:text="TextView" />
+
+        <Button
+            android:id="@+id/previousButten_history"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PREV" />
+
+        <Button
+            android:id="@+id/nextButton_history"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="NEXT" />
+    </LinearLayout>
 
 </LinearLayout>

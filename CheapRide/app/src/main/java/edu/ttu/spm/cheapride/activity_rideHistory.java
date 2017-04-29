@@ -114,7 +114,7 @@ public class activity_rideHistory extends AppCompatActivity {
     }
 
     private DatePickerDialog.OnDateSetListener datePickerListener
-            =new DatePickerDialog.OnDateSetListener() {
+            = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
             if(DIALOG_ID == 1) {
