@@ -18,6 +18,7 @@ public class BookingHandler extends AbstractNetworkRequest {
     private final String TAG = "EstimateHandler";
 
     private RideBookingTask rideBookingTask;
+    private Boolean bookingInProgress = false;
 
     public BookingHandler(Context mContext) {
         this.mContext = mContext;
@@ -29,6 +30,7 @@ public class BookingHandler extends AbstractNetworkRequest {
             return;
         }
 
+        bookingInProgress = true;
         showProgress(true);
         rideBookingTask = new RideBookingTask(rideRequestId);
         rideBookingTask.execute((Void) null);
@@ -42,6 +44,10 @@ public class BookingHandler extends AbstractNetworkRequest {
     @Override
     public void showProgress(boolean show) {
 
+    }
+
+    public boolean isBooking() {
+        return bookingInProgress == true;
     }
 
 
@@ -81,7 +87,11 @@ public class BookingHandler extends AbstractNetworkRequest {
             } else {
 
             }
+
+            bookingInProgress = false;
         }
+
+
 
         @Override
         protected void onCancelled() {

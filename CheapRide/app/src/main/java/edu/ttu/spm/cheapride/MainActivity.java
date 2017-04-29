@@ -279,6 +279,11 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
+        if (this.bookingHandler.isBooking()) {
+            Log.i(TAG, "Another booking is processing");
+            return;
+        }
+
         this.bookingHandler.doBooking(uber.getRideRequestId());
     }
 
@@ -286,6 +291,11 @@ public class MainActivity extends AppCompatActivity
         RideEstimate lyft = this.estimateManager.getRideEstimateResponse().getLyft();
         if (lyft == null || lyft.getRideRequestId() == null || lyft.getRideRequestId().length() < 1) {
             Log.i(TAG, "Invalid lyft booking.  No estimate returned from estimate request");
+            return;
+        }
+
+        if (this.bookingHandler.isBooking()) {
+            Log.i(TAG, "Another booking is processing");
             return;
         }
 
