@@ -120,6 +120,8 @@
                         android:textColor="#FFFFFF"
                         android:background="#000000"
                         android:alpha="0.6"
+                        android:clickable="true"
+                        android:onClick="onUberClick"
                         />
                     <Button
                         android:layout_marginTop="2dp"
@@ -129,6 +131,8 @@
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         android:background="#ff00bf"
+                        android:clickable="true"
+                        android:onClick="onLyftClick"
                         />
                 </LinearLayout>
                 <LinearLayout

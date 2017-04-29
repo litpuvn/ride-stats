@@ -17,12 +17,10 @@ public class BookingHandler extends AbstractNetworkRequest {
     private static final String BOOKING_URL = MainActivity.BASE_URL + "/book";
     private final String TAG = "EstimateHandler";
 
-    private EstimateHandler estimateHandler;
     private RideBookingTask rideBookingTask;
 
-    public BookingHandler(Context mContext, EstimateHandler estimateHandler) {
+    public BookingHandler(Context mContext) {
         this.mContext = mContext;
-        this.estimateHandler = estimateHandler;
     }
 
     public void doBooking(String rideRequestId) {

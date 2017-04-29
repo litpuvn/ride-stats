@@ -41,8 +41,10 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
+import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
+import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity
     private TextView welcomeTextView;
 
     private EstimateHandler estimateManager;
+    private BookingHandler bookingHandler;
 
     private View comparisonChart;
     private View rideBooking;
@@ -169,6 +172,8 @@ public class MainActivity extends AppCompatActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carTypeSelection.setAdapter(adapter);
         carTypeSelection.setOnItemSelectedListener(this);
+
+        bookingHandler = new BookingHandler(this);
     }
 
     /**
@@ -265,6 +270,26 @@ public class MainActivity extends AppCompatActivity
         Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivityForResult(loginIntent, LOGIN_REQUEST);
 
+    }
+
+    public void onUberClick(View v) {
+        RideEstimate uber = this.estimateManager.getRideEstimateResponse().getUber();
+        if (uber == null || uber.getRideRequestId() == null || uber.getRideRequestId().length() < 1) {
+            Log.i(TAG, "Invalid  uber booking  No estimate returned from estimate request");
+            return;
+        }
+
+        this.bookingHandler.doBooking(uber.getRideRequestId());
+    }
+
+    public void onLyftClick(View v) {
+        RideEstimate lyft = this.estimateManager.getRideEstimateResponse().getLyft();
+        if (lyft == null || lyft.getRideRequestId() == null || lyft.getRideRequestId().length() < 1) {
+            Log.i(TAG, "Invalid lyft booking.  No estimate returned from estimate request");
+            return;
+        }
+
+        this.bookingHandler.doBooking(lyft.getRideRequestId());
     }
 
     @Override
