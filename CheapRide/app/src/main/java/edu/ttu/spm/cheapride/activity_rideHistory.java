@@ -187,8 +187,10 @@ public class activity_rideHistory extends AppCompatActivity {
         pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
         nextPage = (Button) findViewById(R.id.nextButton_history);
         previousPage = (Button) findViewById(R.id.previousButten_history);
+        historyRecordArrayList = new ArrayList<>();
 
-        nextPage.setOnClickListener(new View.OnClickListener() {
+        nextPage.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
                 pageableArray.setPage(pageableArray.getNextPage());
@@ -196,7 +198,10 @@ public class activity_rideHistory extends AppCompatActivity {
                 displayPage();
                 pageCounter.setText("Page " + pageableArray.getPage() + " of " + pageableArray.getMaxPages());
             }
+
+
         });
+
 
         previousPage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,18 +216,22 @@ public class activity_rideHistory extends AppCompatActivity {
 
         for(int i = 0; i <= 100; i++){
             //here to input the content of list
-            historyRecordArrayList.add(new historyRecord(""+i+1,"02/15/2017","Uber","2606 31street 79410","33 University Ave.79210","$2"));
+            historyRecordArrayList.add(new historyRecord(" "+i,"02/15/2017","Uber","2606 31street 79410","33 University Ave.79210","$2"));
         }
 
         pageableArray = new Pageable<>(historyRecordArrayList);
-        pageableArray.setPageSize(20);
+        pageableArray.setPageSize(13);
         pageableArray.setPage(1);
         pageCounter.setText("Page " + pageableArray.getPage() + " of " + pageableArray.getMaxPages());
+        pageCounter.setTextColor(Color.BLACK);
+        pageCounter.setTextSize(30);
         displayPage();
     }
 
     public void displayPage(){
         TableLayout historyTable = (TableLayout) findViewById(history_table);
+
+        historyTable.removeAllViews();
         addTitle();
 
         for (historyRecord v : pageableArray.getListForPage()) {
@@ -233,43 +242,54 @@ public class activity_rideHistory extends AppCompatActivity {
             TextView labelNUMBER = new TextView(this);
             labelNUMBER.setText(v.getNumber());
             labelNUMBER.setGravity(Gravity.CENTER);
+            labelNUMBER.setTextColor(Color.MAGENTA);
+            labelNUMBER.setTextSize(25);
             newRow.addView(labelNUMBER);
 
             //create text view to add date
             TextView labelDATE = new TextView(this);
             labelDATE.setText(String.valueOf(v.getDate()));
             labelDATE.setGravity(Gravity.CENTER);
+            labelDATE.setTextColor(Color. BLUE);
+            labelDATE.setTextSize(25);
             newRow.addView(labelDATE);
 
             //create text view to add provide
             TextView labelPROVIDE = new TextView(this);
             labelPROVIDE.setText(String.valueOf(v.getProvider()));
             labelPROVIDE.setGravity(Gravity.CENTER);
+            labelPROVIDE.setTextColor(Color.MAGENTA);
+            labelPROVIDE.setTextSize(25);
             newRow.addView(labelPROVIDE);
 
             //create text view to add pickup
             TextView labelPICKUP = new TextView(this);
             labelPICKUP.setText(String.valueOf(v.getPick()));
             labelPICKUP.setGravity(Gravity.CENTER);
+            labelPICKUP.setTextColor(Color. BLUE);
+            labelPICKUP.setTextSize(25);
             newRow.addView(labelPICKUP);
 
             //create text view to add destination
             TextView labelDESTINATION = new TextView(this);
-            ;
             labelDESTINATION.setText(String.valueOf(v.getDate()));
             labelDESTINATION.setGravity(Gravity.CENTER);
+            labelDESTINATION.setTextColor(Color.MAGENTA);
+            labelDESTINATION.setTextSize(25);
             newRow.addView(labelDESTINATION);
 
             //create text view to add fee
             TextView labelFEE = new TextView(this);
             labelFEE.setText(String.valueOf(v.getFee()));
             labelFEE.setGravity(Gravity.CENTER);
+            labelFEE.setTextColor(Color. BLUE);
+            labelFEE.setTextSize(25);
             newRow.addView(labelFEE);
 
             //add new row into table
             historyTable.addView(newRow);
 
-           // addSeparator();
+           addSeparator();
 
         }
     }
@@ -291,147 +311,64 @@ public class activity_rideHistory extends AppCompatActivity {
         //add title for number
         TextView title0 = new TextView(this);
         title0.setText(numberTitle);
+        title0.setTextColor(Color.BLACK);
+        title0.setTextSize(30);
         titleRow.addView(title0);
+
 
         //add title for date
         TextView title1 = new TextView(this);
         title1.setText(dateTitle);
+        title1.setTextColor(Color.BLACK);
+        title1.setTextSize(30);
         titleRow.addView(title1);
 
         //add title for provide
         TextView title2 = new TextView(this);
         title2.setText(providerTitle);
+        title2.setTextColor(Color.BLACK);
+        title2.setTextSize(30);
         titleRow.addView(title2);
 
         //add title for pickup
         TextView title3 = new TextView(this);
         title3.setText(pickupTitle);
+        title3.setTextColor(Color.BLACK);
+        title3.setTextSize(30);
         titleRow.addView(title3);
 
         //add title for destination
         TextView title4 = new TextView(this);
         title4.setText(destinationTitle);
+        title4.setTextColor(Color.BLACK);
+        title4.setTextSize(30);
         titleRow.addView(title4);
 
         //add title for fee
         TextView title5 = new TextView(this);
         title5.setText(feeTitle);
+        title5.setTextColor(Color.BLACK);
+        title5.setTextSize(30);
         titleRow.addView(title5);
 
         historyTable.addView(titleRow);
 
     }
 
-//    private void addSeparator() {
-//        Resources res = MainActivity.this.getResources();
-//        separator = new LinearLayout(MainActivity.this);
-//        separator.setOrientation(LinearLayout.VERTICAL);
-//        separator.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2));
-//        separator.setBackgroundColor(Color.parseColor("#5e7974"));
-//        separator.setDividerDrawable(res.getDrawable(R.drawable.radius_middle));
-//        maintable.addView(separator);
-//
-//    }
+    private void addSeparator() {
+        TableLayout historyTable = (TableLayout) findViewById(history_table);
+
+        Resources res = activity_rideHistory.this.getResources();
+        separator = new LinearLayout(activity_rideHistory.this);
+        separator.setOrientation(LinearLayout.VERTICAL);
+        separator.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2));
+        separator.setBackgroundColor(Color.parseColor("#5e7974"));
+        //separator.setDividerDrawable(res.getDrawable(R.drawable.radius_middle));
+        historyTable.addView(separator);
+
+    }
+
+
 }
-
-
-
-//        String numberTitle = "  No. ";
-//        String dateTitle = "  Date  ";
-//        String providerTitle = "   Provider   ";
-//        String pickupTitle = "      Pickup      ";
-//        String destinationTitle = "      Destination      ";
-//        String feeTitle = "  Fee  ";
-//
-//        TableLayout historyTable = (TableLayout) findViewById(history_table);
-//
-//        //create row for title
-//        TableRow titleRow = new TableRow(this);
-//
-//        //add title for number
-//        TextView title0 = new TextView(this);
-//        title0.setText(numberTitle);
-//        titleRow.addView(title0);
-//
-//        //add title for date
-//        TextView title1 = new TextView(this);
-//        title1.setText(dateTitle);
-//        titleRow.addView(title1);
-//
-//        //add title for provide
-//        TextView title2 = new TextView(this);
-//        title2.setText(providerTitle);
-//        titleRow.addView(title2);
-//
-//        //add title for pickup
-//        TextView title3 = new TextView(this);
-//        title3.setText(pickupTitle);
-//        titleRow.addView(title3);
-//
-//        //add title for destination
-//        TextView title4 = new TextView(this);
-//        title4.setText(destinationTitle);
-//        titleRow.addView(title4);
-//
-//        //add title for fee
-//        TextView title5 = new TextView(this);
-//        title5.setText(feeTitle);
-//        titleRow.addView(title5);
-//
-//        historyTable.addView(titleRow);
-//
-////        for(int i = 1; i <100; i++){
-////
-////            //int number = i ;
-////            String date = "02/15/2017";
-////            String provide = "Uber";
-////            String pickup = "2606 31street 79410";
-////            String destination = "33 University Ave.79210";
-////            String fee = "$2";
-////
-////            //create a new row
-////            TableRow newRow = new TableRow(this);
-////
-////            //create text view to add number
-////            TextView labelNUMBER = new TextView(this);
-////            labelNUMBER.setText("" + i);
-////            labelNUMBER.setGravity(Gravity.CENTER);
-////            newRow.addView(labelNUMBER);
-////
-////            //create text view to add date
-////            TextView labelDATE  = new TextView(this);
-////            labelDATE.setText(date);
-////            labelDATE.setGravity(Gravity.CENTER);
-////            newRow.addView(labelDATE);
-////
-////            //create text view to add provide
-////            TextView labelPROVIDE = new TextView(this);
-////            labelPROVIDE.setText(provide);
-////            labelPROVIDE.setGravity(Gravity.CENTER);
-////            newRow.addView(labelPROVIDE);
-////
-////            //create text view to add pickup
-////            TextView labelPICKUP = new TextView(this);
-////            labelPICKUP.setText(pickup);
-////            labelPICKUP.setGravity(Gravity.CENTER);
-////            newRow.addView(labelPICKUP);
-////
-////            //create text view to add destination
-////            TextView labelDESTINATION = new TextView(this);;
-////            labelDESTINATION.setText(destination);
-////            labelDESTINATION.setGravity(Gravity.CENTER);
-////            newRow.addView(labelDESTINATION);
-////
-////            //create text view to add fee
-////            TextView labelFEE = new TextView(this);
-////            labelFEE.setText(fee);
-////            labelFEE.setGravity(Gravity.CENTER);
-////            newRow.addView(labelFEE);
-////
-////            //add new row into table
-////            historyTable.addView(newRow);
-////        }
-//    }
-//}
 
 
