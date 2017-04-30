@@ -7,11 +7,9 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static edu.ttu.spm.cheapride.R.id.history_table;
-import static edu.ttu.spm.cheapride.R.id.submit_history;
-import static edu.ttu.spm.cheapride.R.id.wrap_content;
-import static java.security.AccessController.getContext;
 
 public class activity_rideHistory extends AppCompatActivity {
 
@@ -272,7 +267,7 @@ public class activity_rideHistory extends AppCompatActivity {
 
             //create text view to add destination
             TextView labelDESTINATION = new TextView(this);
-            labelDESTINATION.setText(String.valueOf(v.getDate()));
+            labelDESTINATION.setText(String.valueOf(v.getDestination()));
             labelDESTINATION.setGravity(Gravity.CENTER);
             labelDESTINATION.setTextColor(Color.MAGENTA);
             labelDESTINATION.setTextSize(25);
