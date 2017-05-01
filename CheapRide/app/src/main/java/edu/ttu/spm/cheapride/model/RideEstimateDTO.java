@@ -48,19 +48,12 @@ public class RideEstimateDTO {
 
 
     public static RideEstimateDTO createFromJson(JSONObject ride) {
-        RideEstimate uber = RideEstimate.createRandomRideEstimate();
-        RideEstimate lyft = RideEstimate.createRandomRideEstimate();
-
-//        RideEstimate uber = null;
-//        RideEstimate lyft = null;
-
-        if (uber != null) {
-            return new RideEstimateDTO(uber, lyft);
-        }
+        RideEstimate uber = null;
+        RideEstimate lyft = null;
 
         if (ride == null) {
-            uber = RideEstimate.createEmptyRideEstimate();
-            lyft = RideEstimate.createEmptyRideEstimate();
+            uber = RideEstimate.createRandomRideEstimate();
+            lyft = RideEstimate.createRandomRideEstimate();
 
             return new RideEstimateDTO(uber, lyft);
         }

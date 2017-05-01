@@ -267,9 +267,9 @@ public class MainActivity extends AppCompatActivity
         double lyftTimeWidth = this.getLyftTimeWidth(rideEstimateDto);
 
         this.uberArrivalTime.setWidth((int)(uberTimeWidth * pxRatio));
-        this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime() / 60));
+        this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime()));
         this.lyftArrivalTime.setWidth((int)(lyftTimeWidth * pxRatio));
-        this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime() / 60));
+        this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime()));
 
         double uberCostWidth = this.getUberCostWidth(rideEstimateDto);
         double lyftCostWidth = this.getLyftCostWidth(rideEstimateDto);
