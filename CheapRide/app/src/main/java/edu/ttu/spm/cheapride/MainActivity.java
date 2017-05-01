@@ -37,7 +37,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.vision.text.Text;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -53,6 +52,7 @@ import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 import edu.ttu.spm.cheapride.model.item.Driver;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
+import edu.ttu.spm.cheapride.service.TrackGPS;
 
 
 public class MainActivity extends AppCompatActivity

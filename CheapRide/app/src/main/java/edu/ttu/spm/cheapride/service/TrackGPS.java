@@ -1,4 +1,4 @@
-package edu.ttu.spm.cheapride;
+package edu.ttu.spm.cheapride.service;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+
+import edu.ttu.spm.cheapride.MainActivity;
 
 
 public class TrackGPS extends Service {
