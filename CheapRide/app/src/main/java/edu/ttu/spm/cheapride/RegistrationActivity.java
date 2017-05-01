@@ -204,7 +204,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             } else {
                 register_email.setError("Your Email has been used");
-                register_email.requestFocus();
+                //register_email.requestFocus();
             }
         }
 
@@ -212,8 +212,6 @@ public class RegistrationActivity extends AppCompatActivity {
         protected void onCancelled() {
             mAuthTask = null;
         }
-
-
 
         public String performPostCall(String requestURL,
                                       HashMap<String, String> postDataParams) {

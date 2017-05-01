@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -18,8 +20,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static edu.ttu.spm.cheapride.R.id.history_table;
 
@@ -27,28 +39,26 @@ public class activity_rideHistory extends AppCompatActivity {
 
     private EditText startDate;
     private EditText endDate;
-
     int year_start;
     int month_start;
     int day_start;
-
     int year_end;
     int month_end;
     int day_end;
-
     int DIALOG_ID = 0;
-
     private Button date_submit;
     Pageable<historyRecord> pageableArray;
-
     TextView pageCounter;
     Button nextPage;
     Button previousPage;
-    TableRow tableRow;
     LinearLayout separator;
-    TextView value;
-
     ArrayList<historyRecord> historyRecordArrayList;
+
+    private activity_rideHistory.UserSelectDateTask mAuthTask = null;
+    private activity_rideHistory.SetHistoryDateTask mTestTask = null;
+    private static final int READ_TIMEOUT = 30000; // seconds
+    private static final int CONNECTION_TIMEOUT = 30000; // seconds
+    private final String TAG = "post json example";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +118,18 @@ public class activity_rideHistory extends AppCompatActivity {
         date_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for(int i = 0; i <= 100; i++) {
+                    //TODO Auto-generated method stub
+                    String username = "john";
+                    String date = "09/09/2017";
+                    String pick = "broadway avenue";
+                    String destination = "University avenue";
+                    String fee = "$20";
+                    String provider = "uber";
 
+                    mTestTask = new SetHistoryDateTask(username, date, pick, destination, fee, provider);
+                    mTestTask.execute((Void) null);
+                }
             }
         });
     }
@@ -176,6 +197,248 @@ public class activity_rideHistory extends AppCompatActivity {
         public String getPick(){return pick;}
         public String getDestination(){return destination;}
         public String getFee(){return fee;}
+    }
+
+    /**
+     * Represents an asynchronous user history task used to authenticate
+     * the user.
+     */
+    public class UserSelectDateTask extends AsyncTask<Void, Void, Boolean> {
+
+        private  String mUserName;
+        private  String mStartDate;
+        private  String mEndDate;
+
+
+        UserSelectDateTask(String userName, String startDate, String endDate) {
+            mUserName = userName;
+            mStartDate = startDate;
+            mEndDate = endDate;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String serverUrl = MainActivity.BASE_URL + "/history";
+            HashMap<String, String> postParams = new HashMap<>();
+
+            postParams.put("username", mUserName);
+            postParams.put("from_date", mStartDate);
+            postParams.put("to_date",mEndDate);
+
+            //performPostCall(serverUrl, postParams);
+
+            // TODO: submit the request here.
+            return performPostCall(serverUrl, postParams).length() > 0;
+            //return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                Toast.makeText(activity_rideHistory.this, "loading", Toast.LENGTH_SHORT).show();
+                finish();
+
+            } else {
+                Toast.makeText(activity_rideHistory.this, "date error", Toast.LENGTH_SHORT).show();
+                //register_email.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
+
+
+
+        public String performPostCall(String requestURL,
+                                      HashMap<String, String> postDataParams) {
+
+            URL url;
+            String response = "";
+            try {
+                System.out.println("register request: " + requestURL);
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                Log.e(TAG, "11 - url : " + requestURL);
+
+            /*
+             * JSON
+             */
+
+                JSONObject root = new JSONObject();
+                root.put("username", postDataParams.get("username"));
+                root.put("from_date", postDataParams.get("from_date"));
+                root.put("to_date", postDataParams.get("to_date"));
+
+                Log.e(TAG, "12 - root : " + root.toString());
+
+                String str = root.toString();
+                byte[] outputBytes = str.getBytes("UTF-8");
+                OutputStream os = conn.getOutputStream();
+                os.write(outputBytes);
+
+                int responseCode = conn.getResponseCode();
+
+                Log.e(TAG, "13 - responseCode : " + responseCode);
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    Log.e(TAG, "14 - HTTP_OK");
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    response = "";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+    }
+
+    /**
+     * Represents an set some fake user history to test
+     * the user.
+     */
+    public class SetHistoryDateTask extends AsyncTask<Void, Void, Boolean> {
+
+        private  String mUserName;
+        private  String mDate;
+        private  String mPick;
+        private  String mDestination;
+        private  String mFee;
+        private  String mProvider;
+
+
+        SetHistoryDateTask(String userName, String date, String pick, String destination, String fee, String provider) {
+            mUserName = userName;
+            mDate = date;
+            mPick = pick;
+            mDestination = destination;
+            mFee = fee;
+            mProvider = provider;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String serverUrl = MainActivity.BASE_URL + "/setHistory";
+            HashMap<String, String> postParams = new HashMap<>();
+
+            postParams.put("username", mUserName);
+            postParams.put("date", mDate);
+            postParams.put("pickup",mPick);
+            postParams.put("destination",mDestination);
+            postParams.put("fee",mFee);
+            postParams.put("provider",mProvider);
+
+            //performPostCall(serverUrl, postParams);
+
+            // TODO: submit the request here.
+            return performPostCall(serverUrl, postParams).length() > 0;
+            //return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mTestTask = null;
+
+            if (success) {
+                Toast.makeText(activity_rideHistory.this, "history updated", Toast.LENGTH_SHORT).show();
+                finish();
+
+            } else {
+                Toast.makeText(activity_rideHistory.this, "error message", Toast.LENGTH_SHORT).show();
+                //register_email.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mTestTask = null;
+        }
+
+
+
+        public String performPostCall(String requestURL,
+                                      HashMap<String, String> postDataParams) {
+
+            URL url;
+            String response = "";
+            try {
+                System.out.println("set history request: " + requestURL);
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                Log.e(TAG, "11 - url : " + requestURL);
+
+            /*
+             * JSON
+             */
+
+                JSONObject root = new JSONObject();
+                root.put("username", postDataParams.get("username"));
+                root.put("date", postDataParams.get("date"));
+                root.put("pickup", postDataParams.get("pickup"));
+                root.put("destination", postDataParams.get("destination"));
+                root.put("fee", postDataParams.get("fee"));
+                root.put("provider", postDataParams.get("provider"));
+
+                Log.e(TAG, "12 - root : " + root.toString());
+
+                String str = root.toString();
+                byte[] outputBytes = str.getBytes("UTF-8");
+                OutputStream os = conn.getOutputStream();
+                os.write(outputBytes);
+
+                int responseCode = conn.getResponseCode();
+
+                Log.e(TAG, "13 - responseCode : " + responseCode);
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    Log.e(TAG, "14 - HTTP_OK");
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    response = "";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
     }
 
     private void historyTable(){
@@ -288,7 +551,6 @@ public class activity_rideHistory extends AppCompatActivity {
 
         }
     }
-
 
     public void addTitle(){
         String numberTitle = "  No. ";
