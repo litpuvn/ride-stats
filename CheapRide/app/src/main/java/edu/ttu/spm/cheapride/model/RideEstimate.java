@@ -49,8 +49,11 @@ public class RideEstimate {
     }
 
     public static RideEstimate createRandomRideEstimate() {
-        double cost = Math.random() * 100;
-        long pickup = (long)(Math.random() * 200);
+        double cost = 2 + Math.random() * 20;
+        String costString = String.valueOf(cost);
+
+        cost = costString.length() > 4 ? Double.parseDouble(costString.substring(0, 4)) : Double.parseDouble(costString);
+        long pickup = 5 + (long)(Math.random() * 30);
         String rideRequestId = "request-" + (Math.random() * 100);
         RideEstimate rideEst = new RideEstimate(cost, pickup, rideRequestId);
 

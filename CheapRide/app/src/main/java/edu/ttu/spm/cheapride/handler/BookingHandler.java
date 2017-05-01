@@ -1,8 +1,6 @@
 package edu.ttu.spm.cheapride.handler;
 
 import android.content.Context;
-import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -21,42 +18,41 @@ import javax.net.ssl.HttpsURLConnection;
 
 import edu.ttu.spm.cheapride.AbstractNetworkRequest;
 import edu.ttu.spm.cheapride.MainActivity;
-import edu.ttu.spm.cheapride.model.RideEstimate;
+import edu.ttu.spm.cheapride.model.BookResponse;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
-public class EstimateHandler extends AbstractNetworkRequest {
-    private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/getEstimate";
-    private final String TAG = "EstimateHandler";
+public class BookingHandler extends AbstractNetworkRequest {
 
-    private RideEstimateDTO rideEstimateResponse;
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int READ_TIMEOUT = 30000; // seconds
-    private static final int CONNECTION_TIMEOUT = 30000; // seconds
+    private static final String BOOKING_URL = MainActivity.BASE_URL + "/bookRide";
+    private final String TAG = "BookingHandler";
 
-    public EstimateHandler(Context mContext) {
+    private RideBookingTask rideBookingTask;
+    private Boolean bookingInProgress = false;
+
+    public BookingHandler(Context mContext) {
         this.mContext = mContext;
     }
 
-    private RequestEstimateTask requestEstimateTask;
+    public void doBooking(String rideRequestId, String provider) {
+        if (rideRequestId == null || rideRequestId.length() < 1) {
+            Log.i(TAG, "No ride request available");
+            return;
+        }
 
-    public void attemptEstimate(LatLng origin, LatLng destination) {
-        // Show a progress spinner, and kick off a background task to
-        // perform the user login attempt.
+        bookingInProgress = true;
         showProgress(true);
-        requestEstimateTask = new RequestEstimateTask(origin, destination);
-        requestEstimateTask.execute((Void) null);
+        rideBookingTask = new RideBookingTask(rideRequestId, provider);
+        rideBookingTask.execute((Void) null);
     }
 
     public String performPostCall(String requestURL, HashMap<Object, Object> params) {
-        LatLng pickup = (LatLng)params.get("origin");
-        LatLng destination = (LatLng)params.get("destination");
+
+        String proivder = (String)params.get("provider");
+        String rideRequestId = (String)params.get("rideRequestId");
+
         MainActivity m = (MainActivity)mContext;
 
-        String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
-                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude + "&car_type=" + m.getSelectedCarTypeAsString();
-//        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
+        String requestStr = requestURL + "?rideRequestId=" + rideRequestId + "&provider=" + proivder;
         String responseStr = "";
         URL url;
         System.out.println("Request: " + requestStr);
@@ -102,33 +98,33 @@ public class EstimateHandler extends AbstractNetworkRequest {
 
     }
 
-    public RideEstimateDTO getRideEstimateResponse() {
-        return this.rideEstimateResponse;
+    public boolean isBooking() {
+        return bookingInProgress == true;
     }
+
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class RequestEstimateTask extends AsyncTask<Void, Void, Boolean> {
+    public class RideBookingTask extends AsyncTask<Void, Void, Boolean> {
+        private String rideRequestId;
+        private String provider;
 
-        private LatLng origin;
-        private LatLng destination;
-
-        RequestEstimateTask(LatLng origin, LatLng destination) {
-            this.origin = origin;
-            this.destination = destination;
+        RideBookingTask(String rideRequestId, String provider) {
+            this.rideRequestId = rideRequestId;
+            this.provider = provider;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             HashMap<Object, Object> postParams = new HashMap<>();
 
-            postParams.put("origin", origin);
-            postParams.put("destination", destination);
+            postParams.put("rideRequestId", this.rideRequestId);
+            postParams.put("provider", this.provider);
 
-//            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
-            return true;
+            return performPostCall(BOOKING_URL, postParams).length() > 0;
+//            return true;
 
         }
 
@@ -138,14 +134,18 @@ public class EstimateHandler extends AbstractNetworkRequest {
 //            showProgress(false);
             if (success) {
                 MainActivity main = (MainActivity)mContext;
-                RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
-                rideEstimateResponse = rideEstimateDto;
-                main.activateComparisonChart(rideEstimateDto);
+                BookResponse bookResponse = BookResponse.createFromJson(response);
+                main.showBookResponse(bookResponse);
+
 
             } else {
 
             }
+
+            bookingInProgress = false;
         }
+
+
 
         @Override
         protected void onCancelled() {
