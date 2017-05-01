@@ -44,6 +44,7 @@ import java.util.Map;
 import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
+import edu.ttu.spm.cheapride.model.BookResponse;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
@@ -330,6 +331,10 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
+    }
+
+    public void showBookResponse(BookResponse bookResponse) {
+
     }
 
     public void onRegisterClicked(View v) {

@@ -34,7 +34,7 @@ public class BookResponse {
         this.vehicle = vehicle;
     }
 
-    public static BookResponse createBookResponseFromJson(JSONObject bookResponse) {
+    public static BookResponse createFromJson(JSONObject bookResponse) {
 
         BookResponse response = null;
 

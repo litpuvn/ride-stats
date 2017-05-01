@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import edu.ttu.spm.cheapride.AbstractNetworkRequest;
 import edu.ttu.spm.cheapride.MainActivity;
+import edu.ttu.spm.cheapride.model.BookResponse;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 
 public class BookingHandler extends AbstractNetworkRequest {
@@ -80,8 +81,8 @@ public class BookingHandler extends AbstractNetworkRequest {
 //            showProgress(false);
             if (success) {
                 MainActivity main = (MainActivity)mContext;
-                RideEstimateDTO rideEstimateDto = RideEstimateDTO.createFromJson(response);
-                main.activateComparisonChart(rideEstimateDto);
+                BookResponse bookResponse = BookResponse.createFromJson(response);
+                main.showBookResponse(bookResponse);
 
 
             } else {
