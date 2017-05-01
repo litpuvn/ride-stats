@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String PROVIDER_UBER = "uber";
+    private static final String PROVIDER_LYFT = "lyft";
+
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -69,7 +72,8 @@ public class MainActivity extends AppCompatActivity
     private static final int LOCATION_REQUEST = 1340;
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
+//    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
+    public static final String BASE_URL = "http://10.161.98.174/cheapRide";
 //        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
@@ -322,7 +326,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        this.bookingHandler.doBooking(uber.getRideRequestId());
+        this.bookingHandler.doBooking(uber.getRideRequestId(), PROVIDER_UBER);
     }
 
     public void onLyftClick(View v) {
@@ -337,7 +341,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        this.bookingHandler.doBooking(lyft.getRideRequestId());
+        this.bookingHandler.doBooking(lyft.getRideRequestId(), PROVIDER_LYFT);
     }
 
     @Override
