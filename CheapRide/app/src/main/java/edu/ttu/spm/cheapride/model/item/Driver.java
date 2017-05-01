@@ -41,7 +41,7 @@ public class Driver {
         }
         try {
             String phone = json.getString("phone");
-            float rating = (float)(5* Math.random());
+            float rating = (float)json.getDouble("rating");
             String firstName = json.getString("firstName");
             String imageUrl = json.getString("imageUrl");
             dr = new Driver(phone, rating, firstName, imageUrl);
