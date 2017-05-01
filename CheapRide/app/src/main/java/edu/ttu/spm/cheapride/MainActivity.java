@@ -277,9 +277,10 @@ public class MainActivity extends AppCompatActivity
 
         this.comparisonChart.setVisibility(View.VISIBLE);
 
-//        if (LoginActivity.isLogin) {
+        if (LoginActivity.isLogin) {
             this.rideBooking.setVisibility(View.VISIBLE);
-//        }
+            bookingButtons.setVisibility(View.VISIBLE);
+        }
     }
 
     public double getUberTimeWidth(RideEstimateDTO rideEstimateDto) {
