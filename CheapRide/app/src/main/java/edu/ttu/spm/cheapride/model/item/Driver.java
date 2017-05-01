@@ -36,16 +36,30 @@ public class Driver {
     public static Driver createFromJson(JSONObject json) {
         Driver dr = null;
 
+        if (json == null) {
+            return createRandomDriver();
+        }
         try {
             String phone = json.getString("phone");
-
-            dr = new Driver(phone);
+            float rating = (float)(5* Math.random());
+            String firstName = json.getString("firstName");
+            String imageUrl = json.getString("imageUrl");
+            dr = new Driver(phone, rating, firstName, imageUrl);
         }
         catch (JSONException je) {
             je.printStackTrace();
         }
 
         return dr;
+    }
+
+    private static Driver createRandomDriver() {
+        Driver d;
+        String phone = String.valueOf((long)900000000 + (long)(999999999*Math.random()));
+        float rating = (float)(5* Math.random());
+        String firstName = "John";
+        String imageUrl = "https://public-api.lyft.com/static/images/user.png";
+        return  new Driver(phone, rating, firstName, imageUrl);
     }
 }
 
