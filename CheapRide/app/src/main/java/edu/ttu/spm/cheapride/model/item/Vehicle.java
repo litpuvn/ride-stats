@@ -52,19 +52,35 @@ public class Vehicle {
 
     public static Vehicle createFromJson(JSONObject json) {
         Vehicle v = null;
-
+        if (json == null) {
+            return createRandomVehicle();
+        }
         try {
             String color = json.getString("color");
-
-            v = new Vehicle(color);
-        }
-        catch (JSONException je) {
+            String make = json.getString("make");
+            String licensePlate = json.getString("licensePlate");
+            String year = json.getString("year");
+            String licensePlateState = json.getString("licensePlateState");
+            String model = json.getString("model");
+            String imageUrl = json.getString("imageUrl");
+            v = new Vehicle(color, make, licensePlate, year, licensePlateState, model, imageUrl);
+        } catch (JSONException je) {
             je.printStackTrace();
         }
 
         return v;
     }
+
+    private static Vehicle createRandomVehicle() {
+        String color = "Green";
+        String make = "Toyota";
+        String licensePlate = "Txt-" + (1000 + (int)(10000*Math.random()));
+        String year = String.valueOf(2000 + (int)(20 * Math.random()));
+
+        String imageUrl = "https://public-api.lyft.com/static/images/prius_blue.png";
+
+        return new Vehicle(color, make, licensePlate, year, "", "", imageUrl);
+    }
+
+
 }
-
-
-
