@@ -50,6 +50,14 @@ public class Vehicle {
         return imageUrl;
     }
 
+    public String getLicense() {
+        return this.licensePlateState + "-" + this.licensePlate;
+    }
+
+    public String getBasicPrudctionInfo() {
+        return this.make + "-" + this.model + "-" + this.year;
+    }
+
     public static Vehicle createFromJson(JSONObject json) {
         Vehicle v = null;
         if (json == null) {
@@ -74,12 +82,13 @@ public class Vehicle {
     private static Vehicle createRandomVehicle() {
         String color = "Green";
         String make = "Toyota";
-        String licensePlate = "Txt-" + (1000 + (int)(10000*Math.random()));
+        String licensePlate = String.valueOf(1000 + (int)(10000*Math.random()));
+        String licenseState = "Txt" ;
         String year = String.valueOf(2000 + (int)(20 * Math.random()));
 
         String imageUrl = "https://public-api.lyft.com/static/images/prius_blue.png";
 
-        return new Vehicle(color, make, licensePlate, year, "", "", imageUrl);
+        return new Vehicle(color, make, licensePlate, year, licenseState, "", imageUrl);
     }
 
 

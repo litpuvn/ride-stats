@@ -34,6 +34,26 @@ public class BookResponse {
         this.vehicle = vehicle;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public boolean isAccepted() {
+        if (this.status == null) {
+            return false;
+        }
+
+        return this.status.toLowerCase().equals("accepted") ;
+    }
+
     public static BookResponse createFromJson(JSONObject bookResponse) {
 
         BookResponse response = null;

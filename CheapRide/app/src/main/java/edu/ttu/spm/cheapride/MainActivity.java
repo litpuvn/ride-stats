@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -47,6 +51,8 @@ import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
+import edu.ttu.spm.cheapride.model.item.Driver;
+import edu.ttu.spm.cheapride.model.item.Vehicle;
 
 
 public class MainActivity extends AppCompatActivity
@@ -112,6 +118,17 @@ public class MainActivity extends AppCompatActivity
 
     private View comparisonChart;
     private View rideBooking;
+    private View bookingButtons;
+    private View driveInfoBoard;
+
+    private ImageView vehicleImage;
+    private TextView vehicleColor;
+    private TextView vehiclePlateLicense;
+    private TextView vehicleInfo;
+    private ImageView driverImage;
+    private TextView driverName;
+    private TextView driverInfo;
+
     private TextView uberArrivalTime;
     private TextView lyftArrivalTime;
     private TextView uberCost;
@@ -123,6 +140,9 @@ public class MainActivity extends AppCompatActivity
     private TrackGPS gps;
 
     private int selectedCarType = 0;
+
+    private ImageLoader imageLoader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -159,6 +179,16 @@ public class MainActivity extends AppCompatActivity
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
         comparisonChart = findViewById(R.id.comparison_chart);
         rideBooking = findViewById(R.id.ride_booking);
+        driveInfoBoard = findViewById(R.id.driverInfoBoard);
+        bookingButtons = findViewById(R.id.bookingButtons);
+
+        vehicleImage = (ImageView) findViewById(R.id.vehicleImg);
+        vehicleColor = (TextView) findViewById(R.id.vehicleColor);
+        vehiclePlateLicense = (TextView) findViewById(R.id.vehiclePlateLicense);
+        vehicleInfo = (TextView) findViewById(R.id.vehicleInfo);
+        driverImage = (ImageView) findViewById(R.id.driverImg);
+        driverName = (TextView) findViewById(R.id.driverName);
+        driverInfo = (TextView) findViewById(R.id.driverInfo);
 
         uberArrivalTime = (TextView) findViewById(R.id.uber_arrival);
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
@@ -175,6 +205,12 @@ public class MainActivity extends AppCompatActivity
         carTypeSelection.setOnItemSelectedListener(this);
 
         bookingHandler = new BookingHandler(this);
+
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+            .build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
     }
 
     /**
@@ -334,7 +370,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showBookResponse(BookResponse bookResponse) {
+        if (bookResponse == null || !bookResponse.isAccepted()) {
+            return;
+        }
 
+        Vehicle v = bookResponse.getVehicle();
+        Driver d = bookResponse.getDriver();
+        bookingButtons.setVisibility(View.INVISIBLE);
+
+        // show info
+        imageLoader.displayImage(v.getImageUrl(), vehicleImage);
+        vehiclePlateLicense.setText(v.getLicense());
+        vehicleColor.setText(v.getColor());
+        vehicleInfo.setText(v.getBasicPrudctionInfo());
+
+        imageLoader.displayImage(d.getImageUrl(), driverImage);
+        driverName.setText(d.getFirstName());
+        driverInfo.setText(d.getPhoneNumber());
+
+        driveInfoBoard.setVisibility(View.VISIBLE);
     }
 
     public void onRegisterClicked(View v) {

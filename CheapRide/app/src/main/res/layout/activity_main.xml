@@ -112,28 +112,84 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
-                    <Button
-                        android:layout_width="90dp"
-                        android:layout_height="30dp"
-                        android:text="@string/book_uber"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        android:background="#000000"
-                        android:alpha="0.6"
-                        android:clickable="true"
-                        android:onClick="onUberClick"
-                        />
-                    <Button
-                        android:layout_marginTop="2dp"
-                        android:layout_width="90dp"
-                        android:layout_height="30dp"
-                        android:text="@string/book_lyft"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        android:background="#ff00bf"
-                        android:clickable="true"
-                        android:onClick="onLyftClick"
-                        />
+                    <LinearLayout
+                        android:id="@+id/bookingButtons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <Button
+                            android:layout_width="90dp"
+                            android:layout_height="30dp"
+                            android:text="@string/book_uber"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"
+                            android:background="#000000"
+                            android:alpha="0.6"
+                            android:clickable="true"
+                            android:onClick="onUberClick"
+                            />
+                        <Button
+                            android:layout_marginTop="2dp"
+                            android:layout_width="90dp"
+                            android:layout_height="30dp"
+                            android:text="@string/book_lyft"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"
+                            android:background="#ff00bf"
+                            android:clickable="true"
+                            android:onClick="onLyftClick"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/driverInfoBoard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="invisible"
+                        android:background="#FFFFFF"
+
+                        >
+                        <ImageView
+                            android:id="@+id/vehicleImg"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="60dp"
+                            android:layout_height="50dp" />
+                        <TextView
+                            android:id="@+id/vehicleColor"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+                        <TextView
+                            android:id="@+id/vehiclePlateLicense"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+                        <TextView
+                            android:id="@+id/vehicleInfo"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+                        <ImageView
+                            android:id="@+id/driverImg"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="60dp"
+                            android:layout_height="50dp" />
+                        <TextView
+                            android:id="@+id/driverName"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/driverInfo"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/comparison_chart"
