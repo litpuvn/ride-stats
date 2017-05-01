@@ -28,18 +28,30 @@ public class BookResponse {
         this.vehicle = vehicle;
     }
 
+    public BookResponse(String status, Driver driver, Vehicle vehicle) {
+        this.status = status;
+        this.driver = driver;
+        this.vehicle = vehicle;
+    }
+
     public static BookResponse createBookResponseFromJson(JSONObject bookResponse) {
 
         BookResponse response = null;
+
+        if (bookResponse == null) {
+            return new BookResponse("accepted", Driver.createFromJson(null), Vehicle.createFromJson(null));
+        }
+
         try {
             String bStatus = bookResponse.getString("status");
-            Address origin = Address.createFromJson(bookResponse.getJSONObject("origin"));
-            Passenger p = Passenger.createFromJson(bookResponse.getJSONObject("passenger"));
-            Address destination = Address.createFromJson(bookResponse.getJSONObject("destination"));
+//            Address origin = Address.createFromJson(bookResponse.getJSONObject("origin"));
+//            Passenger p = Passenger.createFromJson(bookResponse.getJSONObject("passenger"));
+//            Address destination = Address.createFromJson(bookResponse.getJSONObject("destination"));
             Driver dr = Driver.createFromJson(bookResponse.getJSONObject("driver"));
-            String requestedTime = bookResponse.getString("requestedTime");
+//            String requestedTime = bookResponse.getString("requestedTime");
             Vehicle v = Vehicle.createFromJson(bookResponse.getJSONObject("vehicle"));
-            response = new BookResponse(bStatus, origin, p, destination, dr, requestedTime, v);
+//            response = new BookResponse(bStatus, origin, p, destination, dr, requestedTime, v);
+            response = new BookResponse(bStatus, dr,  v);
 
         }
         catch (JSONException je) {
