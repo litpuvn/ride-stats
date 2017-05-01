@@ -20,9 +20,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -45,6 +49,9 @@ public class activity_rideHistory extends AppCompatActivity {
     int year_end;
     int month_end;
     int day_end;
+    String showStartTime = null;
+    String showEndTime = null;
+    String userName = "john";
     int DIALOG_ID = 0;
     private Button date_submit;
     Pageable<historyRecord> pageableArray;
@@ -53,6 +60,8 @@ public class activity_rideHistory extends AppCompatActivity {
     Button previousPage;
     LinearLayout separator;
     ArrayList<historyRecord> historyRecordArrayList;
+    JSONArray historyResponse;
+    JSONObject json;
 
     private activity_rideHistory.UserSelectDateTask mAuthTask = null;
     private activity_rideHistory.SetHistoryDateTask mTestTask = null;
@@ -118,17 +127,32 @@ public class activity_rideHistory extends AppCompatActivity {
         date_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i <= 100; i++) {
-                    //TODO Auto-generated method stub
-                    String username = "john";
-                    String date = "09/09/2017";
-                    String pick = "broadway avenue";
-                    String destination = "University avenue";
-                    String fee = "$20";
-                    String provider = "uber";
+//                //submit some fake data to test
+//                for(int i = 0; i <= 100; i++) {
+//                    //TODO Auto-generated method stub
+//                    String username = "john";
+//                    String date = "09/09/2017";
+//                    String pick = "broadway avenue";
+//                    String destination = "University avenue";
+//                    String fee = "$20";
+//                    String provider = "uber";
+//
+//                    mTestTask = new SetHistoryDateTask(username, date, pick, destination, fee, provider);
+//                    mTestTask.execute((Void) null);
+//                }
 
-                    mTestTask = new SetHistoryDateTask(username, date, pick, destination, fee, provider);
-                    mTestTask.execute((Void) null);
+                //submit the request to get history data
+                if(showStartTime == null){
+                    Toast.makeText(activity_rideHistory.this, "please enter from date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(showEndTime == null){
+                    Toast.makeText(activity_rideHistory.this, "please enter to date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+                    mAuthTask = new UserSelectDateTask(userName, showStartTime,showEndTime);
+                    mAuthTask.execute((Void) null);
                 }
             }
         });
@@ -151,7 +175,7 @@ public class activity_rideHistory extends AppCompatActivity {
                 year_start = year;
                 month_start = month + 1;
                 day_start = day;
-                String showStartTime = month_start + "/" + day_start + "/" + year_start;
+                showStartTime = month_start + "/" + day_start + "/" + year_start;
 
                 //show date on the text view
                 startDate.setText(showStartTime);
@@ -161,7 +185,7 @@ public class activity_rideHistory extends AppCompatActivity {
                 year_end = year;
                 month_end = month;
                 day_end = day;
-                String showEndTime = month_end + "/" + day_end + "/" + year_end;
+                showEndTime = month_end + "/" + day_end + "/" + year_end;
 
                 //show date on the text view
                 endDate.setText(showEndTime);
@@ -218,17 +242,17 @@ public class activity_rideHistory extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = MainActivity.BASE_URL + "/history";
-            HashMap<String, String> postParams = new HashMap<>();
-
-            postParams.put("username", mUserName);
-            postParams.put("from_date", mStartDate);
-            postParams.put("to_date",mEndDate);
-
-            //performPostCall(serverUrl, postParams);
+            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&fromDate=" + mStartDate +"&toDate=" + mEndDate;
+//            HashMap<String, String> postParams = new HashMap<>();
+//
+//            postParams.put("username", mUserName);
+//            postParams.put("from_date", mStartDate);
+//            postParams.put("to_date",mEndDate);
+//
+//            //performPostCall(serverUrl, postParams);
 
             // TODO: submit the request here.
-            return performPostCall(serverUrl, postParams).length() > 0;
+            return performGetCall(serverUrl).length() > 0;
             //return true;
         }
 
@@ -253,64 +277,60 @@ public class activity_rideHistory extends AppCompatActivity {
 
 
 
-        public String performPostCall(String requestURL,
-                                      HashMap<String, String> postDataParams) {
+        public String performGetCall(String requestURL) {
 
             URL url;
-            String response = "";
+            StringBuffer response = new StringBuffer();
             try {
-                System.out.println("register request: " + requestURL);
+                System.out.println("get history request: " + requestURL);
                 url = new URL(requestURL);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(READ_TIMEOUT);
                 conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
+                conn.setRequestMethod("GET");
+                conn.setUseCaches(false);
+                conn.setAllowUserInteraction(false);
                 conn.setRequestProperty("Content-Type", "application/json");
-
-                Log.e(TAG, "11 - url : " + requestURL);
-
-            /*
-             * JSON
-             */
-
-                JSONObject root = new JSONObject();
-                root.put("username", postDataParams.get("username"));
-                root.put("from_date", postDataParams.get("from_date"));
-                root.put("to_date", postDataParams.get("to_date"));
-
-                Log.e(TAG, "12 - root : " + root.toString());
-
-                String str = root.toString();
-                byte[] outputBytes = str.getBytes("UTF-8");
-                OutputStream os = conn.getOutputStream();
-                os.write(outputBytes);
 
                 int responseCode = conn.getResponseCode();
 
-                Log.e(TAG, "13 - responseCode : " + responseCode);
-
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    Log.e(TAG, "14 - HTTP_OK");
 
-                    String line;
-                    BufferedReader br = new BufferedReader(new InputStreamReader(
-                            conn.getInputStream()));
-                    while ((line = br.readLine()) != null) {
-                        response += line;
+                    InputStream inputStream = conn.getInputStream();
+
+                    if(inputStream == null){
+                        Toast.makeText(activity_rideHistory.this, "input stream is empty", Toast.LENGTH_SHORT).show();
                     }
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+//                    StringBuilder builder = new StringBuilder();
+
+//                    for(String line = null;(line = reader.readLine())!=null;){
+//                        builder.append(line).append("\n");
+//                    }
+//
+//                    JSONTokener tokener = new JSONTokener(builder.toString());
+//                    JSONArray finalResult = new JSONArray(tokener);
+
+                    String inputLine;
+                    while ((inputLine = reader.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+
+                    historyResponse = new JSONArray(response.toString());
+
+
                 } else {
                     Log.e(TAG, "14 - False - HTTP_OK");
-                    response = "";
+                    response = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return response;
+            return response.toString();
         }
     }
 
@@ -362,7 +382,7 @@ public class activity_rideHistory extends AppCompatActivity {
 
             if (success) {
                 Toast.makeText(activity_rideHistory.this, "history updated", Toast.LENGTH_SHORT).show();
-                finish();
+                //finish();
 
             } else {
                 Toast.makeText(activity_rideHistory.this, "error message", Toast.LENGTH_SHORT).show();
