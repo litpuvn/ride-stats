@@ -111,14 +111,14 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     >
                     <LinearLayout
                         android:id="@+id/bookingButtons"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="invisible"
+                        android:visibility="visible"
                         >
                         <Button
                             android:layout_width="90dp"

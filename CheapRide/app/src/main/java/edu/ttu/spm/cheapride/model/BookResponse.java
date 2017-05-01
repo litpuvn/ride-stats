@@ -10,6 +10,7 @@ import edu.ttu.spm.cheapride.model.item.Vehicle;
 
 public class BookResponse {
     private String status;
+    private String rideRequestId;
     private Address origin;
     private Passenger passenger;
     private Address destination;
@@ -28,14 +29,19 @@ public class BookResponse {
         this.vehicle = vehicle;
     }
 
-    public BookResponse(String status, Driver driver, Vehicle vehicle) {
+    public BookResponse(String status, String rideRequestId, Driver driver, Vehicle vehicle) {
         this.status = status;
+        this.rideRequestId = rideRequestId;
         this.driver = driver;
         this.vehicle = vehicle;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public String getRideRequestId() {
+        return rideRequestId;
     }
 
     public Driver getDriver() {
@@ -59,19 +65,20 @@ public class BookResponse {
         BookResponse response = null;
 
         if (bookResponse == null) {
-            return new BookResponse("accepted", Driver.createFromJson(null), Vehicle.createFromJson(null));
+            return new BookResponse("accepted", "testRideRequest", Driver.createFromJson(null), Vehicle.createFromJson(null));
         }
 
         try {
             String bStatus = bookResponse.getString("status");
+            String rideRequestId = bookResponse.getString("rideId");
 //            Address origin = Address.createFromJson(bookResponse.getJSONObject("origin"));
 //            Passenger p = Passenger.createFromJson(bookResponse.getJSONObject("passenger"));
 //            Address destination = Address.createFromJson(bookResponse.getJSONObject("destination"));
             Driver dr = Driver.createFromJson(bookResponse.getJSONObject("driver"));
 //            String requestedTime = bookResponse.getString("requestedTime");
-            Vehicle v = Vehicle.createFromJson(bookResponse.getJSONObject("vehicle"));
+            Vehicle v = Vehicle.createFromJson(bookResponse.getJSONObject("car"));
 //            response = new BookResponse(bStatus, origin, p, destination, dr, requestedTime, v);
-            response = new BookResponse(bStatus, dr,  v);
+            response = new BookResponse(bStatus, rideRequestId, dr,  v);
 
         }
         catch (JSONException je) {

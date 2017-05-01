@@ -55,7 +55,7 @@ public class Vehicle {
     }
 
     public String getBasicPrudctionInfo() {
-        return this.make + "-" + this.model + "-" + this.year;
+        return this.make + "-" + this.model;
     }
 
     public static Vehicle createFromJson(JSONObject json) {
@@ -64,13 +64,17 @@ public class Vehicle {
             return createRandomVehicle();
         }
         try {
-            String color = json.getString("color");
+//            String color = json.getString("color");
+            String color = "Green";
+
             String make = json.getString("make");
-            String licensePlate = json.getString("licensePlate");
+            String licensePlate = json.getString("license_plate");
             String year = json.getString("year");
-            String licensePlateState = json.getString("licensePlateState");
+            String licensePlateState = json.getString("license_plate_state");
             String model = json.getString("model");
-            String imageUrl = json.getString("imageUrl");
+//            String imageUrl = json.getString("imageUrl");
+            String imageUrl = "https://public-api.lyft.com/static/images/prius_blue.png";
+
             v = new Vehicle(color, make, licensePlate, year, licensePlateState, model, imageUrl);
         } catch (JSONException je) {
             je.printStackTrace();

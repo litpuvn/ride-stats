@@ -40,10 +40,12 @@ public class Driver {
             return createRandomDriver();
         }
         try {
-            String phone = json.getString("phone");
+            String phone = json.getString("phone_number");
             float rating = (float)json.getDouble("rating");
             String firstName = json.getString("firstName");
-            String imageUrl = json.getString("imageUrl");
+//            String imageUrl = json.getString("imageUrl");
+            String imageUrl = "https://public-api.lyft.com/static/images/user.png";
+
             dr = new Driver(phone, rating, firstName, imageUrl);
         }
         catch (JSONException je) {
