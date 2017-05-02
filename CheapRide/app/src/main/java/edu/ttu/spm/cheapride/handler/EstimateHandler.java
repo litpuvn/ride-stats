@@ -23,6 +23,7 @@ import edu.ttu.spm.cheapride.AbstractNetworkRequest;
 import edu.ttu.spm.cheapride.MainActivity;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
+import edu.ttu.spm.cheapride.model.RideEstimateRequest;
 
 public class EstimateHandler extends AbstractNetworkRequest {
     private static final String RIDE_ESTIMATE_URL = MainActivity.BASE_URL + "/getEstimate";
@@ -40,22 +41,24 @@ public class EstimateHandler extends AbstractNetworkRequest {
     }
 
     private RequestEstimateTask requestEstimateTask;
+    private RideEstimateRequest rideEstimateRequest;
 
-    public void attemptEstimate(LatLng origin, LatLng destination) {
+    public void attemptEstimate(LatLng origin, LatLng destination, String carType) {
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         showProgress(true);
-        requestEstimateTask = new RequestEstimateTask(origin, destination);
+        rideEstimateRequest = new RideEstimateRequest(origin, destination, carType);
+        requestEstimateTask = new RequestEstimateTask(rideEstimateRequest);
         requestEstimateTask.execute((Void) null);
     }
 
     public String performPostCall(String requestURL, HashMap<Object, Object> params) {
         LatLng pickup = (LatLng)params.get("origin");
         LatLng destination = (LatLng)params.get("destination");
-        MainActivity m = (MainActivity)mContext;
+        String carType = (String)params.get("carType");
 
         String requestStr = requestURL + "?pick_up_lattitude=" + pickup.latitude + "&pick_up_longitude=" + pickup.longitude +
-                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude + "&car_type=" + m.getSelectedCarTypeAsString();
+                "&drop_off_lattitude=" +  destination.latitude  + "&drop_off_longitude=" +  destination.longitude + "&car_type=" +carType;
 //        String requestStr = MainActivity.BASE_URL + "/getEstimate?pick_up_lattitude=37.7753&pick_up_longitude=-122.418&drop_off_lattitude=37.787654&drop_off_longitude=-122.40276";
         String responseStr = "";
         URL url;
@@ -106,26 +109,29 @@ public class EstimateHandler extends AbstractNetworkRequest {
         return this.rideEstimateResponse;
     }
 
+    public RideEstimateRequest getRideEstimateRequest() {
+        return rideEstimateRequest;
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
     public class RequestEstimateTask extends AsyncTask<Void, Void, Boolean> {
 
-        private LatLng origin;
-        private LatLng destination;
+        private RideEstimateRequest request;
 
-        RequestEstimateTask(LatLng origin, LatLng destination) {
-            this.origin = origin;
-            this.destination = destination;
+        RequestEstimateTask(RideEstimateRequest request) {
+            this.request = request;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             HashMap<Object, Object> postParams = new HashMap<>();
 
-            postParams.put("origin", origin);
-            postParams.put("destination", destination);
+            postParams.put("origin", this.request.getOrigin());
+            postParams.put("destination", this.request.getDestination());
+            postParams.put("carType", this.request.getCarType());
 
 //            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
             return true;

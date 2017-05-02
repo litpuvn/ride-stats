@@ -50,6 +50,7 @@ import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
+import edu.ttu.spm.cheapride.model.RideEstimateRequest;
 import edu.ttu.spm.cheapride.model.item.Driver;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
 import edu.ttu.spm.cheapride.service.TrackGPS;
@@ -326,7 +327,9 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        this.bookingHandler.doBooking(uber.getRideRequestId(), PROVIDER_UBER);
+        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
+        this.bookingHandler.doBooking(estimateRequest.getOrigin(), estimateRequest.getDestination(), estimateRequest.getCarType(), PROVIDER_UBER);
+
     }
 
     public void onLyftClick(View v) {
@@ -341,7 +344,9 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        this.bookingHandler.doBooking(lyft.getRideRequestId(), PROVIDER_LYFT);
+        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
+
+        this.bookingHandler.doBooking(estimateRequest.getOrigin(), estimateRequest.getDestination(), estimateRequest.getCarType(), PROVIDER_LYFT);
     }
 
     @Override
