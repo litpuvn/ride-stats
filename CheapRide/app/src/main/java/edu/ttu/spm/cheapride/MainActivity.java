@@ -539,6 +539,10 @@ public class MainActivity extends AppCompatActivity
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
        this.selectedCarType = position;
+        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
+        if (estimateRequest != null) {
+            estimateRequest.setCarType(this.getSelectedCarTypeAsString());
+        }
     }
 
     @Override

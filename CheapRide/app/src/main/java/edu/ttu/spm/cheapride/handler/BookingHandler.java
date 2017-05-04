@@ -62,13 +62,15 @@ public class BookingHandler extends AbstractNetworkRequest {
 
             conn.setRequestProperty("Content-Type", "application/json");
 
-            Log.e(TAG, "11 - url : " + requestURL);
+            Log.i(TAG, "11 - url : " + requestURL);
 
             /*
              * JSON
              */
 
             BookRequest req = (BookRequest)params.get("request");
+            Log.i(TAG, req.toJson().toString());
+
             JSONObject root = req.toJson();
 
             String str = root.toString();
