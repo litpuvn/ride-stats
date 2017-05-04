@@ -216,10 +216,10 @@
                             android:layout_height="wrap_content"
                             android:text="Arrival time (min)"
                             android:layout_gravity="center"
-                            />
+                        />
                         <TextView
                             android:id="@+id/uber_arrival"
-                            android:gravity="end"
+                            android:gravity="end|center_vertical"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:width="90dp"
@@ -238,7 +238,7 @@
                             android:height="15dp"
                             android:background="#ff00bf"
                             android:layout_gravity="end"
-                            android:gravity="end"
+                            android:gravity="end|center_vertical"
                             android:textColor="#FFFFFF"
 
                             />

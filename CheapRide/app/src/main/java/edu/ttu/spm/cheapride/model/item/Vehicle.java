@@ -72,8 +72,8 @@ public class Vehicle {
             String year = json.getString("year");
             String licensePlateState = json.getString("license_plate_state");
             String model = json.getString("model");
-//            String imageUrl = json.getString("imageUrl");
-            String imageUrl = "https://public-api.lyft.com/static/images/prius_blue.png";
+            String imageUrl = json.getString("imageUrl");
+//            String imageUrl = "https://public-api.lyft.com/static/images/prius_blue.png";
 
             v = new Vehicle(color, make, licensePlate, year, licensePlateState, model, imageUrl);
         } catch (JSONException je) {
