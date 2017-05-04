@@ -100,16 +100,16 @@ public class MainActivity extends AppCompatActivity
     private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final int LOGIN_REQUEST = 0;
-    private static final String[] CAR_TYPES = {"Any", "Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
+    private static final String[] CAR_TYPES = {"Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
     private static final Map<Integer, String> CAR_TYPE_MAP;
 
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
-        tmp.put(0, "");
-        tmp.put(1, "share");
-        tmp.put(2, "4_seats");
-        tmp.put(3, "6_or_more_seats");
-        tmp.put(4, "luxury_4_seats");
+//        tmp.put(0, "");
+        tmp.put(0, "share");
+        tmp.put(1, "4_seats");
+        tmp.put(2, "6_or_more_seats");
+        tmp.put(3, "luxury_4_seats");
 
         CAR_TYPE_MAP = Collections.unmodifiableMap(tmp);
     }
@@ -382,6 +382,8 @@ public class MainActivity extends AppCompatActivity
 
     public void showBookResponse(BookResponse bookResponse) {
         if (bookResponse == null || !bookResponse.isAccepted()) {
+            Toast.makeText(this, "Some error occurs. Please try again latter", Toast.LENGTH_LONG).show();
+
             return;
         }
 
@@ -539,9 +541,12 @@ public class MainActivity extends AppCompatActivity
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
        this.selectedCarType = position;
-        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
-        if (estimateRequest != null) {
-            estimateRequest.setCarType(this.getSelectedCarTypeAsString());
+
+        if (this.estimateManager != null) {
+            RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
+            if (estimateRequest != null) {
+                estimateRequest.setCarType(this.getSelectedCarTypeAsString());
+            }
         }
     }
 
