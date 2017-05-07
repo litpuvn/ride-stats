@@ -241,7 +241,7 @@ public class activity_rideHistory extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             //String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&fromDate=" + mStartDate + "&toDate=" + mEndDate + "&pageNumber=" + mPage + "&size=" + mPageSize;
-            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + "05/05/2015" + "&to=" + "5/5/2018" + "&pageNumber=" + mPage + "&size=" + mPageSize;
+            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + "5/5/2010" + "&to=" + "5/5/2018" + "&pageNumber=" + mPage + "&size=" + mPageSize;
 
             // TODO: submit the request here.
             return performGetCall(serverUrl)!=null;

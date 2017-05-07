@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 //    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
 //    public static final String BASE_URL = "http://10.161.98.174:8080/cheapRide";
 //        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
-    public static final String BASE_URL = "http://192.168.0.104:8080/cheapRide";
+    public static final String BASE_URL = "http://10.161.15.68:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
