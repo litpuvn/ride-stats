@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -95,6 +96,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             }
         } catch (Exception e) {
             e.printStackTrace();
+
+
         }
 
         return responseStr;
@@ -149,6 +152,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
                 main.activateComparisonChart(rideEstimateDto);
 
             } else {
+                Toast.makeText(mContext, "Some error occurs. Please try again latter", Toast.LENGTH_LONG).show();
 
             }
         }

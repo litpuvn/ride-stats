@@ -185,9 +185,10 @@ public class MainActivity extends AppCompatActivity
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
         comparisonChart = findViewById(R.id.comparison_chart);
         rideBooking = findViewById(R.id.ride_booking);
+        rideBooking.setVisibility(View.INVISIBLE);
         driveInfoBoard = findViewById(R.id.driverInfoBoard);
         bookingButtons = findViewById(R.id.bookingButtons);
-
+        bookingButtons.setVisibility(View.INVISIBLE);
         vehicleImage = (ImageView) findViewById(R.id.vehicleImg);
         vehicleColor = (TextView) findViewById(R.id.vehicleColor);
         vehiclePlateLicense = (TextView) findViewById(R.id.vehiclePlateLicense);

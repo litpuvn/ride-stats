@@ -3,6 +3,7 @@ package edu.ttu.spm.cheapride.handler;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -197,7 +198,7 @@ public class BookingHandler extends AbstractNetworkRequest {
 
 
             } else {
-
+                Toast.makeText(mContext, "Some error occurs. Please try again latter", Toast.LENGTH_LONG).show();
             }
 
             bookingInProgress = false;
