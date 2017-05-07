@@ -7,6 +7,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,10 +38,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static edu.ttu.spm.cheapride.R.id.history_table;
+import static edu.ttu.spm.cheapride.R.attr.layoutManager;
+
 
 public class activity_rideHistory extends AppCompatActivity {
 
@@ -51,17 +57,20 @@ public class activity_rideHistory extends AppCompatActivity {
     int day_end;
     String showStartTime = null;
     String showEndTime = null;
+
     String userName = "john";
     int DIALOG_ID = 0;
     private Button date_submit;
-    Pageable<historyRecord> pageableArray;
+    private pageable page;
+    int pageSize = 10;
     TextView pageCounter;
     Button nextPage;
     Button previousPage;
-    LinearLayout separator;
-    ArrayList<historyRecord> historyRecordArrayList;
-    JSONArray historyResponse;
-    JSONObject json;
+
+
+
+//    JSONArray historyResponse;
+//    JSONObject json;
 
     private activity_rideHistory.UserSelectDateTask mAuthTask = null;
     private activity_rideHistory.SetHistoryDateTask mTestTask = null;
@@ -69,10 +78,16 @@ public class activity_rideHistory extends AppCompatActivity {
     private static final int CONNECTION_TIMEOUT = 30000; // seconds
     private final String TAG = "post json example";
 
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private CustomAdapter adapter;
+    private List<historyRecordEntity> historyRecordArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history);
+        page = new pageable(1,4);
 
         //set default date
         setDefaultDate();
@@ -80,8 +95,8 @@ public class activity_rideHistory extends AppCompatActivity {
         //show the date picker
         showDialogOnTextViewClick();
 
-        //insert new rows
-        historyTable();
+        //insert history record cards
+        historyRecyclerView();
 
     }
 
@@ -151,8 +166,11 @@ public class activity_rideHistory extends AppCompatActivity {
                     return;
                 }
                 else{
-                    mAuthTask = new UserSelectDateTask(userName, showStartTime,showEndTime);
-                    mAuthTask.execute((Void) null);
+                    page.setPage(1);
+                    pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
+                    pageCounter.setTextSize(30);
+                    pageCounter.setText("Page" + page.getPage());
+                    displayCard(page.getPage());
                 }
             }
         });
@@ -183,7 +201,7 @@ public class activity_rideHistory extends AppCompatActivity {
             }
             if(DIALOG_ID ==2){
                 year_end = year;
-                month_end = month;
+                month_end = month + 1;
                 day_end = day;
                 showEndTime = month_end + "/" + day_end + "/" + year_end;
 
@@ -198,30 +216,6 @@ public class activity_rideHistory extends AppCompatActivity {
         }
     };
 
-    //create history record class
-    public class historyRecord{
-        private String number;
-        private String date;
-        private String provider;
-        private String pick;
-        private String destination;
-        private String fee;
-
-        public historyRecord(String number,String date,String provider,String pick,String destination,String fee){
-            this.number = number;
-            this.date = date;
-            this.provider = provider;
-            this.pick = pick;
-            this.destination = destination;
-            this.fee = fee;
-        }
-        public String getNumber(){return number;}
-        public String getDate(){return date;}
-        public String getProvider(){return provider;}
-        public String getPick(){return pick;}
-        public String getDestination(){return destination;}
-        public String getFee(){return fee;}
-    }
 
     /**
      * Represents an asynchronous user history task used to authenticate
@@ -232,28 +226,25 @@ public class activity_rideHistory extends AppCompatActivity {
         private  String mUserName;
         private  String mStartDate;
         private  String mEndDate;
+        private int mPage;
+        private int mPageSize;
 
 
-        UserSelectDateTask(String userName, String startDate, String endDate) {
+        UserSelectDateTask(String userName, String startDate, String endDate, int page, int pageSize) {
             mUserName = userName;
             mStartDate = startDate;
             mEndDate = endDate;
+            mPage = page;
+            mPageSize = pageSize;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&fromDate=" + mStartDate +"&toDate=" + mEndDate;
-//            HashMap<String, String> postParams = new HashMap<>();
-//
-//            postParams.put("username", mUserName);
-//            postParams.put("from_date", mStartDate);
-//            postParams.put("to_date",mEndDate);
-//
-//            //performPostCall(serverUrl, postParams);
+            //String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&fromDate=" + mStartDate + "&toDate=" + mEndDate + "&pageNumber=" + mPage + "&size=" + mPageSize;
+            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + "05/05/2015" + "&to=" + "5/5/2018" + "&pageNumber=" + mPage + "&size=" + mPageSize;
 
             // TODO: submit the request here.
-            return performGetCall(serverUrl).length() > 0;
-            //return true;
+            return performGetCall(serverUrl)!=null;
         }
 
         @Override
@@ -261,12 +252,11 @@ public class activity_rideHistory extends AppCompatActivity {
             mAuthTask = null;
 
             if (success) {
-                Toast.makeText(activity_rideHistory.this, "loading", Toast.LENGTH_SHORT).show();
-                finish();
+                adapter = new CustomAdapter(activity_rideHistory.this,historyRecordArrayList);
+                recyclerView.setAdapter(adapter);
 
             } else {
                 Toast.makeText(activity_rideHistory.this, "date error", Toast.LENGTH_SHORT).show();
-                //register_email.requestFocus();
             }
         }
 
@@ -277,10 +267,11 @@ public class activity_rideHistory extends AppCompatActivity {
 
 
 
-        public String performGetCall(String requestURL) {
+        public List<historyRecordEntity> performGetCall(String requestURL) {
 
             URL url;
-            StringBuffer response = new StringBuffer();
+            // ArrayList<historyRecordEntity> historyRecordEntityArrayList = new ArrayList<historyRecordEntity>();
+
             try {
                 System.out.println("get history request: " + requestURL);
                 url = new URL(requestURL);
@@ -289,48 +280,46 @@ public class activity_rideHistory extends AppCompatActivity {
                 conn.setReadTimeout(READ_TIMEOUT);
                 conn.setConnectTimeout(CONNECTION_TIMEOUT);
                 conn.setRequestMethod("GET");
-                conn.setUseCaches(false);
-                conn.setAllowUserInteraction(false);
-                conn.setRequestProperty("Content-Type", "application/json");
 
                 int responseCode = conn.getResponseCode();
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-                    InputStream inputStream = conn.getInputStream();
-
-                    if(inputStream == null){
-                        Toast.makeText(activity_rideHistory.this, "input stream is empty", Toast.LENGTH_SHORT).show();
-                    }
+//                    InputStream inputStream = conn.getInputStream();
+//
+//                    if(inputStream == null){
+//                        Toast.makeText(activity_rideHistory.this, "input stream is empty", Toast.LENGTH_SHORT).show();
+//                    }
 
                     BufferedReader reader = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
-//                    StringBuilder builder = new StringBuilder();
-
-//                    for(String line = null;(line = reader.readLine())!=null;){
-//                        builder.append(line).append("\n");
-//                    }
-//
-//                    JSONTokener tokener = new JSONTokener(builder.toString());
-//                    JSONArray finalResult = new JSONArray(tokener);
 
                     String inputLine;
                     while ((inputLine = reader.readLine()) != null) {
-                        response.append(inputLine);
+                        JSONArray ja = new JSONArray(inputLine);
+
+                        for(int i = 0; i < ja.length(); i++){
+                            JSONObject jo = (JSONObject) ja.get(i);
+
+                            String date = jo.getString("date");
+                            String provider = jo.getString("provider");
+                            String pickup = jo.getString("pickup");
+                            String destination = jo.getString("destination");
+                            String fee = jo.getString("fee");
+
+                            historyRecordEntity historyRecordEntity = new historyRecordEntity(date,provider,pickup,destination,fee);
+                            historyRecordArrayList.add(historyRecordEntity);
+                        }
                     }
-
-                    historyResponse = new JSONArray(response.toString());
-
-
                 } else {
                     Log.e(TAG, "14 - False - HTTP_OK");
-                    response = null;
+                    historyRecordArrayList = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return response.toString();
+            return historyRecordArrayList;
         }
     }
 
@@ -461,20 +450,22 @@ public class activity_rideHistory extends AppCompatActivity {
         }
     }
 
-    private void historyTable(){
+    private void historyRecyclerView(){
         pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
         nextPage = (Button) findViewById(R.id.nextButton_history);
         previousPage = (Button) findViewById(R.id.previousButten_history);
         historyRecordArrayList = new ArrayList<>();
 
+
+
         nextPage.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                pageableArray.setPage(pageableArray.getNextPage());
-//                tableRow.removeAllViews();
-                displayPage();
-                pageCounter.setText("Page " + pageableArray.getPage() + " of " + pageableArray.getMaxPages());
+
+                displayCard(page.getNextPage());
+                pageCounter.setText("Page " + page.getPage());
+                pageCounter.setTextSize(30);
             }
 
 
@@ -484,168 +475,36 @@ public class activity_rideHistory extends AppCompatActivity {
         previousPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pageableArray.setPage(pageableArray.getPreviousPage());
-//                tableRow.removeAllViews();
-                displayPage();
-                pageCounter.setText("Page " + pageableArray.getPage() + " of " + pageableArray.getMaxPages());
+
+                displayCard(page.getPrevPage());
+                pageCounter.setText("Page " + page.getPage());
+                pageCounter.setTextSize(30);
 
             }
         });
-
-        for(int i = 0; i <= 100; i++){
-            //here to input the content of list
-            historyRecordArrayList.add(new historyRecord(" "+i,"02/15/2017","Uber","2606 31street 79410","33 University Ave.79210","$2"));
-        }
-
-        pageableArray = new Pageable<>(historyRecordArrayList);
-        pageableArray.setPageSize(13);
-        pageableArray.setPage(1);
-        pageCounter.setText("Page " + pageableArray.getPage() + " of " + pageableArray.getMaxPages());
-        pageCounter.setTextColor(Color.BLACK);
-        pageCounter.setTextSize(30);
-        displayPage();
     }
 
-    public void displayPage(){
-        TableLayout historyTable = (TableLayout) findViewById(history_table);
+    public void displayCard(int page){
+        int pageNeedToLoad = page;
+        recyclerView = (RecyclerView) findViewById(R.id.history_recyclerView);
+        historyRecordArrayList = new ArrayList<>();
 
-        historyTable.removeAllViews();
-        addTitle();
+        load_data_from_server(pageNeedToLoad);
 
-        for (historyRecord v : pageableArray.getListForPage()) {
-            //create a new row
-            TableRow newRow = new TableRow(this);
+        //recyclerView.removeAllViews();
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            //create text view to add number
-            TextView labelNUMBER = new TextView(this);
-            labelNUMBER.setText(v.getNumber());
-            labelNUMBER.setGravity(Gravity.CENTER);
-            labelNUMBER.setTextColor(Color.MAGENTA);
-            labelNUMBER.setTextSize(25);
-            newRow.addView(labelNUMBER);
+        adapter = new CustomAdapter(this, historyRecordArrayList);
+        recyclerView.setAdapter(adapter);
 
-            //create text view to add date
-            TextView labelDATE = new TextView(this);
-            labelDATE.setText(String.valueOf(v.getDate()));
-            labelDATE.setGravity(Gravity.CENTER);
-            labelDATE.setTextColor(Color. BLUE);
-            labelDATE.setTextSize(25);
-            newRow.addView(labelDATE);
 
-            //create text view to add provide
-            TextView labelPROVIDE = new TextView(this);
-            labelPROVIDE.setText(String.valueOf(v.getProvider()));
-            labelPROVIDE.setGravity(Gravity.CENTER);
-            labelPROVIDE.setTextColor(Color.MAGENTA);
-            labelPROVIDE.setTextSize(25);
-            newRow.addView(labelPROVIDE);
-
-            //create text view to add pickup
-            TextView labelPICKUP = new TextView(this);
-            labelPICKUP.setText(String.valueOf(v.getPick()));
-            labelPICKUP.setGravity(Gravity.CENTER);
-            labelPICKUP.setTextColor(Color. BLUE);
-            labelPICKUP.setTextSize(25);
-            newRow.addView(labelPICKUP);
-
-            //create text view to add destination
-            TextView labelDESTINATION = new TextView(this);
-            labelDESTINATION.setText(String.valueOf(v.getDestination()));
-            labelDESTINATION.setGravity(Gravity.CENTER);
-            labelDESTINATION.setTextColor(Color.MAGENTA);
-            labelDESTINATION.setTextSize(25);
-            newRow.addView(labelDESTINATION);
-
-            //create text view to add fee
-            TextView labelFEE = new TextView(this);
-            labelFEE.setText(String.valueOf(v.getFee()));
-            labelFEE.setGravity(Gravity.CENTER);
-            labelFEE.setTextColor(Color. BLUE);
-            labelFEE.setTextSize(25);
-            newRow.addView(labelFEE);
-
-            //add new row into table
-            historyTable.addView(newRow);
-
-           addSeparator();
-
-        }
+        ;
     }
-
-    public void addTitle(){
-        String numberTitle = "  No. ";
-        String dateTitle = "  Date  ";
-        String providerTitle = "   Provider   ";
-        String pickupTitle = "      Pickup      ";
-        String destinationTitle = "      Destination      ";
-        String feeTitle = "  Fee  ";
-
-        TableLayout historyTable = (TableLayout) findViewById(history_table);
-
-        //create row for title
-        TableRow titleRow = new TableRow(this);
-
-        //add title for number
-        TextView title0 = new TextView(this);
-        title0.setText(numberTitle);
-        title0.setTextColor(Color.BLACK);
-        title0.setTextSize(30);
-        titleRow.addView(title0);
-
-
-        //add title for date
-        TextView title1 = new TextView(this);
-        title1.setText(dateTitle);
-        title1.setTextColor(Color.BLACK);
-        title1.setTextSize(30);
-        titleRow.addView(title1);
-
-        //add title for provide
-        TextView title2 = new TextView(this);
-        title2.setText(providerTitle);
-        title2.setTextColor(Color.BLACK);
-        title2.setTextSize(30);
-        titleRow.addView(title2);
-
-        //add title for pickup
-        TextView title3 = new TextView(this);
-        title3.setText(pickupTitle);
-        title3.setTextColor(Color.BLACK);
-        title3.setTextSize(30);
-        titleRow.addView(title3);
-
-        //add title for destination
-        TextView title4 = new TextView(this);
-        title4.setText(destinationTitle);
-        title4.setTextColor(Color.BLACK);
-        title4.setTextSize(30);
-        titleRow.addView(title4);
-
-        //add title for fee
-        TextView title5 = new TextView(this);
-        title5.setText(feeTitle);
-        title5.setTextColor(Color.BLACK);
-        title5.setTextSize(30);
-        titleRow.addView(title5);
-
-        historyTable.addView(titleRow);
-
+    private void load_data_from_server(int pageNeedToLoad){
+        mAuthTask = new UserSelectDateTask(userName, showStartTime,showEndTime,pageNeedToLoad,pageSize);
+        mAuthTask.execute((Void) null);
     }
-
-    private void addSeparator() {
-        TableLayout historyTable = (TableLayout) findViewById(history_table);
-
-        Resources res = activity_rideHistory.this.getResources();
-        separator = new LinearLayout(activity_rideHistory.this);
-        separator.setOrientation(LinearLayout.VERTICAL);
-        separator.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2));
-        separator.setBackgroundColor(Color.parseColor("#5e7974"));
-        //separator.setDividerDrawable(res.getDrawable(R.drawable.radius_middle));
-        historyTable.addView(separator);
-
-    }
-
-
 }
 
 
