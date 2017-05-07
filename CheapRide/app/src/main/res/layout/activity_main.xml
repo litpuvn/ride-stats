@@ -219,13 +219,14 @@
                         />
                         <TextView
                             android:id="@+id/uber_arrival"
-                            android:gravity="end|center_vertical"
+                            android:gravity="start|center_vertical"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:width="90dp"
-                            android:height="15dp"
-                            android:layout_gravity="end"
+                            android:height="18dp"
+                            android:layout_gravity="start"
                             android:background="#000000"
+                            android:paddingStart="2dp"
                             android:textColor="#FFFFFF"
                             android:alpha="0.6"
                             />
@@ -235,10 +236,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:width="30dp"
-                            android:height="15dp"
+                            android:height="18dp"
                             android:background="#ff00bf"
-                            android:layout_gravity="end"
-                            android:gravity="end|center_vertical"
+                            android:layout_gravity="start"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="2dp"
                             android:textColor="#FFFFFF"
 
                             />
@@ -265,10 +267,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:width="20dp"
-                            android:height="15dp"
+                            android:height="18dp"
                             android:background="#000000"
                             android:alpha="0.6"
                             android:textColor="#FFFFFF"
+                            android:paddingStart="2dp"
+
                             />
 
                         <TextView
@@ -276,9 +280,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:width="80dp"
-                            android:height="15dp"
+                            android:height="18dp"
                             android:background="#ff00bf"
                             android:textColor="#FFFFFF"
+                            android:paddingStart="2dp"
 
                             />
                     </LinearLayout>
