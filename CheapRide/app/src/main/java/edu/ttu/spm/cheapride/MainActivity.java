@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,23 +36,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-
-import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
-import edu.ttu.spm.cheapride.model.BookResponse;
-import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
-import edu.ttu.spm.cheapride.model.RideEstimateRequest;
-import edu.ttu.spm.cheapride.model.item.Driver;
-import edu.ttu.spm.cheapride.model.item.Vehicle;
-import edu.ttu.spm.cheapride.service.TrackGPS;
 
 
 public class MainActivity extends AppCompatActivity
@@ -63,9 +49,6 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String PROVIDER_UBER = "uber";
-    private static final String PROVIDER_LYFT = "lyft";
-
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -73,10 +56,8 @@ public class MainActivity extends AppCompatActivity
     private static final int LOCATION_REQUEST = 1340;
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-//    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
-//    public static final String BASE_URL = "http://10.161.98.174:8080/cheapRide";
-//        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     public static final String BASE_URL = "http://10.161.15.68:8080/cheapRide";
+    //        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -101,18 +82,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final int LOGIN_REQUEST = 0;
     private static final String[] CAR_TYPES = {"Any", "Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
-    private static final Map<Integer, String> CAR_TYPE_MAP;
-
-    static {
-        Hashtable<Integer, String> tmp = new Hashtable<>();
-        tmp.put(0, "");
-        tmp.put(1, "share");
-        tmp.put(2, "4_seats");
-        tmp.put(3, "6_or_more_seats");
-        tmp.put(4, "luxury_4_seats");
-
-        CAR_TYPE_MAP = Collections.unmodifiableMap(tmp);
-    }
 
     private TextView loginTextView;
     private TextView registerTextView;
@@ -120,21 +89,9 @@ public class MainActivity extends AppCompatActivity
     private TextView welcomeTextView;
 
     private EstimateHandler estimateManager;
-    private BookingHandler bookingHandler;
 
     private View comparisonChart;
     private View rideBooking;
-    private View bookingButtons;
-    private View driveInfoBoard;
-
-    private ImageView vehicleImage;
-    private TextView vehicleColor;
-    private TextView vehiclePlateLicense;
-    private TextView vehicleInfo;
-    private ImageView driverImage;
-    private TextView driverName;
-    private TextView driverInfo;
-
     private TextView uberArrivalTime;
     private TextView lyftArrivalTime;
     private TextView uberCost;
@@ -144,10 +101,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final int CHART_MAX_WIDTH = 100;
     private TrackGPS gps;
-
-    private int selectedCarType = 0;
-
-    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,16 +138,6 @@ public class MainActivity extends AppCompatActivity
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
         comparisonChart = findViewById(R.id.comparison_chart);
         rideBooking = findViewById(R.id.ride_booking);
-        driveInfoBoard = findViewById(R.id.driverInfoBoard);
-        bookingButtons = findViewById(R.id.bookingButtons);
-
-        vehicleImage = (ImageView) findViewById(R.id.vehicleImg);
-        vehicleColor = (TextView) findViewById(R.id.vehicleColor);
-        vehiclePlateLicense = (TextView) findViewById(R.id.vehiclePlateLicense);
-        vehicleInfo = (TextView) findViewById(R.id.vehicleInfo);
-        driverImage = (ImageView) findViewById(R.id.driverImg);
-        driverName = (TextView) findViewById(R.id.driverName);
-        driverInfo = (TextView) findViewById(R.id.driverInfo);
 
         uberArrivalTime = (TextView) findViewById(R.id.uber_arrival);
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
@@ -209,14 +152,6 @@ public class MainActivity extends AppCompatActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carTypeSelection.setAdapter(adapter);
         carTypeSelection.setOnItemSelectedListener(this);
-
-        bookingHandler = new BookingHandler(this);
-
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
     }
 
     /**
@@ -269,9 +204,9 @@ public class MainActivity extends AppCompatActivity
         double lyftTimeWidth = this.getLyftTimeWidth(rideEstimateDto);
 
         this.uberArrivalTime.setWidth((int)(uberTimeWidth * pxRatio));
-        this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime()));
+        this.uberArrivalTime.setText(String.valueOf(rideEstimateDto.getUberArrivalTime() / 60));
         this.lyftArrivalTime.setWidth((int)(lyftTimeWidth * pxRatio));
-        this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime()));
+        this.lyftArrivalTime.setText(String.valueOf(rideEstimateDto.getLyftArrivalTime() / 60));
 
         double uberCostWidth = this.getUberCostWidth(rideEstimateDto);
         double lyftCostWidth = this.getLyftCostWidth(rideEstimateDto);
@@ -283,10 +218,9 @@ public class MainActivity extends AppCompatActivity
 
         this.comparisonChart.setVisibility(View.VISIBLE);
 
-        if (LoginActivity.isLogin) {
-            this.rideBooking.setVisibility(View.VISIBLE);
-            bookingButtons.setVisibility(View.VISIBLE);
-        }
+//        if (LoginActivity.isLogin) {
+        this.rideBooking.setVisibility(View.VISIBLE);
+//        }
     }
 
     public double getUberTimeWidth(RideEstimateDTO rideEstimateDto) {
@@ -316,38 +250,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void onUberClick(View v) {
-        RideEstimate uber = this.estimateManager.getRideEstimateResponse().getUber();
-        if (uber == null || uber.getRideRequestId() == null || uber.getRideRequestId().length() < 1) {
-            Log.i(TAG, "Invalid  uber booking  No estimate returned from estimate request");
-            return;
-        }
+    public void onHistoryClicked(View v) {
+        System.out.println("History clicked");
 
-        if (this.bookingHandler.isBooking()) {
-            Log.i(TAG, "Another booking is processing");
-            return;
-        }
+        Intent intent = new Intent(getApplicationContext(), activity_rideHistory.class);
+        startActivity(intent);
 
-        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
-        this.bookingHandler.doBooking(estimateRequest.getOrigin(), estimateRequest.getDestination(), estimateRequest.getCarType(), PROVIDER_UBER);
-
-    }
-
-    public void onLyftClick(View v) {
-        RideEstimate lyft = this.estimateManager.getRideEstimateResponse().getLyft();
-        if (lyft == null || lyft.getRideRequestId() == null || lyft.getRideRequestId().length() < 1) {
-            Log.i(TAG, "Invalid lyft booking.  No estimate returned from estimate request");
-            return;
-        }
-
-        if (this.bookingHandler.isBooking()) {
-            Log.i(TAG, "Another booking is processing");
-            return;
-        }
-
-        RideEstimateRequest estimateRequest = this.estimateManager.getRideEstimateRequest();
-
-        this.bookingHandler.doBooking(estimateRequest.getOrigin(), estimateRequest.getDestination(), estimateRequest.getCarType(), PROVIDER_LYFT);
     }
 
     @Override
@@ -378,28 +286,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
-    }
-
-    public void showBookResponse(BookResponse bookResponse) {
-        if (bookResponse == null || !bookResponse.isAccepted()) {
-            return;
-        }
-
-        Vehicle v = bookResponse.getVehicle();
-        Driver d = bookResponse.getDriver();
-        bookingButtons.setVisibility(View.INVISIBLE);
-
-        // show info
-        imageLoader.displayImage(v.getImageUrl(), vehicleImage);
-        vehiclePlateLicense.setText(v.getLicense());
-        vehicleColor.setText(v.getColor() + "-" + v.getYear());
-        vehicleInfo.setText(v.getBasicPrudctionInfo());
-
-        imageLoader.displayImage(d.getImageUrl(), driverImage);
-        driverName.setText(d.getFirstName());
-        driverInfo.setText(d.getPhoneNumber());
-
-        driveInfoBoard.setVisibility(View.VISIBLE);
     }
 
     public void onRegisterClicked(View v) {
@@ -538,20 +424,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
-        this.selectedCarType = position;
+        switch (position) {
+            case 0:
+                // Whatever you want to happen when the first item gets selected
+                break;
+            case 1:
+                // Whatever you want to happen when the second item gets selected
+                break;
+            case 2:
+                // Whatever you want to happen when the thrid item gets selected
+                break;
+
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    public String getSelectedCarTypeAsString() {
-        if (this.selectedCarType <= 0 || this.selectedCarType >= CAR_TYPES.length) {
-            this.selectedCarType = 0;
-        }
-
-        return CAR_TYPE_MAP.get(this.selectedCarType);
     }
 }
 

@@ -35,8 +35,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.PublicKey;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -240,8 +243,8 @@ public class activity_rideHistory extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            //String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&fromDate=" + mStartDate + "&toDate=" + mEndDate + "&pageNumber=" + mPage + "&size=" + mPageSize;
-            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + "5/5/2010" + "&to=" + "5/5/2018" + "&pageNumber=" + mPage + "&size=" + mPageSize;
+            String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + mStartDate + "&to=" + mEndDate + "&pageNumber=" + mPage + "&size=" + mPageSize;
+            //String serverUrl = MainActivity.BASE_URL + "/getHistoryByDate?" + "username=" + mUserName + "&from=" + "5/5/2000" + "&to=" + "5/5/2019" + "&pageNumber=" + mPage + "&size=" + mPageSize;
 
             // TODO: submit the request here.
             return performGetCall(serverUrl)!=null;
@@ -301,13 +304,14 @@ public class activity_rideHistory extends AppCompatActivity {
                         for(int i = 0; i < ja.length(); i++){
                             JSONObject jo = (JSONObject) ja.get(i);
 
-                            String date = jo.getString("date");
+                            Long date = jo.getLong("date");
+                            String SDate = getDate(date,"dd/MM/yyyy hh:mm:ss.SSS");
                             String provider = jo.getString("provider");
                             String pickup = jo.getString("pickup");
                             String destination = jo.getString("destination");
                             String fee = jo.getString("fee");
 
-                            historyRecordEntity historyRecordEntity = new historyRecordEntity(date,provider,pickup,destination,fee);
+                            historyRecordEntity historyRecordEntity = new historyRecordEntity(SDate,provider,pickup,destination,fee);
                             historyRecordArrayList.add(historyRecordEntity);
                         }
                     }
@@ -322,6 +326,17 @@ public class activity_rideHistory extends AppCompatActivity {
             return historyRecordArrayList;
         }
     }
+
+    public String getDate(long milliSecond, String dateFormat){
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSecond);
+        return formatter.format(calendar.getTime());
+    }
+
 
     /**
      * Represents an set some fake user history to test
@@ -505,6 +520,7 @@ public class activity_rideHistory extends AppCompatActivity {
         mAuthTask = new UserSelectDateTask(userName, showStartTime,showEndTime,pageNeedToLoad,pageSize);
         mAuthTask.execute((Void) null);
     }
+
 }
 
 
