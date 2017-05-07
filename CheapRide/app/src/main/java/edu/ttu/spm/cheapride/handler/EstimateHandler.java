@@ -133,8 +133,8 @@ public class EstimateHandler extends AbstractNetworkRequest {
             postParams.put("destination", this.request.getDestination());
             postParams.put("carType", this.request.getCarType());
 
-//            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
-            return true;
+            return performPostCall(RIDE_ESTIMATE_URL, postParams).length() > 0;
+//            return true;
 
         }
 

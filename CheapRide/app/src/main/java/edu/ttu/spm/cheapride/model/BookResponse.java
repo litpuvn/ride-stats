@@ -1,5 +1,7 @@
 package edu.ttu.spm.cheapride.model;
 
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,6 +85,7 @@ public class BookResponse {
         }
         catch (JSONException je) {
             je.printStackTrace();
+
         }
 
         return  response;

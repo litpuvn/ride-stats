@@ -43,8 +43,8 @@ public class Driver {
             String phone = json.getString("phone_number");
             float rating = (float)json.getDouble("rating");
             String firstName = json.getString("firstName");
-//            String imageUrl = json.getString("imageUrl");
-            String imageUrl = "https://public-api.lyft.com/static/images/user.png";
+            String imageUrl = json.getString("imageUrl");
+//            String imageUrl = "https://public-api.lyft.com/static/images/user.png";
 
             dr = new Driver(phone, rating, firstName, imageUrl);
         }

@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import edu.ttu.spm.cheapride.MainActivity;
 
 
@@ -114,6 +116,12 @@ public class TrackGPS extends Service {
             e.printStackTrace();
         }
 
+//        loc = new Location("custom");
+//        loc.setLatitude(37.7763);
+//        loc.setLongitude(-122.3918);
+
+//        loc.setLongitude(37.7763);
+//        loc.setLatitude(-122.3918);
         return loc;
     }
 
