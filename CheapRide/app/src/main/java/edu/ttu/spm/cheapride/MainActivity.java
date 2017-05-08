@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     private static final int LOCATION_REQUEST = 1340;
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
-    public static final String BASE_URL = "http://10.161.15.68:8080/cheapRide";
+    public static final String BASE_URL = "http://10.161.60.69:8080/cheapRide";
     //        public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.

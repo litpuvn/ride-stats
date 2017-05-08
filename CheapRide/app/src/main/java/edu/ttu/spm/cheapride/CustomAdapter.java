@@ -3,6 +3,7 @@ package edu.ttu.spm.cheapride;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -41,11 +42,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         holder.date.setTextSize(25);
         holder.date.setTextColor(Color.parseColor("#FF4081"));
 
-        if(historyRecordEntityList.get(position).getProvider().equals("lyft"))
-            holder.provider.setText(Html.fromHtml("<font color='black'>"+ "PROVIDER ;  " + "</font>" + "<font color='#ff00bf'>"+ historyRecordEntityList.get(position).getProvider() + "</font>",1));
-        else
-            holder.provider.setText(Html.fromHtml("<font color='black'>"+ "PROVIDER ;  " + "</font>" + "<font color='black'>"+ historyRecordEntityList.get(position).getProvider() + "</font>",1));
-
+        if (historyRecordEntityList.get(position).getProvider().equals("lyft")) {
+            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='#ff00bf'>" + historyRecordEntityList.get(position).getProvider() + "</font>", 1));
+            holder.card.setCardBackgroundColor(Color.parseColor("#008080"));
+        } else{
+            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='black'>" + historyRecordEntityList.get(position).getProvider() + "</font>", 1));
+            holder.card.setCardBackgroundColor(Color.parseColor("#F5F5DC"));
+        }
         holder.provider.setTextSize(15);
         holder.pickup.setText(Html.fromHtml("<font color='black'>"+ "PICKUP ;  " + "</font>" + "<font color='gray'>"+ historyRecordEntityList.get(position).getPick() + "</font>",1));
         holder.pickup.setTextSize(15);
@@ -67,6 +70,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public TextView pickup;
         public TextView destination;
         public TextView fee;
+        public CardView card;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -75,6 +79,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             this.pickup = (TextView) itemView.findViewById(R.id.pickup_card);
             this.destination = (TextView) itemView.findViewById(R.id.destination_card);
             this.fee = (TextView) itemView.findViewById(R.id.fee_card);
+            this.card = (CardView) itemView.findViewById(R.id.card_view);
         }
     }
 }

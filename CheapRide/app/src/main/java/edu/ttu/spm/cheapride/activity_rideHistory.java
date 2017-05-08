@@ -255,8 +255,20 @@ public class activity_rideHistory extends AppCompatActivity {
             mAuthTask = null;
 
             if (success) {
-                adapter = new CustomAdapter(activity_rideHistory.this,historyRecordArrayList);
-                recyclerView.setAdapter(adapter);
+                if(!historyRecordArrayList.isEmpty()) {
+                    adapter = new CustomAdapter(activity_rideHistory.this, historyRecordArrayList);
+                    recyclerView.setAdapter(adapter);
+                }
+
+                else {
+                        page.setPage(1);
+                        pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
+                        pageCounter.setTextSize(30);
+                        pageCounter.setText("Page" + page.getPage());
+//                        displayCard(page.getPage());
+                        Toast.makeText(activity_rideHistory.this, "No content", Toast.LENGTH_SHORT).show();
+
+                }
 
             } else {
                 Toast.makeText(activity_rideHistory.this, "date error", Toast.LENGTH_SHORT).show();
@@ -289,13 +301,25 @@ public class activity_rideHistory extends AppCompatActivity {
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
 
 //                    InputStream inputStream = conn.getInputStream();
+//                    int test = conn.getInputStream().available();
+
 //
-//                    if(inputStream == null){
-//                        Toast.makeText(activity_rideHistory.this, "input stream is empty", Toast.LENGTH_SHORT).show();
+//                    if(conn.getInputStream().available() == 0){
+//                        page.setPage(1);
+//                        pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
+//                        pageCounter.setTextSize(30);
+//                        pageCounter.setText("Page" + page.getPage());
+//                        displayCard(page.getPage());
+//                        Toast.makeText(activity_rideHistory.this, "No content", Toast.LENGTH_SHORT).show();
 //                    }
+
+
+
 
                     BufferedReader reader = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
+
+
 
                     String inputLine;
                     while ((inputLine = reader.readLine()) != null) {
@@ -305,7 +329,7 @@ public class activity_rideHistory extends AppCompatActivity {
                             JSONObject jo = (JSONObject) ja.get(i);
 
                             Long date = jo.getLong("date");
-                            String SDate = getDate(date,"dd/MM/yyyy hh:mm:ss.SSS");
+                            String SDate = getDate(date,"dd/MM/yyyy hh:mm");
                             String provider = jo.getString("provider");
                             String pickup = jo.getString("pickup");
                             String destination = jo.getString("destination");
@@ -315,6 +339,7 @@ public class activity_rideHistory extends AppCompatActivity {
                             historyRecordArrayList.add(historyRecordEntity);
                         }
                     }
+
                 } else {
                     Log.e(TAG, "14 - False - HTTP_OK");
                     historyRecordArrayList = null;
@@ -322,7 +347,6 @@ public class activity_rideHistory extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return historyRecordArrayList;
         }
     }
