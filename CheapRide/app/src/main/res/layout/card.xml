@@ -29,11 +29,6 @@
             android:text="TextView"
             android:textStyle="bold"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/background_light" />
-
         <TextView
             android:id="@+id/pickup_card"
             android:layout_width="match_parent"
@@ -41,22 +36,12 @@
             android:text="TextView"
             android:textStyle="bold"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/background_light" />
-
         <TextView
             android:id="@+id/destination_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textStyle="bold"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/background_light" />
 
         <TextView
             android:id="@+id/fee_card"
