@@ -316,6 +316,13 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(loginIntent, LOGIN_REQUEST);
 
     }
+    public void onHistoryClicked(View v) {
+        System.out.println("History clicked");
+
+        Intent intent = new Intent(getApplicationContext(), ActivityRideHistory.class);
+        startActivity(intent);
+
+    }
 
     public void onUberClick(View v) {
         RideEstimate uber = this.estimateManager.getRideEstimateResponse().getUber();

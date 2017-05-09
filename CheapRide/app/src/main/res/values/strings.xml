@@ -17,6 +17,7 @@
     </string>
     <string name="title_activity_main">Cheap Ride</string>
     <string name="login">Login</string>
+    <string name="history">History</string>
     <string name="register">Register</string>
     <string name="vertical_separator">|</string>
     <string name="search_hint">Enter a place</string>
