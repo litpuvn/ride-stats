@@ -41,7 +41,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegistrationActivity" />
-        <activity android:name=".testRegisterActivity"></activity>
+        <activity android:name=".testRegisterActivity" />
+        <activity android:name=".activity_rideHistory"></activity>
     </application>
 
 </manifest>
