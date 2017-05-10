@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
 //    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
-    public static final String BASE_URL = "http://10.161.98.174:8080/cheapRide";
+    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
 //    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
 //    public static final String BASE_URL = "http://192.168.0.104:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity
     private TextView registerTextView;
     private TextView loginSeparatorTextView;
     private TextView welcomeTextView;
+    private TextView history;
 
     private EstimateHandler estimateManager;
     private BookingHandler bookingHandler;
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity
         registerTextView = (TextView) findViewById(R.id.register);
         loginSeparatorTextView = (TextView) findViewById(R.id.login_separator);
         welcomeTextView = (TextView) findViewById(R.id.welcome_message);
+        history = (TextView) findViewById(R.id.history);
         comparisonChart = findViewById(R.id.comparison_chart);
         rideBooking = findViewById(R.id.ride_booking);
         rideBooking.setVisibility(View.INVISIBLE);
@@ -377,11 +379,17 @@ public class MainActivity extends AppCompatActivity
                 welcomeTextView.setText("Hello, Today is " + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
 
+                history.setText("User History");
+                history.setVisibility(View.VISIBLE);
+
                 LoginActivity.isLogin = true;
             }
             else {
                 welcomeTextView.setText("");
                 welcomeTextView.setVisibility(View.INVISIBLE);
+
+                history.setText("");
+                history.setVisibility(View.INVISIBLE);
                 LoginActivity.isLogin = false;
 
             }

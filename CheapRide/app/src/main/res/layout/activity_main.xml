@@ -42,7 +42,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:text="@string/history"
+                android:text=""
+                android:textSize="25sp"
                 android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,6 +53,7 @@
 
             <TextView
                 android:text="@string/login"
+                android:textSize="25sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -61,6 +63,7 @@
 
             <TextView
                 android:text="@string/vertical_separator"
+                android:textSize="25sp"
                 android:paddingEnd="3dp"
                 android:paddingStart="3dp"
                 android:layout_width="wrap_content"
@@ -70,6 +73,7 @@
 
             <TextView
                 android:text="@string/register"
+                android:textSize="25sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -78,6 +82,8 @@
 
             <TextView
                 android:text=""
+                android:textSize="15sp"
+                android:textColor="#FF4081"
                 android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
