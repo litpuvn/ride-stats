@@ -42,6 +42,7 @@
         </activity>
         <activity android:name=".RegistrationActivity" />
         <!--<activity android:name=".testRegisterActivity"></activity>-->
+        <activity android:name=".ActivityRideHistory"></activity>
     </application>
 
 </manifest>
