@@ -50,7 +50,7 @@ public class ActivityRideHistory extends AppCompatActivity {
     String showStartTime = null;
     String showEndTime = null;
 
-    String userName = "john";
+    String userName = LoginActivity.email;
     int DIALOG_ID = 0;
     private Button date_submit;
     private Pageable page;
