@@ -2,6 +2,7 @@ package edu.ttu.spm.cheapride.listener;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Address;
 import android.util.Log;
 
 import com.akexorcist.googledirection.DirectionCallback;
@@ -24,11 +25,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import edu.ttu.spm.cheapride.MainActivity;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
+import edu.ttu.spm.cheapride.model.BookRequest;
 
 
 public class MyPlaceSelectionListener implements PlaceSelectionListener {
@@ -55,6 +59,7 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
     public void onPlaceSelected(Place place) {
         // TODO: Get info about the selected place.
         Log.i(TAG, "Place: " + place.getName());
+        Log.i(TAG, "Address: " + place.getAddress());
         Log.i(TAG, "Place LatLng: " + place.getLatLng().toString());
 
         if (destinationMarker != null) {
@@ -77,9 +82,6 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
         String serverKey = "AIzaSyCOlafJC7QHMEiBqCfd0cDmdbLU1ZwkdHA";
         LatLng origin = this.currentLocation;
         LatLng destination = place.getLatLng();
-
-        this.estimateManager.attemptEstimate(origin, destination, m.getSelectedCarTypeAsString());
-
 
         GoogleDirection.withServerKey(serverKey)
                 .from(origin)

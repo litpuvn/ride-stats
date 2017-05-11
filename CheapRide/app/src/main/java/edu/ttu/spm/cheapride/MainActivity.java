@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -41,7 +42,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
 
 import edu.ttu.spm.cheapride.handler.BookingHandler;
@@ -63,8 +66,8 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String PROVIDER_UBER = "uber";
-    private static final String PROVIDER_LYFT = "lyft";
+    public static final String PROVIDER_UBER = "uber";
+    public static final String PROVIDER_LYFT = "lyft";
 
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -74,8 +77,8 @@ public class MainActivity extends AppCompatActivity
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
 //    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
-    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
-//    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
+//    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
+    public static final String BASE_URL = "http://192.168.0.110:8080/cheapRide";
 //    public static final String BASE_URL = "http://192.168.0.104:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
     // Keys for storing activity state.
@@ -150,6 +153,12 @@ public class MainActivity extends AppCompatActivity
 
     private ImageLoader imageLoader;
 
+    public EstimateHandler getEstimateManager() {
+        return this.estimateManager;
+    }
+
+    public static Geocoder geocoder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -220,6 +229,9 @@ public class MainActivity extends AppCompatActivity
             .build();
         ImageLoader.getInstance().init(config);
         imageLoader = ImageLoader.getInstance();
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
     }
 
     /**

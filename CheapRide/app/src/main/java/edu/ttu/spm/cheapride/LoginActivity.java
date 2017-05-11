@@ -104,6 +104,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     public static boolean isLogin = false;
+    public static String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -379,6 +380,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 loginActivity.setResult(RESULT_OK, resultIntent);
                 finish();
 
+                LoginActivity.email = mEmail;
 
             } else {
                 mPasswordView.setError(getString(R.string.error_not_authorized_access));
