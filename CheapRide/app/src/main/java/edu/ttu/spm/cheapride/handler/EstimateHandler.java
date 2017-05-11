@@ -87,6 +87,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
                 while ((line = br.readLine()) != null) {
                     responseStr += line;
                 }
+                Log.e(TAG, requestStr);
 
                 response = new JSONObject(responseStr);
 

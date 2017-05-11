@@ -155,7 +155,7 @@ public class BookingHandler extends AbstractNetworkRequest {
                 RideEstimateDTO est = main.getEstimateManager().getRideEstimateResponse();
                 double cost = bookRequest.getProvider() == MainActivity.PROVIDER_UBER ? est.getUberCost() : est.getLyftCost();
 
-                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
                 String currentDateAndTime = sdf.format(new Date());
                 System.out.println("today is: " + currentDateAndTime);
 

@@ -116,12 +116,12 @@ public class TrackGPS extends Service {
             e.printStackTrace();
         }
 
-//        loc = new Location("custom");
-//        loc.setLatitude(37.7763);
-//        loc.setLongitude(-122.3918);
+       loc = new Location("custom");
+      loc.setLatitude(37.7763);
+        loc.setLongitude(-122.3918);
 
-//        loc.setLongitude(37.7763);
-//        loc.setLatitude(-122.3918);
+      // loc.setLongitude(37.7763);
+    // loc.setLatitude(-122.3918);
         return loc;
     }
 

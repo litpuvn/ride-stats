@@ -83,6 +83,8 @@ public class MyPlaceSelectionListener implements PlaceSelectionListener {
         LatLng origin = this.currentLocation;
         LatLng destination = place.getLatLng();
 
+        this.estimateManager.attemptEstimate(origin, destination, m.getSelectedCarTypeAsString());
+
         GoogleDirection.withServerKey(serverKey)
                 .from(origin)
                 .to(destination)
