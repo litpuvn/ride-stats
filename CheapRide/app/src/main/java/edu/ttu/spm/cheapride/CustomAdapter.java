@@ -42,21 +42,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         holder.date.setPaintFlags(holder.date.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         holder.date.setText(historyRecordEntityList.get(position).getDate());
         holder.date.setTextSize(25);
-        holder.date.setTextColor(Color.parseColor("#FF4081"));
+        holder.date.setTextColor(Color.parseColor("#333333"));
 
         if (historyRecordEntityList.get(position).getProvider().equals("lyft")) {
-            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='#ff00bf'>" + historyRecordEntityList.get(position).getProvider() + "</font>", 1));
-            holder.card.setCardBackgroundColor(Color.parseColor("#008080"));
+            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='#ff00bf'>" + "LYFT" + "</font>", 1));
+            holder.card.setCardBackgroundColor(Color.parseColor("#8cadf2"));
         } else{
-            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='black'>" + historyRecordEntityList.get(position).getProvider() + "</font>", 1));
-            holder.card.setCardBackgroundColor(Color.parseColor("#F5F5DC"));
+            holder.provider.setText(Html.fromHtml("<font color='black'>" + "PROVIDER ;  " + "</font>" + "<font color='black'>" + "UBER" + "</font>", 1));
+            holder.card.setCardBackgroundColor(Color.parseColor("#dcdcdc"));
         }
         holder.provider.setTextSize(15);
-        holder.pickup.setText(Html.fromHtml("<font color='black'>"+ "PICKUP ;  " + "</font>" + "<font color='gray'>"+ historyRecordEntityList.get(position).getPick() + "</font>",1));
+        holder.pickup.setText(Html.fromHtml("<font color='black'>"+ "PICKUP ;  " + "</font>" + "<font color='black'>"+ historyRecordEntityList.get(position).getPick() + "</font>",1));
         holder.pickup.setTextSize(15);
-        holder.destination.setText(Html.fromHtml("<font color='black'>"+ "DESTINATION ;  " + "</font>" + "<font color='gray'>"+ historyRecordEntityList.get(position).getDestination(),1));
+        holder.destination.setText(Html.fromHtml("<font color='black'>"+ "DESTINATION ;  " + "</font>" + "<font color='black'>"+ historyRecordEntityList.get(position).getDestination(),1));
         holder.destination.setTextSize(15);
-        holder.fee.setText(Html.fromHtml("<font color='black'>"+ "FEE ;  $"  + "</font>" + "<font color='gray'>"+ historyRecordEntityList.get(position).getFee(),1));
+        holder.fee.setText(Html.fromHtml("<font color='black'>"+ "FEE ;  $"  + "</font>" + "<font color='black'>"+ historyRecordEntityList.get(position).getFee(),1));
         holder.fee.setTextSize(15);
     }
 
