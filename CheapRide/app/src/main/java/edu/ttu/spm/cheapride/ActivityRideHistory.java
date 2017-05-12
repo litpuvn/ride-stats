@@ -318,7 +318,7 @@ public class ActivityRideHistory extends AppCompatActivity {
                             JSONObject jo = (JSONObject) ja.get(i);
 
                             Long date = jo.getLong("date");
-                            String SDate = getDate(date,"dd/MM/yyyy hh:mm");
+                            String SDate = getDate(date,"MM/dd/yyyy hh:mm");
                             String provider = jo.getString("provider");
                             String pickup = jo.getString("pickup");
                             String destination = jo.getString("destination");
