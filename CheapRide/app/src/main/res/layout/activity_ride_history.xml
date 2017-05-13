@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="374dp"
         android:layout_centerInParent="true"
-        android:layout_weight="0.55" />
+        android:layout_weight="1.18" />
 
 
     <LinearLayout
