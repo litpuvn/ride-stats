@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
 //    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
 //    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
-    public static final String BASE_URL = "http://10.161.68.82:8080/cheapRide";
+    public static final String BASE_URL = "http://10.161.80.152:8080/cheapRide";
 //    public static final String BASE_URL = "https://a03e04ed.ngrok.io/cheapRide";
 //    public static final String BASE_URL = "http://192.168.0.104:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity
     private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final int LOGIN_REQUEST = 0;
-    private static final String[] CAR_TYPES = {"Share", "4 seats", "6 or more seats", "Luxury 4 seats"};
+    private static final String[] CAR_TYPES = {"4 seats", "Share", "6 or more seats", "Luxury 4 seats"};
     private static final Map<Integer, String> CAR_TYPE_MAP;
 
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
 //        tmp.put(0, "");
-        tmp.put(0, "share");
-        tmp.put(1, "4_seats");
+        tmp.put(0, "4_seats");
+        tmp.put(1, "share");
         tmp.put(2, "6_or_more_seats");
         tmp.put(3, "luxury_4_seats");
 
@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity
         this.comparisonChart.setVisibility(View.VISIBLE);
 
         if (LoginActivity.isLogin) {
+            driveInfoBoard.setVisibility(View.INVISIBLE);
             this.rideBooking.setVisibility(View.VISIBLE);
             bookingButtons.setVisibility(View.VISIBLE);
         }
