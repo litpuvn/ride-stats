@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity
                 loginTextView.setVisibility(View.INVISIBLE);
                 registerTextView.setVisibility(View.INVISIBLE);
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
-                welcomeTextView.setText("Hello, Today is " + formattedDate);
+                welcomeTextView.setText("Hello, Today is" + System.getProperty ("line.separator") + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
 
                 history.setText("User History");
