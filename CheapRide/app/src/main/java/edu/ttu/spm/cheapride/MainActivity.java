@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity
 
     //public static final String BASE_URL = "http://cheapride-api.dtag.vn:8080/cheapRide";
 //    public static final String BASE_URL = "http://738e44ce.ngrok.io/cheapRide";
-    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
-//    public static final String BASE_URL = "http://10.161.68.82:8080/cheapRide";
+//    public static final String BASE_URL = "http://192.168.1.73:8080/cheapRide";
+    public static final String BASE_URL = "http://10.161.19.37:8080/cheapRide";
 //    public static final String BASE_URL = "https://a03e04ed.ngrok.io/cheapRide";
 //    public static final String BASE_URL = "http://192.168.0.104:8080/cheapRide";
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity
                 loginTextView.setVisibility(View.INVISIBLE);
                 registerTextView.setVisibility(View.INVISIBLE);
                 loginSeparatorTextView.setVisibility(View.INVISIBLE);
-                welcomeTextView.setText("Hello, Today is " + formattedDate);
+                welcomeTextView.setText("Hello, Today is" + System.getProperty ("line.separator") + formattedDate);
                 welcomeTextView.setVisibility(View.VISIBLE);
 
                 history.setText("User History");
