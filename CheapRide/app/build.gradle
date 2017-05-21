@@ -49,6 +49,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.+'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
-
+    compile files('libs/xcl-charts.jar')
 }

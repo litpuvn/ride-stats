@@ -1,0 +1,4 @@
+#Sun May 21 16:21:33 CDT 2017
+base.0=E\:\\project\\ride-stats\\ride-stats\\XCL-Charts-demo2\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+renamed.0=classes.dex
+file.0=E\:\\project\\ride-stats\\ride-stats\\XCL-Charts-demo2\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex
