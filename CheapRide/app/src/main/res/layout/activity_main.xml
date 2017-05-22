@@ -320,7 +320,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                 android:background="@color/wallet_highlighted_text_holo_light"
+                 android:background="@color/cardview_light_background"
                 android:orientation="vertical">
 
 
