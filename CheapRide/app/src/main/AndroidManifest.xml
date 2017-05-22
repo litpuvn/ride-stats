@@ -43,6 +43,9 @@
         <activity android:name=".RegistrationActivity" />
         <!--<activity android:name=".testRegisterActivity"></activity>-->
         <activity android:name=".ActivityRideHistory"></activity>
+        <activity android:name=".PopupActivity"
+            android:theme="@style/AppTheme.PopupBackground"
+            ></activity>
     </application>
 
 </manifest>

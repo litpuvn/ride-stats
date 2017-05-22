@@ -450,7 +450,10 @@ public class MainActivity extends AppCompatActivity
 //        Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
 //        startActivity(intent);
 
-        initRoseChart();
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+        startActivity(intent);
+
+        //initRoseChart();
     }
 
     public LatLng getCurrentLocation() {
