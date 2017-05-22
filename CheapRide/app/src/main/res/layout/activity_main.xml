@@ -307,15 +307,26 @@
                 </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/rose_chart"
+                android:id="@+id/rose_chart_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                  android:id="@+id/rose_chart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                 android:background="@color/wallet_highlighted_text_holo_light"
                 android:orientation="vertical">
 
 
                 />
 
+            </LinearLayout>
             </LinearLayout>
         </fragment>
 

@@ -57,10 +57,13 @@ public class NightingaleRoseChart extends DemoView {
 
     private void initView()
     {
+        chartRose.setTitle("Comparison Chart");
+        chartRose.addSubtitle("(Uber vs. Lyft)");
+
         chartLabels();
 
-        chartRender1();
-        chartDataSet1();
+        //chartRender1();
+        //chartDataSet1();
 
         chartRender2();
         chartDataSet2();
@@ -69,9 +72,9 @@ public class NightingaleRoseChart extends DemoView {
         chartDataSet3();
 
         //綁定手势滑动事件
-        this.bindTouch(this,chartRose);
-        this.bindTouch(this,chartRose3);
-        this.bindTouch(this,chartRose1);
+//        this.bindTouch(this,chartRose);
+//        this.bindTouch(this,chartRose3);
+//        this.bindTouch(this,chartRose1);
     }
 
 
@@ -90,10 +93,10 @@ public class NightingaleRoseChart extends DemoView {
         labels.add("A2");
         labels.add("A3");
         labels.add("A4");
-        labels.add("A5");
-        labels.add("A6");
-        labels.add("A7");
-        labels.add("A8");
+//        labels.add("A5");
+//        labels.add("A6");
+//        labels.add("A7");
+//        labels.add("A8");
 
     }
 
@@ -108,7 +111,7 @@ public class NightingaleRoseChart extends DemoView {
             //数据源
             chartRose.setDataSource(roseData);
             chartRose.getInnerPaint().setStyle(Style.STROKE);
-            chartRose.setInitialAngle(270 + 72/2);
+            chartRose.setInitialAngle(315 - 1);
 
             //设置标签显示位置,当前设置标签显示在扇区中间
             //chartRose.setLabelStyle(XEnum.SliceLabelStyle.OUTSIDE);
@@ -143,12 +146,7 @@ public class NightingaleRoseChart extends DemoView {
         roseData.add(new PieData("",40,Color.rgb(149, 206, 255)));  //(int)Color.rgb(39, 51, 72)));
         roseData.add(new PieData("",50,Color.rgb(149, 206, 255)));  //(int)Color.rgb(39, 51, 72)));
         roseData.add(new PieData("",60,Color.rgb(149, 206, 255)));  //(int)Color.rgb(39, 51, 72)));
-
         roseData.add(new PieData("",70,Color.rgb(149, 206, 255)));  //(int)Color.rgb(77, 83, 97) ));
-        roseData.add(new PieData(""	,80,Color.rgb(149, 206, 255)));  //(int)Color.rgb(148, 159, 181)));
-        roseData.add(new PieData(""	,90,Color.rgb(149, 206, 255)));  //(int)Color.rgb(253, 180, 90)));
-        roseData.add(new PieData(""	,95,Color.rgb(149, 206, 255)));  //(int)Color.rgb(52, 194, 188)));
-        roseData.add(new PieData("",97,Color.rgb(149, 206, 255)));  //(int)Color.rgb(39, 51, 72)));
     }
 
     private void chartRender3()
@@ -161,7 +159,7 @@ public class NightingaleRoseChart extends DemoView {
             //数据源
             chartRose3.setDataSource(roseData3);
             chartRose3.getInnerPaint().setStyle(Style.STROKE);
-            chartRose3.setInitialAngle(270 + 72/2);
+            chartRose3.setInitialAngle(315 - 1);
 
             //设置标签显示位置,当前设置标签显示在扇区中间
             //chartRose3.setLabelStyle(XEnum.SliceLabelStyle.INSIDE);
@@ -193,64 +191,60 @@ public class NightingaleRoseChart extends DemoView {
 		roseData3.add(new PieData("个",70,(int)Color.rgb(0, 156, 214)));
 	*/
 
-        roseData3.add(new PieData("A1",10,Color.rgb(92, 92, 97) ));
-        roseData3.add(new PieData("A2",20,Color.rgb(92, 92, 97)));
-        roseData3.add(new PieData("A3",30,Color.rgb(92, 92, 97)));
+        roseData3.add(new PieData("E",10,Color.rgb(92, 92, 97) ));
+        roseData3.add(new PieData("S",20,Color.rgb(92, 92, 97)));
+        roseData3.add(new PieData("W",30,Color.rgb(92, 92, 97)));
+        roseData3.add(new PieData("N",40,Color.rgb(92, 92, 97) ));
 
-        roseData3.add(new PieData("A4",40,Color.rgb(92, 92, 97) ));
-        roseData3.add(new PieData("A5",50,Color.rgb(92, 92, 97)));
-        roseData3.add(new PieData("A6",60,Color.rgb(92, 92, 97)));
-        roseData3.add(new PieData("A7",70,Color.rgb(92, 92, 97)));
-        roseData3.add(new PieData("A8",80,Color.rgb(92, 92, 97)));
 
     }
 
 
-    private void chartDataSet1()
-    {
-        //设置图表数据源
-        //PieData(标签，百分比，在饼图中对应的颜色)
-        roseData1.add(new PieData("",7,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
-        roseData1.add(new PieData("",12,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
-        roseData1.add(new PieData("",13,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
-
-        roseData1.add(new PieData("",15,Color.rgb(190, 254, 175)));  //(int)Color.rgb(77, 83, 97) ));
-        roseData1.add(new PieData("",27,Color.rgb(190, 254, 175)));  //(int)Color.rgb(148, 159, 181)));
-        roseData1.add(new PieData("",32,Color.rgb(190, 254, 175)));  //(int)Color.rgb(253, 180, 90)));
-        roseData1.add(new PieData("",55,Color.rgb(190, 254, 175)));  //(int)Color.rgb(52, 194, 188)));
-        roseData1.add(new PieData("",35,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
-    }
-
-    private void chartRender1()
-    {
-        try {
-
-            //设置绘图区默认缩进px值
-            int [] ltrb = getPieDefaultSpadding();
-            chartRose1.setPadding(ltrb[0], ltrb[1], ltrb[2], ltrb[3]);
-            //数据源
-            chartRose1.setDataSource(roseData1);
-            chartRose1.getInnerPaint().setStyle(Style.STROKE);
-            chartRose1.setInitialAngle(270 + 72/2);
-
-            //设置标签显示位置,当前设置标签显示在扇区中间
-            //chartRose1.setLabelStyle(XEnum.SliceLabelStyle.INSIDE);
-
-            chartRose1.getLabelPaint().setColor(Color.parseColor("#D92222"));
-
-            chartRose1.setIntervalAngle(3);
-            chartRose1.showOuterLabels();
-            //chartRose1.hideOuterLabels();
-
-
-            chartRose1.setTitle("玫瑰风向图");
-            chartRose1.addSubtitle("(XCL-Charts Demo)");
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Log.e(TAG, e.toString());
-        }
-    }
+//    private void chartDataSet1()
+//    {
+//        //设置图表数据源
+//        //PieData(标签，百分比，在饼图中对应的颜色)
+//        roseData1.add(new PieData("",7,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
+//        roseData1.add(new PieData("",12,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
+//        roseData1.add(new PieData("",13,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
+//
+//        roseData1.add(new PieData("",15,Color.rgb(190, 254, 175)));  //(int)Color.rgb(77, 83, 97) ));
+//        roseData1.add(new PieData("",27,Color.rgb(190, 254, 175)));  //(int)Color.rgb(148, 159, 181)));
+//        roseData1.add(new PieData("",32,Color.rgb(190, 254, 175)));  //(int)Color.rgb(253, 180, 90)));
+//        roseData1.add(new PieData("",55,Color.rgb(190, 254, 175)));  //(int)Color.rgb(52, 194, 188)));
+//        roseData1.add(new PieData("",35,Color.rgb(190, 254, 175)));  //(int)Color.rgb(39, 51, 72)));
+//    }
+//
+//    private void chartRender1()
+//    {
+//        try {
+//
+//            //设置绘图区默认缩进px值
+//            int [] ltrb = getPieDefaultSpadding();
+//            chartRose1.setPadding(ltrb[0], ltrb[1], ltrb[2], ltrb[3]);
+//            //数据源
+//            chartRose1.setDataSource(roseData1);
+//            chartRose1.getInnerPaint().setStyle(Style.STROKE);
+//            chartRose1.setInitialAngle(270 + 72/2);
+//
+//            //设置标签显示位置,当前设置标签显示在扇区中间
+//            //chartRose1.setLabelStyle(XEnum.SliceLabelStyle.INSIDE);
+//
+//            chartRose1.getLabelPaint().setColor(Color.parseColor("#D92222"));
+//
+//            chartRose1.setIntervalAngle(3);
+//            chartRose1.showOuterLabels();
+//            //chartRose1.hideOuterLabels();
+//
+//
+//            chartRose1.setTitle("Comparison Chart");
+//            chartRose1.addSubtitle("(Uber vs. Lyft)");
+//
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            Log.e(TAG, e.toString());
+//        }
+//    }
 
 
     @Override
