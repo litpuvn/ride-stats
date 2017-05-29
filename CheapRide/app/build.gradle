@@ -50,4 +50,5 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.+'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile files('libs/xcl-charts.jar')
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }

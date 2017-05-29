@@ -62,8 +62,10 @@ import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 import edu.ttu.spm.cheapride.model.RideEstimateRequest;
 import edu.ttu.spm.cheapride.model.item.Driver;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
+import edu.ttu.spm.cheapride.model.item.clusterItem;
 import edu.ttu.spm.cheapride.service.TrackGPS;
 import edu.ttu.spm.cheapride.view.DemoView;
+import com.google.maps.android.clustering.ClusterManager;
 
 
 public class MainActivity extends AppCompatActivity
@@ -169,6 +171,8 @@ public class MainActivity extends AppCompatActivity
 
     private DemoView mCharts;
     private LinearLayout RoseChart;
+
+    private ClusterManager<clusterItem> mClusterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,7 +283,7 @@ public class MainActivity extends AppCompatActivity
             this.displayLocation(gps.getLatitude(), gps.getLongitude());
         }
 
-        addMarkers();
+        setUpClustering();
 
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -487,7 +491,7 @@ public class MainActivity extends AppCompatActivity
 
     private void displayLocation(double lat, double lng) {
         mCurrentLocation =  new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+        //mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
 
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
@@ -495,15 +499,38 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void setUpClustering() {
+        // Declare a variable for the cluster manager.
+        //ClusterManager<clusterItem> mClusterManager;
+
+        // Position the map in UK.
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), DEFAULT_ZOOM_LEVEL));
+
+        // Initialize the manager with the context and the map.
+        mClusterManager = new ClusterManager<clusterItem>(this, mMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster manager.
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+
+        // Add cluster items (markers) to the cluster manager.
+        addMarkers();
+    }
+
     private void addMarkers(){
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7764,-122.393)).title("Example 1"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7765,-122.394)).title("Example 2"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7766,-122.396)).title("Example 3"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7767,-122.397)).title("Example 4"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7769,-122.399)).title("Example 5"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7761,-122.391)).title("Example 6"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7766,-122.399)).title("Example 7"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7768,-122.392)).title("Example 8"));
+
+        // Set some lat/lng coordinates to start with.
+        double latitude = 37.7764;
+        double longitude = -122.393;
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        for (int i = 0; i < 100; i++) {
+            double offset = i / 60d;
+            latitude = latitude + offset;
+            longitude = longitude + offset;
+            clusterItem offsetItem = new clusterItem(latitude, longitude);
+            mClusterManager.addItem(offsetItem);
+        }
 
     }
     /**
