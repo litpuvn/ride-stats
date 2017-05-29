@@ -266,9 +266,7 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-
-
-        // Get the current location of the device and set the position of the map.
+//         //Get the current location of the device and set the position of the map.
 //        getDeviceLocation();
 
         estimateManager = new EstimateHandler(this);
@@ -280,6 +278,8 @@ public class MainActivity extends AppCompatActivity
             gps = new TrackGPS(this);
             this.displayLocation(gps.getLatitude(), gps.getLongitude());
         }
+
+        addMarkers();
 
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -482,6 +482,7 @@ public class MainActivity extends AppCompatActivity
         mCurrentLocation =  new LatLng(gps.getLatitude(), gps.getLongitude());
 
         this.displayLocation(gps.getLatitude(), gps.getLongitude());
+
     }
 
     private void displayLocation(double lat, double lng) {
@@ -491,6 +492,19 @@ public class MainActivity extends AppCompatActivity
 
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
         mMap.animateCamera(zoom);
+
+    }
+
+    private void addMarkers(){
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7764,-122.393)).title("Example 1"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7765,-122.394)).title("Example 2"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7766,-122.396)).title("Example 3"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7767,-122.397)).title("Example 4"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7769,-122.399)).title("Example 5"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7761,-122.391)).title("Example 6"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7766,-122.399)).title("Example 7"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(37.7768,-122.392)).title("Example 8"));
+
     }
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -506,25 +520,25 @@ public class MainActivity extends AppCompatActivity
             //Not in api-23, no need to prompt
             mMap.setMyLocationEnabled(true);
         }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            double lat = mLastLocation.getLatitude();
-            double lng = mLastLocation.getLongitude();
-
-            mCurrentLocation =  new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
-
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
-            mMap.animateCamera(zoom);
-
-        }
-        else
-        {
-            Toast.makeText(this, "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
-        }
+//        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                mGoogleApiClient);
+//
+//        if (mLastLocation != null) {
+//            double lat = mLastLocation.getLatitude();
+//            double lng = mLastLocation.getLongitude();
+//
+//            mCurrentLocation =  new LatLng(lat, lng);
+//            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+//
+//            CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+//            mMap.animateCamera(zoom);
+//
+//        }
+//        else
+//        {
+//            Toast.makeText(this, "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
