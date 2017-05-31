@@ -62,6 +62,7 @@ import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
+import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
 import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
@@ -80,7 +81,7 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import org.xclcharts.chart.RoseChart;
 
 
-public class MainActivity extends AppCompatActivity
+public abstract class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
         LocationListener,
         AdapterView.OnItemSelectedListener,
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity
     private static final int LOGIN_REQUEST = 0;
     private static final String[] CAR_TYPES = {"4 seats", "Share", "6 or more seats", "Luxury 4 seats"};
     private static final Map<Integer, String> CAR_TYPE_MAP;
+
 
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
@@ -302,6 +304,7 @@ public class MainActivity extends AppCompatActivity
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
     }
+
 
     public void activateComparisonChart(RideEstimateDTO rideEstimateDto) {
 
@@ -797,6 +800,18 @@ public class MainActivity extends AppCompatActivity
 //        //缩小监听
 //        //  mZoomControls.setOnZoomOutClickListener(new OnZoomOutClickListenerImpl());
 //    }
+
+
+    /**
+     * Run the demo-specific code.
+     */
+    protected abstract void startDemo();
+
+    protected GoogleMap getMap() {
+        return mMap;
+    }
+
+
 }
 
 
