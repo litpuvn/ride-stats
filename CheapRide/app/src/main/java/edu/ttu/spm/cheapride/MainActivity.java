@@ -1,6 +1,7 @@
 package edu.ttu.spm.cheapride;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,12 +45,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.google.maps.android.ui.IconGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -66,6 +72,12 @@ import edu.ttu.spm.cheapride.model.item.clusterItem;
 import edu.ttu.spm.cheapride.service.TrackGPS;
 import edu.ttu.spm.cheapride.view.DemoView;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+
+import org.xclcharts.chart.RoseChart;
 
 
 public class MainActivity extends AppCompatActivity
@@ -283,7 +295,9 @@ public class MainActivity extends AppCompatActivity
             this.displayLocation(gps.getLatitude(), gps.getLongitude());
         }
 
-        setUpClustering();
+//        setUpClustering();
+
+        startDemo();
 
         autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -499,40 +513,112 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void setUpClustering() {
-        // Declare a variable for the cluster manager.
-        //ClusterManager<clusterItem> mClusterManager;
-
-        // Position the map in UK.
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), DEFAULT_ZOOM_LEVEL));
-
-        // Initialize the manager with the context and the map.
-        mClusterManager = new ClusterManager<clusterItem>(this, mMap);
-
-        // Point the map's listeners at the listeners implemented by the cluster manager.
-        mMap.setOnCameraIdleListener(mClusterManager);
-        mMap.setOnMarkerClickListener(mClusterManager);
-
-        // Add cluster items (markers) to the cluster manager.
-        addMarkers();
-    }
-
-    private void addMarkers(){
-
-        // Set some lat/lng coordinates to start with.
-        double latitude = 37.7764;
-        double longitude = -122.393;
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 100; i++) {
-            double offset = i / 60d;
-            latitude = latitude + offset;
-            longitude = longitude + offset;
-            clusterItem offsetItem = new clusterItem(latitude, longitude);
-            mClusterManager.addItem(offsetItem);
-        }
-
-    }
+//    private void setUpClustering() {
+//        // Declare a variable for the cluster manager.
+//        //ClusterManager<clusterItem> mClusterManager;
+//
+//        // Position the map in UK.
+//        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), DEFAULT_ZOOM_LEVEL));
+//
+//        // Initialize the manager with the context and the map.
+//        mClusterManager = new ClusterManager<clusterItem>(this, mMap);
+//
+//        // Point the map's listeners at the listeners implemented by the cluster manager.
+//        mMap.setOnCameraIdleListener(mClusterManager);
+//        mMap.setOnMarkerClickListener(mClusterManager);
+//
+//
+//
+//        // Add cluster items (markers) to the cluster manager.
+//        addMarkers();
+//    }
+//
+//    private void addMarkers(){
+//
+//        // Set some lat/lng coordinates to start with.
+//        double latitude = 37.7764;
+//        double longitude = -122.393;
+//
+//        // Add 100 clusters items in close proximity, for purposes of this example.
+//        for (int i = 0; i < 100; i++) {
+//            double offset = i / 60d;
+//            latitude = latitude + offset;
+//            longitude = longitude + offset;
+//            clusterItem offsetItem = new clusterItem(latitude, longitude);
+//            mClusterManager.addItem(offsetItem);
+//        }
+//
+//    }
+//
+//    public class RoseChartRenderer extends DefaultClusterRenderer<clusterItem> {
+//
+//        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
+//       private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
+////        private final ImageView mImageView;
+//        private final ImageView mClusterImageView;
+//        private final View viewRoseChart;
+////        private final int mDimension;
+//
+//        public RoseChartRenderer() {
+//            super(getApplicationContext(), mMap, mClusterManager);
+//
+//
+//            viewRoseChart = getLayoutInflater().inflate(R.layout.popwindow, null);
+//            mClusterIconGenerator.setContentView(viewRoseChart);
+//            mClusterImageView = (ImageView) viewRoseChart.findViewById(R.id.image);
+//
+////            View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
+////            mClusterIconGenerator.setContentView(multiProfile);
+////            mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
+////
+////            mImageView = new ImageView(getApplicationContext());
+////            mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
+////            mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
+////            int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
+////            mImageView.setPadding(padding, padding, padding, padding);
+////            mIconGenerator.setContentView(mImageView);
+//        }
+//
+//       // @Override
+//        protected void onBeforeClusterItemRendered(View roseChart, MarkerOptions markerOptions) {
+//
+//
+////            // Draw a single person.
+////            // Set the info window to show their name.
+////            mImageView.setImageResource(person.profilePhoto);
+////            Bitmap icon = mIconGenerator.makeIcon();
+////            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
+//        }
+//
+////        @Override
+////        protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
+////            // Draw multiple people.
+////            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
+////            List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+////            int width = mDimension;
+////            int height = mDimension;
+////
+////            for (Person p : cluster.getItems()) {
+////                // Draw 4 at most.
+////                if (profilePhotos.size() == 4) break;
+////                Drawable drawable = getResources().getDrawable(p.profilePhoto);
+////                drawable.setBounds(0, 0, width, height);
+////                profilePhotos.add(drawable);
+////            }
+////            MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
+////            multiDrawable.setBounds(0, 0, width, height);
+////
+////            mClusterImageView.setImageDrawable(multiDrawable);
+////            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+////            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+////        }
+//
+//        @Override
+//        protected boolean shouldRenderAsCluster(Cluster cluster) {
+//            // Always render clusters.
+//            return cluster.getSize() > 1;
+//        }
+//    }
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
