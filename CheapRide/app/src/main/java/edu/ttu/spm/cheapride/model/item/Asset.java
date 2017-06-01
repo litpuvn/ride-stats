@@ -9,12 +9,13 @@ import com.google.maps.android.clustering.ClusterItem;
 
 public class Asset implements ClusterItem {
     public final String name;
-    public final int marker;
+    //public final int marker;
     private final LatLng mPosition;
 
-    public Asset(LatLng position, String name, int pictureResource) {
+//    public Asset(LatLng position, String name, int pictureResource) {
+     public Asset(LatLng position, String name) {
         this.name = name;
-        marker = pictureResource;
+        /* marker = pictureResource; */
         mPosition = position;
     }
 

@@ -41,6 +41,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
@@ -57,16 +58,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
-import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
+//import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
 import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 import edu.ttu.spm.cheapride.model.RideEstimateRequest;
+import edu.ttu.spm.cheapride.model.item.Asset;
 import edu.ttu.spm.cheapride.model.item.Driver;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
 import edu.ttu.spm.cheapride.model.item.clusterItem;
@@ -80,13 +83,15 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import org.xclcharts.chart.RoseChart;
 
+import static edu.ttu.spm.cheapride.R.id.ad_image_view;
 
-public abstract class MainActivity extends AppCompatActivity
+
+public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
         LocationListener,
         AdapterView.OnItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,ClusterManager.OnClusterClickListener<Asset>, ClusterManager.OnClusterInfoWindowClickListener<Asset>, ClusterManager.OnClusterItemClickListener<Asset>, ClusterManager.OnClusterItemInfoWindowClickListener<Asset> {
 
     public static final String PROVIDER_UBER = "uber";
     public static final String PROVIDER_LYFT = "lyft";
@@ -186,7 +191,10 @@ public abstract class MainActivity extends AppCompatActivity
     private DemoView mCharts;
     private LinearLayout RoseChart;
 
-    private ClusterManager<clusterItem> mClusterManager;
+    //private ClusterManager<clusterItem> mClusterManager;
+
+    private ClusterManager<Asset> mClusterManager;
+    private Random mRandom = new Random(1984);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -287,21 +295,21 @@ public abstract class MainActivity extends AppCompatActivity
 //         //Get the current location of the device and set the position of the map.
 //        getDeviceLocation();
 
-        estimateManager = new EstimateHandler(this);
-
-        if (!canAccessLocation()) {
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        }
-        else {
-            gps = new TrackGPS(this);
-            this.displayLocation(gps.getLatitude(), gps.getLongitude());
-        }
+//        estimateManager = new EstimateHandler(this);
+//
+//        if (!canAccessLocation()) {
+//            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+//        }
+//        else {
+//            gps = new TrackGPS(this);
+//            this.displayLocation(gps.getLatitude(), gps.getLongitude());
+//        }
 
 //        setUpClustering();
 
         startDemo();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
+        //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
     }
 
@@ -803,12 +811,96 @@ public abstract class MainActivity extends AppCompatActivity
 
 
     /**
-     * Run the demo-specific code.
+     * Draws Rose Chart inside markers (using IconGenerator).
+     * When there are multiple Chart in the cluster, draw multiple Chart (using MultiDrawable).
      */
-    protected abstract void startDemo();
+    private class AssetRenderer extends DefaultClusterRenderer<Asset> {
+        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
+        private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
+        //private final ImageView mImageView;
+        private final ImageView mClusterImageView;
+        //private final int mDimension;
 
-    protected GoogleMap getMap() {
-        return mMap;
+        public AssetRenderer() {
+            super(getApplicationContext(), mMap, mClusterManager);
+
+            View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
+            mClusterIconGenerator.setContentView(multiProfile);
+            mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(Asset Asset, MarkerOptions markerOptions) {
+            // Draw a single Asset.
+            // Set the info window to show their name.
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(ad_image_view)).title("test1");
+        }
+
+        @Override
+        protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
+            // Draw a single Asset.
+            // Set the info window to show their name.
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(ad_image_view)).title("test2");
+        }
+
+        @Override
+        protected boolean shouldRenderAsCluster(Cluster cluster) {
+            // Always render clusters.
+            return cluster.getSize() > 1;
+        }
+
+    }
+    @Override
+    public boolean onClusterClick(Cluster<Asset> cluster) {
+        return false;
+    }
+
+    @Override
+    public void onClusterInfoWindowClick(Cluster<Asset> cluster) {
+
+    }
+
+    @Override
+    public boolean onClusterItemClick(Asset asset) {
+        return false;
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(Asset asset) {
+
+    }
+
+    protected void startDemo() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.988612, 53.459411), 4.5f));
+
+        mClusterManager = new ClusterManager<>(this, mMap);
+        mClusterManager.setRenderer(new AssetRenderer());
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mClusterManager.setOnClusterClickListener(this);
+        mClusterManager.setOnClusterInfoWindowClickListener(this);
+        mClusterManager.setOnClusterItemClickListener(this);
+        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+
+        addItems();
+        mClusterManager.cluster();
+    }
+
+    private void addItems() {
+
+        for (int i = 0; i < 5; i++) {
+            mClusterManager.addItem(new Asset(position(), randomStatus()));
+        }
+    }
+    private LatLng position() {
+        return new LatLng(random(30.325877, 36.615905), random(60.648976, 47.465382));
+    }
+    private double random(double min, double max) {
+        return mRandom.nextDouble() * (max - min) + min;
+    }
+    private String randomStatus() {
+        return "Test";
     }
 
 
