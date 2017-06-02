@@ -812,7 +812,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Draws Rose Chart inside markers (using IconGenerator).
-     * When there are multiple Chart in the cluster, draw multiple Chart (using MultiDrawable).
+     * When there are multiple Chart in the cluster, draw multiple Chart (using MultiDrawable ).
      */
     private class AssetRenderer extends DefaultClusterRenderer<Asset> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
