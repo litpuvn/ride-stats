@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity
 
 //        setUpClustering();
 
-        startDemo();
+        //startDemo();
 
         //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
