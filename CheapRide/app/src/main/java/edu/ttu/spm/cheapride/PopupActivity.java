@@ -8,12 +8,14 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import org.xclcharts.chart.RoseChart;
 
 import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
+import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.view.DemoView;
 
 /**
@@ -24,6 +26,8 @@ public class PopupActivity extends AppCompatActivity {
 
     private DemoView mCharts;
     private LinearLayout RoseChart;
+
+    private Origin fakeOrigin1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,8 @@ public class PopupActivity extends AppCompatActivity {
 
     public void initRoseChart()
     {
+
+        fakeOrigin1 = Origin.createMe("Lubbock");
         //图表的使用方法:
         //使用方式一:
         // 1.新增一个Activity
@@ -89,9 +95,9 @@ public class PopupActivity extends AppCompatActivity {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         //图表view放入布局中，也可直接将图表view放入Activity对应的xml文件中
         //final RelativeLayout chartLayout = new RelativeLayout(this);
-        RoseChart = (LinearLayout)findViewById(R.id.rose_chart);
+        RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
-        mCharts = new NightingaleRoseChart(this);
+        mCharts = new NightingaleRoseChart(this,fakeOrigin1);
 
         RoseChart.addView( mCharts, layoutParams);
 

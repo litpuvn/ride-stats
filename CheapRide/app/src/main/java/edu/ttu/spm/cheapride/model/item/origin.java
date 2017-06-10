@@ -4,7 +4,7 @@ package edu.ttu.spm.cheapride.model.item;
  * Created by Administrator on 2017/5/27.
  */
 
-public class origin {
+public class Origin {
 
     private double lat;
     private double lng;
@@ -16,7 +16,10 @@ public class origin {
     private direction north;
     private direction south;
 
-    public origin(double lat, double lng, String name, direction east, direction west, direction north, direction south) {
+    public Origin() {
+    }
+
+    public Origin(double lat, double lng, String name, direction east, direction west, direction north, direction south) {
         this.lat = lat;
         this.lng = lng;
         this.name = name;
@@ -80,5 +83,19 @@ public class origin {
 
     public void setSouth(direction south) {
         this.south = south;
+    }
+
+
+    public static Origin createMe(String name) {
+        Origin a = new Origin();
+        a.setName(name);
+        a.setLat((Math.random() * ((36.615905 - 30.325877) + 1)) + 30.325877);
+        a.setLng((Math.random() * ((60.648976 - 47.465382) + 1)) + 47.465382);
+        a.setEast(direction.createMe("east"));
+        a.setWest(direction.createMe("west"));
+        a.setNorth(direction.createMe("north"));
+        a.setSouth(direction.createMe("south"));
+
+        return a;
     }
 }

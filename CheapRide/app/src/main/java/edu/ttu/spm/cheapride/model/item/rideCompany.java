@@ -9,6 +9,10 @@ public class rideCompany {
     private int cost;
     private int pickupTime;
 
+    public rideCompany(String companyName) {
+        this.companyName = companyName;
+    }
+
     public rideCompany(String companyName, int cost, int pickupTime) {
         this.companyName = companyName;
         this.cost = cost;
@@ -37,5 +41,13 @@ public class rideCompany {
 
     public void setPickupTime(int pickupTime) {
         this.pickupTime = pickupTime;
+    }
+
+    public static rideCompany createMe(String rideCompany){
+        rideCompany company = new rideCompany(rideCompany);
+        company.setCost((int) (Math.random() * 80));
+        company.setPickupTime((int) (Math.random() * 20));
+
+        return company;
     }
 }

@@ -3,9 +3,12 @@ package edu.ttu.spm.cheapride.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.webkit.WebStorage;
 
 import org.xclcharts.common.DensityUtil;
 import org.xclcharts.view.ChartView;
+
+import edu.ttu.spm.cheapride.model.item.Origin;
 
 /**
  * Created by Administrator on 2017/5/22.

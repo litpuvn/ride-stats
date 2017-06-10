@@ -10,6 +10,10 @@ public class direction {
     private rideCompany uber;
     private rideCompany lyft;
 
+    direction(String direction) {
+        this.direction = direction;
+    }
+
     public direction(String direction, rideCompany uber, rideCompany lyft) {
         this.direction = direction;
         this.uber = uber;
@@ -38,5 +42,14 @@ public class direction {
 
     public void setLyft(rideCompany lyft) {
         this.lyft = lyft;
+    }
+
+
+    public static direction createMe(String direction) {
+        direction dir = new direction(direction);
+        dir.setUber(rideCompany.createMe("Uber"));
+        dir.setLyft(rideCompany.createMe("Lyft"));
+
+        return dir;
     }
 }
