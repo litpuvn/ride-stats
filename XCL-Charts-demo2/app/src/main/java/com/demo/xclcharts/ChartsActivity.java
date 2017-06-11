@@ -152,19 +152,19 @@ public class ChartsActivity extends Activity {
 			new BarChart05View(this),	//横向定制线柱形图
 			new BarChart03View(this),	//竖向定制线柱形图
 			new BarChart04View(this),	//高密度柱形图
-			
+
 			new BarChart3D01View(this),	//竖向3D柱形图
 			new BarChart3D02View(this),	//横向3D柱形图
-			
+
 			new BarChart08View(this),	//正负背向式图
 			new BarChart09View(this),	//正负背向式图(横向)
-			
+
 			new BarChart10View(this),   // 双轴柱形图
 			new BarChart11View(this),   // 顶轴横向柱形图
 			new BarChart12View(this),   // 圆角柱形图
 			new BarChart13View(this),   // 圆角柱形图(横向)
-			
-			
+
+
 			new StackBarChart01View(this),	//竖向堆积柱形图
 			new StackBarChart02View(this),	//横向堆积柱形图
 			new LineChart01View(this),	//折线图(封闭式)
@@ -177,7 +177,7 @@ public class ChartsActivity extends Activity {
 			new AreaChart01View(this),	//区域图
 			new AreaChart02View(this),	//平滑区域图
 			new AreaChart03View(this),	//
-			
+
 			new MultiAxisChart01View(this),
 			new MultiAxisChart02View(this),
 			new MultiBarChart01View(this),	//多柱形堆积效果图
@@ -195,9 +195,9 @@ public class ChartsActivity extends Activity {
 			new ArcLineChart01View(this),	//弧线比较图
 			new ScatterChart01View(this),	//散点图
 			new BubbleChart01View(this),	//气泡图
-			new RangeBarChart01View(this), 	//范围条形图			
+			new RangeBarChart01View(this), 	//范围条形图
 			new QuadrantChart01View(this),	//象限图
-			
+
 			new FunnelChart01View(this), //漏斗图(Desc)
 			new FunnelChart02View(this), //漏斗图(Asc)
 			new CircleChart04View(this), //圆形图

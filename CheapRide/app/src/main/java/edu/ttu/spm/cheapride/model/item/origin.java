@@ -1,5 +1,8 @@
 package edu.ttu.spm.cheapride.model.item;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Administrator on 2017/5/27.
  */
@@ -97,5 +100,72 @@ public class Origin {
         a.setSouth(direction.createMe("south"));
 
         return a;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject myObject = new JSONObject();
+
+
+        return  null;
+    }
+    public String toJsonString() {
+        JSONObject jsonObj = this.toJsonObject();
+        return jsonObj.toString();
+    }
+
+    public static Origin createFromJsonString(String json) {
+
+        JSONObject obj = null;
+        Origin origin = null;
+
+        try {
+            obj = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try{
+
+            Double lat = obj.getDouble("lat");
+            Double lng = obj.getDouble("lng");
+            String name = obj.getString("name");
+
+            JSONObject eastJson = (JSONObject)obj.get("east");
+            direction east = direction.createFromJSONObject(eastJson);
+
+            JSONObject westJson = (JSONObject)obj.get("west");
+            direction west = direction.createFromJSONObject(westJson);
+
+            JSONObject northJson = (JSONObject)obj.get("north");
+            direction north = direction.createFromJSONObject(northJson);
+
+            JSONObject southJson = (JSONObject)obj.get("south");
+            direction south = direction.createFromJSONObject(southJson);
+
+            origin = new Origin(lat,lng,name,east,west,north,south);
+
+        }
+        catch (JSONException je) {
+            je.printStackTrace();
+        }
+
+        return origin;
+    }
+
+    public JSONObject toJson() {
+        JSONObject oir = new JSONObject();
+        try {
+            oir.put("lat", this.lat);
+            oir.put("lng", this.lng);
+            oir.put("name", this.name);
+            oir.put("east", this.east.toJson());
+            oir.put("west", this.west.toJson());
+            oir.put("south", this.south.toJson());
+            oir.put("north", this.north.toJson());
+        }
+        catch (JSONException je){
+            je.printStackTrace();
+        }
+        return oir;
     }
 }

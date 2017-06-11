@@ -83,6 +83,7 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import org.json.JSONObject;
 import org.xclcharts.chart.RoseChart;
 
 import static edu.ttu.spm.cheapride.R.id.ad_image_view;
@@ -752,8 +753,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
     /**
      * Draws Rose Chart inside markers (using IconGenerator).
      * When there are multiple Chart in the cluster, draw multiple Chart (using MultiDrawable ).
@@ -806,17 +805,33 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onClusterClick(Cluster<Asset> cluster) {
-        return false;
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+
+
+        String str = fakeOrigin1.toJson().toString();
+        intent.putExtra("cluster", str);
+        startActivity(intent);
+
+        return true;
     }
 
     @Override
     public void onClusterInfoWindowClick(Cluster<Asset> cluster) {
+//        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+//        startActivity(intent);
 
     }
 
     @Override
     public boolean onClusterItemClick(Asset asset) {
-        return false;
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+
+
+        String str = fakeOrigin1.toJson().toString();
+        intent.putExtra("cluster", str);
+        startActivity(intent);
+
+        return true;
     }
 
     @Override

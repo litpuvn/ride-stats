@@ -1,5 +1,6 @@
 package edu.ttu.spm.cheapride;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -48,8 +49,12 @@ public class PopupActivity extends AppCompatActivity {
 
     public void initRoseChart()
     {
+        Intent myIntent = getIntent();
+        String data = myIntent.getStringExtra("cluster");
 
-        fakeOrigin1 = Origin.createMe("Lubbock");
+        Origin  fakeOrigin1 = Origin.createFromJsonString(data);
+
+        //fakeOrigin1 = Origin.createMe("Lubbock");
         //图表的使用方法:
         //使用方式一:
         // 1.新增一个Activity
@@ -86,8 +91,8 @@ public class PopupActivity extends AppCompatActivity {
 
         //图表显示范围在占屏幕大小的90%的区域内
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int scrWidth = (int) (dm.widthPixels * 0.2);
-        int scrHeight = (int) (dm.heightPixels * 0.2);
+        int scrWidth = (int) (dm.widthPixels * 0.8);
+        int scrHeight = (int) (dm.heightPixels * 0.8);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 scrWidth, scrHeight);
 
