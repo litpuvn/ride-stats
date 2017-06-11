@@ -47,7 +47,7 @@ public class DemoView  extends ChartView {
     {
         int [] ltrb = new int[4];
         ltrb[0] = DensityUtil.dip2px(getContext(), 20); //left
-        ltrb[1] = DensityUtil.dip2px(getContext(), 65); //top
+        ltrb[1] = DensityUtil.dip2px(getContext(), 10); //top
         ltrb[2] = DensityUtil.dip2px(getContext(), 20); //right
         ltrb[3] = DensityUtil.dip2px(getContext(), 20); //bottom
         return ltrb;

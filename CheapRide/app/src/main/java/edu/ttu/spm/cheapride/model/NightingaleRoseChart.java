@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import edu.ttu.spm.cheapride.MainActivity;
 import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.view.DemoView;
 
@@ -56,11 +58,11 @@ public class NightingaleRoseChart extends DemoView {
         // TODO Auto-generated constructor stub
         initView();
     }
-
-    public NightingaleRoseChart(Context context, AttributeSet attrs){
-       super(context, attrs);
-        initView();
-    }
+//
+//    public NightingaleRoseChart(Context context, Origin attrs){
+//       super(context, attrs);
+//        initView();
+//    }
 
     public NightingaleRoseChart(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

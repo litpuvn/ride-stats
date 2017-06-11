@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Geocoder;
@@ -71,6 +72,7 @@ import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 import edu.ttu.spm.cheapride.model.RideEstimateRequest;
 import edu.ttu.spm.cheapride.model.item.Asset;
 import edu.ttu.spm.cheapride.model.item.Driver;
+import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
 import edu.ttu.spm.cheapride.model.item.clusterItem;
 import edu.ttu.spm.cheapride.service.TrackGPS;
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity
     private static final int LOGIN_REQUEST = 0;
     private static final String[] CAR_TYPES = {"4 seats", "Share", "6 or more seats", "Luxury 4 seats"};
     private static final Map<Integer, String> CAR_TYPE_MAP;
-
+    private Context main;
 
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
@@ -195,6 +197,7 @@ public class MainActivity extends AppCompatActivity
 
     private ClusterManager<Asset> mClusterManager;
     private Random mRandom = new Random(1984);
+    private Origin fakeOrigin1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +272,8 @@ public class MainActivity extends AppCompatActivity
 
 
         geocoder = new Geocoder(this, Locale.getDefault());
+
+        main = this;
     }
 
     /**
@@ -307,7 +312,7 @@ public class MainActivity extends AppCompatActivity
 
 //        setUpClustering();
 
-        //startDemo();
+        startDemo();
 
         //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -756,30 +761,40 @@ public class MainActivity extends AppCompatActivity
     private class AssetRenderer extends DefaultClusterRenderer<Asset> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
-        //private final ImageView mImageView;
-        private final ImageView mClusterImageView;
-        //private final int mDimension;
+        private LinearLayout mLinearLayout;
+        private LinearLayout mClusterImageView;
+        private int mDimension;
+
 
         public AssetRenderer() {
-            super(getApplicationContext(), mMap, mClusterManager);
+            super(getApplicationContext(), mMap,mClusterManager);
+
+            fakeOrigin1 = Origin.createMe("Lubbock");
 
             View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
             mClusterIconGenerator.setContentView(multiProfile);
-            mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
+            mClusterImageView = (LinearLayout) multiProfile.findViewById(R.id.rose_chart);
+
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+            mCharts = new NightingaleRoseChart(main, fakeOrigin1);
+            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mIconGenerator.setContentView(mCharts);
         }
 
         @Override
         protected void onBeforeClusterItemRendered(Asset Asset, MarkerOptions markerOptions) {
             // Draw a single Asset.
             // Set the info window to show their name.
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(ad_image_view)).title("test1");
+            Bitmap icon = mIconGenerator.makeIcon();
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title("Test");
         }
 
         @Override
         protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
-            // Draw a single Asset.
+            // Draw a multiple Asset.
             // Set the info window to show their name.
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(ad_image_view)).title("test2");
+            Bitmap icon = mIconGenerator.makeIcon();
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title("Test1");
         }
 
         @Override
@@ -810,7 +825,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     protected void startDemo() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.988612, 53.459411), 4.5f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.988612, 53.459411), 3.5f));
 
         mClusterManager = new ClusterManager<>(this, mMap);
         mClusterManager.setRenderer(new AssetRenderer());
@@ -828,8 +843,8 @@ public class MainActivity extends AppCompatActivity
 
     private void addItems() {
 
-        for (int i = 0; i < 5; i++) {
-            mClusterManager.addItem(new Asset(position(), randomStatus()));
+        for (int i = 0; i < 30; i++) {
+            mClusterManager.addItem(new Asset(position(), randomStatus(), randomImage()));
         }
     }
     private LatLng position() {
@@ -840,6 +855,9 @@ public class MainActivity extends AppCompatActivity
     }
     private String randomStatus() {
         return "Test";
+    }
+    private int randomImage() {
+        return (int)Math.random() * 10;
     }
 
 
