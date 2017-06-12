@@ -769,15 +769,20 @@ public class MainActivity extends AppCompatActivity
             super(getApplicationContext(), mMap,mClusterManager);
 
             fakeOrigin1 = Origin.createMe("Lubbock");
-
-            View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
-            mClusterIconGenerator.setContentView(multiProfile);
-            mClusterImageView = (LinearLayout) multiProfile.findViewById(R.id.rose_chart);
-
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mCharts = new NightingaleRoseChart(main, fakeOrigin1);
             mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
-            mIconGenerator.setContentView(mCharts);
+
+            NightingaleRoseChart mCharts1 = new NightingaleRoseChart(main, fakeOrigin1);
+            mCharts1.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+
+            //View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
+            mClusterIconGenerator.setContentView(mCharts);
+            //mClusterImageView = (LinearLayout) multiProfile.findViewById(R.id.rose_chart);
+
+
+
+            mIconGenerator.setContentView(mCharts1);
         }
 
         @Override
@@ -792,7 +797,7 @@ public class MainActivity extends AppCompatActivity
         protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
             // Draw a multiple Asset.
             // Set the info window to show their name.
-            Bitmap icon = mIconGenerator.makeIcon();
+            Bitmap icon = mClusterIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title("Test1");
         }
 
@@ -858,7 +863,7 @@ public class MainActivity extends AppCompatActivity
 
     private void addItems() {
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 10; i++) {
             mClusterManager.addItem(new Asset(position(), randomStatus(), randomImage()));
         }
     }

@@ -91,8 +91,8 @@ public class PopupActivity extends AppCompatActivity {
 
         //图表显示范围在占屏幕大小的90%的区域内
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int scrWidth = (int) (dm.widthPixels * 0.8);
-        int scrHeight = (int) (dm.heightPixels * 0.8);
+        int scrWidth = (int) (dm.widthPixels * 0.7);
+        int scrHeight = (int) (dm.heightPixels * 0.7);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 scrWidth, scrHeight);
 
