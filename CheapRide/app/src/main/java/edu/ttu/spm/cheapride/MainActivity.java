@@ -867,9 +867,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onClusterClick(Cluster<Asset> cluster) {
 
-        cluster_lat = 0;
-        cluster_lng = 0;
-
         uber_east = 0;
         uber_west = 0;
         uber_south = 0;
@@ -934,8 +931,43 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onClusterItemClick(Asset asset) {
+        uber_east = 0;
+        uber_west = 0;
+        uber_south = 0;
+        uber_north = 0;
+
+        lyft_east = 0;
+        lyft_west = 0;
+        lyft_north = 0;
+        lyft_south = 0;
+
+        uber_east = asset.getUber_east();
+        uber_west = asset.getUber_west();
+        uber_south = asset.getUber_south();
+        uber_north = asset.getUber_north();
+
+        lyft_east = asset.getLyft_east();
+        lyft_west = asset.getLyft_west();
+        lyft_north = asset.getLyft_north();
+        lyft_south = asset.getLyft_south()
+        ;
         Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
-        String str = fakeOrigin1.toJson().toString();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("uber_east",uber_east);
+            jsonObject.put("uber_west",uber_west);
+            jsonObject.put("uber_south",uber_south);
+            jsonObject.put("uber_north",uber_north);
+
+            jsonObject.put("lyft_east",lyft_east);
+            jsonObject.put("lyft_west",lyft_west);
+            jsonObject.put("lyft_north",lyft_north);
+            jsonObject.put("lyft_south",lyft_south);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String str = jsonObject.toString();
         intent.putExtra("cluster", str);
         startActivity(intent);
 
