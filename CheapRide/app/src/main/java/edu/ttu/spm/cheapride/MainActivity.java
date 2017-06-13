@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Geocoder;
@@ -83,6 +86,7 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xclcharts.chart.RoseChart;
 
@@ -192,6 +196,7 @@ public class MainActivity extends AppCompatActivity
     public static Geocoder geocoder;
 
     private DemoView mCharts;
+    private DemoView mClusterCharts;
     private LinearLayout RoseChart;
 
     //private ClusterManager<clusterItem> mClusterManager;
@@ -199,6 +204,20 @@ public class MainActivity extends AppCompatActivity
     private ClusterManager<Asset> mClusterManager;
     private Random mRandom = new Random(1984);
     private Origin fakeOrigin1;
+
+    double uber_east;
+    double uber_west;
+    double uber_south;
+    double uber_north;
+
+    double lyft_east;
+    double lyft_west;
+    double lyft_north;
+    double lyft_south;
+
+    double cluster_lat;
+    double cluster_lng;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -768,37 +787,74 @@ public class MainActivity extends AppCompatActivity
         public AssetRenderer() {
             super(getApplicationContext(), mMap,mClusterManager);
 
-            fakeOrigin1 = Origin.createMe("Lubbock");
+            //fakeOrigin1 = Origin.createMe("Lubbock");
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
-            mCharts = new NightingaleRoseChart(main, fakeOrigin1);
-            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
-
-            NightingaleRoseChart mCharts1 = new NightingaleRoseChart(main, fakeOrigin1);
-            mCharts1.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+//            mCharts = new NightingaleRoseChart(main, fakeOrigin1);
+//            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
 
             //View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
-            mClusterIconGenerator.setContentView(mCharts);
             //mClusterImageView = (LinearLayout) multiProfile.findViewById(R.id.rose_chart);
-
-
-
-            mIconGenerator.setContentView(mCharts1);
         }
 
         @Override
         protected void onBeforeClusterItemRendered(Asset Asset, MarkerOptions markerOptions) {
             // Draw a single Asset.
             // Set the info window to show their name.
+            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south());
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mIconGenerator.setContentView(mCharts);
+
             Bitmap icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title("Test");
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(Asset.locationName);
         }
 
         @Override
         protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
-            // Draw a multiple Asset.
-            // Set the info window to show their name.
+
+            cluster_lat = 0;
+            cluster_lng = 0;
+
+            uber_east = 0;
+            uber_west = 0;
+            uber_south = 0;
+            uber_north = 0;
+
+            lyft_east = 0;
+            lyft_west = 0;
+            lyft_north = 0;
+            lyft_south = 0;
+
+            for (Asset p : cluster.getItems()) {
+
+                uber_east = uber_east + p.getUber_east();
+                uber_west = uber_west + p.getUber_west();
+                uber_south = uber_south + p.getUber_south();
+                uber_north = uber_north + p.getUber_north();
+
+                lyft_east = lyft_east + p.getLyft_east();
+                lyft_west = lyft_west + p.getLyft_west();
+                lyft_north = lyft_north + p.getLyft_north();
+                lyft_south = lyft_south + p.getUber_south();
+            }
+
+            uber_east = uber_east / cluster.getItems().size();
+            uber_west = uber_west / cluster.getItems().size();
+            uber_south = uber_south / cluster.getItems().size();
+            uber_north = uber_north / cluster.getItems().size();
+
+            lyft_east = lyft_east / cluster.getItems().size();
+            lyft_west = lyft_west / cluster.getItems().size();
+            lyft_north = lyft_north / cluster.getItems().size();
+            lyft_south = lyft_south / cluster.getItems().size();
+
+            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+            mClusterCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mClusterIconGenerator.setContentView(mClusterCharts);
+
             Bitmap icon = mClusterIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title("Test1");
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(String.valueOf(cluster.getItems().size()));
         }
 
         @Override
@@ -810,28 +866,75 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onClusterClick(Cluster<Asset> cluster) {
+
+        cluster_lat = 0;
+        cluster_lng = 0;
+
+        uber_east = 0;
+        uber_west = 0;
+        uber_south = 0;
+        uber_north = 0;
+
+        lyft_east = 0;
+        lyft_west = 0;
+        lyft_north = 0;
+        lyft_south = 0;
+
+        for (Asset p : cluster.getItems()) {
+
+            uber_east = uber_east + p.getUber_east();
+            uber_west = uber_west + p.getUber_west();
+            uber_south = uber_south + p.getUber_south();
+            uber_north = uber_north + p.getUber_north();
+
+            lyft_east = lyft_east + p.getLyft_east();
+            lyft_west = lyft_west + p.getLyft_west();
+            lyft_north = lyft_north + p.getLyft_north();
+            lyft_south = lyft_south + p.getUber_south();
+        }
+
+        uber_east = uber_east / cluster.getItems().size();
+        uber_west = uber_west / cluster.getItems().size();
+        uber_south = uber_south / cluster.getItems().size();
+        uber_north = uber_north / cluster.getItems().size();
+
+        lyft_east = lyft_east / cluster.getItems().size();
+        lyft_west = lyft_west / cluster.getItems().size();
+        lyft_north = lyft_north / cluster.getItems().size();
+        lyft_south = lyft_south / cluster.getItems().size();
+
         Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("uber_east",uber_east);
+            jsonObject.put("uber_west",uber_west);
+            jsonObject.put("uber_south",uber_south);
+            jsonObject.put("uber_north",uber_north);
 
-        String str = fakeOrigin1.toJson().toString();
+            jsonObject.put("lyft_east",lyft_east);
+            jsonObject.put("lyft_west",lyft_west);
+            jsonObject.put("lyft_north",lyft_north);
+            jsonObject.put("lyft_south",lyft_south);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String str = jsonObject.toString();
         intent.putExtra("cluster", str);
         startActivity(intent);
-
+//
         return true;
     }
 
     @Override
     public void onClusterInfoWindowClick(Cluster<Asset> cluster) {
-//        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
-//        startActivity(intent);
 
     }
 
     @Override
     public boolean onClusterItemClick(Asset asset) {
         Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
-
-
         String str = fakeOrigin1.toJson().toString();
         intent.putExtra("cluster", str);
         startActivity(intent);
@@ -863,8 +966,8 @@ public class MainActivity extends AppCompatActivity
 
     private void addItems() {
 
-        for (int i = 0; i < 10; i++) {
-            mClusterManager.addItem(new Asset(position(), randomStatus(), randomImage()));
+        for (int i = 0; i < 100; i++) {
+            mClusterManager.addItem(new Asset(randomLocation(), position()));
         }
     }
     private LatLng position() {
@@ -873,12 +976,14 @@ public class MainActivity extends AppCompatActivity
     private double random(double min, double max) {
         return mRandom.nextDouble() * (max - min) + min;
     }
-    private String randomStatus() {
-        return "Test";
+    private String randomLocation() {
+        int i = (int)Math.random() * 100000;
+
+        return "Test-" + i;
     }
-    private int randomImage() {
-        return (int)Math.random() * 10;
-    }
+//    private int randomImage() {
+//        return (int)Math.random() * 10;
+//    }
 
 
 }

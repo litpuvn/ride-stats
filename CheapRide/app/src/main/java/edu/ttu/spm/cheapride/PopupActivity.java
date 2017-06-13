@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xclcharts.chart.RoseChart;
 
 import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
@@ -27,8 +29,19 @@ public class PopupActivity extends AppCompatActivity {
 
     private DemoView mCharts;
     private LinearLayout RoseChart;
+    private JSONObject obj = null;
 
     private Origin fakeOrigin1;
+
+    double uber_east;
+    double uber_west;
+    double uber_south;
+    double uber_north;
+
+    double lyft_east;
+    double lyft_west;
+    double lyft_north;
+    double lyft_south;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,8 +64,26 @@ public class PopupActivity extends AppCompatActivity {
     {
         Intent myIntent = getIntent();
         String data = myIntent.getStringExtra("cluster");
+        try {
+             obj = new JSONObject(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try{
+         uber_east = obj.getDouble("uber_east");
+         uber_west = obj.getDouble("uber_west");
+         uber_south = obj.getDouble("uber_south");
+         uber_north = obj.getDouble("uber_north");
 
-        Origin  fakeOrigin1 = Origin.createFromJsonString(data);
+         lyft_east = obj.getDouble("lyft_east");
+         lyft_west = obj.getDouble("lyft_west");
+         lyft_north = obj.getDouble("lyft_north");
+         lyft_south = obj.getDouble("lyft_south");
+        }
+        catch (JSONException je) {
+            je.printStackTrace();
+        }
+
 
         //fakeOrigin1 = Origin.createMe("Lubbock");
         //图表的使用方法:
@@ -102,7 +133,7 @@ public class PopupActivity extends AppCompatActivity {
         //final RelativeLayout chartLayout = new RelativeLayout(this);
         RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
-        mCharts = new NightingaleRoseChart(this,fakeOrigin1);
+        mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
 
         RoseChart.addView( mCharts, layoutParams);
 

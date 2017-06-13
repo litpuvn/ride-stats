@@ -35,8 +35,8 @@ public class NightingaleRoseChart extends DemoView {
     private RoseChart chartRose3 = new RoseChart();
     LinkedList<PieData> roseData3 = new LinkedList<PieData>();
 
-    private RoseChart chartRose1 = new RoseChart();
-    LinkedList<PieData> roseData1 = new LinkedList<PieData>();
+//    private RoseChart chartRose1 = new RoseChart();
+//    LinkedList<PieData> roseData1 = new LinkedList<PieData>();
 
     //标签集合
     private List<String> labels = new LinkedList<String>();
@@ -58,7 +58,7 @@ public class NightingaleRoseChart extends DemoView {
 
     private int textSize = 30;
 
-    private int x = -7;
+    private int x = -0;
     private int y = 10;
 
     private int padding = 100;
@@ -78,6 +78,23 @@ public class NightingaleRoseChart extends DemoView {
 
     public NightingaleRoseChart(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initView();
+    }
+
+    public NightingaleRoseChart(Context context,double eastUber,double eastLyft,double westUber,double westLyft,double northUber,double northLyft,double southUber,double southLyft){
+        super(context);
+
+        this.eastUber = (int)eastUber;
+        this.eastLyft = (int)eastLyft;
+
+        this.westUber = (int)westUber;
+        this.westLyft = (int)westLyft;
+
+        this.northUber = (int)northUber;
+        this.northLyft = (int)northLyft;
+
+        this.southUber = (int)southUber;
+        this.southLyft = (int)southLyft;
         initView();
     }
 
