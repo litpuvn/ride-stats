@@ -289,22 +289,6 @@ public class ActivityRideHistory extends AppCompatActivity {
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-//                    InputStream inputStream = conn.getInputStream();
-//                    int test = conn.getInputStream().available();
-
-//
-//                    if(conn.getInputStream().available() == 0){
-//                        page.setPage(1);
-//                        pageCounter  = (TextView) findViewById(R.id.pageCounter_history);
-//                        pageCounter.setTextSize(30);
-//                        pageCounter.setText("Page" + page.getPage());
-//                        displayCard(page.getPage());
-//                        Toast.makeText(ActivityRideHistory.this, "No content", Toast.LENGTH_SHORT).show();
-//                    }
-
-
-
-
                     BufferedReader reader = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
 

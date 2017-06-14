@@ -143,9 +143,11 @@ public class NightingaleRoseChart extends DemoView {
 
     private int scale(double price) {
         double scaledPrice;
+        int temp;
 
         if(price >= MIN && price <MAX) {
-            scaledPrice = (MIN_SCALE +  RANGE * ((price)/VALUE));
+            temp = (int)((MIN_SCALE +  RANGE * ((price)/VALUE))/10);
+            scaledPrice = 10 * temp;
         }
         else {
             scaledPrice = 100;

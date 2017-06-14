@@ -32,10 +32,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -220,6 +222,9 @@ public class MainActivity extends AppCompatActivity
 
     String title;
 
+    private SeekBar seekBar;
+    private TextView textView_seekBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,8 +253,8 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.connect();
 
 
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//        autocompleteFragment = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         loginTextView = (TextView) findViewById(R.id.login);
         registerTextView = (TextView) findViewById(R.id.register);
@@ -296,6 +301,8 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         main = this;
+
+
     }
 
     /**
@@ -333,10 +340,12 @@ public class MainActivity extends AppCompatActivity
 //        }
 
 //        setUpClustering();
+        seekbarer();
 
         startDemo();
 
         //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
+
 
     }
 
@@ -387,7 +396,6 @@ public class MainActivity extends AppCompatActivity
     public double getLyftTimeWidth(RideEstimateDTO rideEstimateDto) {
         return rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
     }
-
 
 
 
@@ -503,11 +511,11 @@ public class MainActivity extends AppCompatActivity
     public void onRegisterClicked(View v) {
         System.out.println("register clicked");
 
-//        Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-//        startActivity(intent);
-
-        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+        Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
         startActivity(intent);
+
+//        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+//        startActivity(intent);
 
         //initRoseChart();
     }
@@ -550,113 +558,6 @@ public class MainActivity extends AppCompatActivity
         mMap.animateCamera(zoom);
 
     }
-
-//    private void setUpClustering() {
-//        // Declare a variable for the cluster manager.
-//        //ClusterManager<clusterItem> mClusterManager;
-//
-//        // Position the map in UK.
-//        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), DEFAULT_ZOOM_LEVEL));
-//
-//        // Initialize the manager with the context and the map.
-//        mClusterManager = new ClusterManager<clusterItem>(this, mMap);
-//
-//        // Point the map's listeners at the listeners implemented by the cluster manager.
-//        mMap.setOnCameraIdleListener(mClusterManager);
-//        mMap.setOnMarkerClickListener(mClusterManager);
-//
-//
-//
-//        // Add cluster items (markers) to the cluster manager.
-//        addMarkers();
-//    }
-//
-//    private void addMarkers(){
-//
-//        // Set some lat/lng coordinates to start with.
-//        double latitude = 37.7764;
-//        double longitude = -122.393;
-//
-//        // Add 100 clusters items in close proximity, for purposes of this example.
-//        for (int i = 0; i < 100; i++) {
-//            double offset = i / 60d;
-//            latitude = latitude + offset;
-//            longitude = longitude + offset;
-//            clusterItem offsetItem = new clusterItem(latitude, longitude);
-//            mClusterManager.addItem(offsetItem);
-//        }
-//
-//    }
-//
-//    public class RoseChartRenderer extends DefaultClusterRenderer<clusterItem> {
-//
-//        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
-//       private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
-////        private final ImageView mImageView;
-//        private final ImageView mClusterImageView;
-//        private final View viewRoseChart;
-////        private final int mDimension;
-//
-//        public RoseChartRenderer() {
-//            super(getApplicationContext(), mMap, mClusterManager);
-//
-//
-//            viewRoseChart = getLayoutInflater().inflate(R.layout.popwindow, null);
-//            mClusterIconGenerator.setContentView(viewRoseChart);
-//            mClusterImageView = (ImageView) viewRoseChart.findViewById(R.id.image);
-//
-////            View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
-////            mClusterIconGenerator.setContentView(multiProfile);
-////            mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
-////
-////            mImageView = new ImageView(getApplicationContext());
-////            mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
-////            mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
-////            int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
-////            mImageView.setPadding(padding, padding, padding, padding);
-////            mIconGenerator.setContentView(mImageView);
-//        }
-//
-//       // @Override
-//        protected void onBeforeClusterItemRendered(View roseChart, MarkerOptions markerOptions) {
-//
-//
-////            // Draw a single person.
-////            // Set the info window to show their name.
-////            mImageView.setImageResource(person.profilePhoto);
-////            Bitmap icon = mIconGenerator.makeIcon();
-////            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
-//        }
-//
-////        @Override
-////        protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
-////            // Draw multiple people.
-////            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-////            List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
-////            int width = mDimension;
-////            int height = mDimension;
-////
-////            for (Person p : cluster.getItems()) {
-////                // Draw 4 at most.
-////                if (profilePhotos.size() == 4) break;
-////                Drawable drawable = getResources().getDrawable(p.profilePhoto);
-////                drawable.setBounds(0, 0, width, height);
-////                profilePhotos.add(drawable);
-////            }
-////            MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
-////            multiDrawable.setBounds(0, 0, width, height);
-////
-////            mClusterImageView.setImageDrawable(multiDrawable);
-////            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
-////            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
-////        }
-//
-//        @Override
-//        protected boolean shouldRenderAsCluster(Cluster cluster) {
-//            // Always render clusters.
-//            return cluster.getSize() > 1;
-//        }
-//    }
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -1021,11 +922,82 @@ public class MainActivity extends AppCompatActivity
 
         return "Test-" + i1;
     }
-//    private int randomImage() {
-//        return (int)Math.random() * 10;
-//    }
+
+    public void seekbarer(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c.getTime());
+        int hours = c.get(Calendar.HOUR_OF_DAY);
+        int mins = c.get(Calendar.MINUTE);
 
 
+        seekBar = (SeekBar)findViewById(R.id.seek_Bar);
+        textView_seekBar = (TextView)findViewById(R.id.textView_seekBar);
+        textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(seekBar.getProgress()));
+        textView_seekBar.setTextSize(20);
+        seekBar.setMax(100*(hours * 60 + mins)/1440);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c.getTime());
+            int progress_value;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress_value = progress;
+                textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(progress));
+                textView_seekBar.setTextSize(20);
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(progress_value));
+                textView_seekBar.setTextSize(20);
+
+
+
+            }
+        });
+    }
+
+    public String convertTime(int progress){
+        String time = null;
+        double totalSec = 864 * progress;
+        String hoursS = null;
+        String minsS = null;
+        String secsS = null;
+
+        int hours = (int)(totalSec / 3600);
+        int remainder = (int)(totalSec - hours * 3600);
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        if(hours < 10)
+            hoursS = "0" + String.valueOf(hours);
+        else
+            hoursS = String.valueOf(hours);
+
+        if(mins < 10)
+            minsS = "0" + String.valueOf(mins);
+        else
+            minsS = String.valueOf(mins);
+
+        if (secs < 10)
+            secsS = "0" + String.valueOf(secs);
+        else
+            secsS = String.valueOf(secs);
+
+        time = hoursS + ":" + minsS + ":" + secsS;
+        return time;
+    }
 }
 
 
