@@ -21,9 +21,13 @@ public class Asset implements ClusterItem {
     private double lyft_north;
     private double lyft_south;
 
-    private static final int MIN = 40;
-    private static final int MAX = 100;
-    private static final int VALUE = MAX-MIN;
+    public static final int MIN = 0;
+    public static final int MAX = 10;
+    public static final int VALUE = MAX-MIN;
+
+    public static final int MIN_SCALE = 20;
+    public static final int MAX_SCALE = 100;
+    public static final int RANGE = MAX_SCALE-MIN_SCALE;
 
     public Asset(String locationName) {
         this.locationName = locationName;
@@ -61,7 +65,13 @@ public class Asset implements ClusterItem {
         mPosition = pos;
     }
 
+    public String getLocationName() {
+        return locationName;
+    }
+
     @Override
+
+
     public LatLng getPosition() {
         return mPosition;
     }

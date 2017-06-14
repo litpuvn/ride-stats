@@ -218,6 +218,8 @@ public class MainActivity extends AppCompatActivity
     double cluster_lat;
     double cluster_lng;
 
+    String title;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -800,17 +802,20 @@ public class MainActivity extends AppCompatActivity
         protected void onBeforeClusterItemRendered(Asset Asset, MarkerOptions markerOptions) {
             // Draw a single Asset.
             // Set the info window to show their name.
-            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south());
+            title = Asset.getLocationName();
+            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south(),title);
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
             mIconGenerator.setContentView(mCharts);
 
-            Bitmap icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(Asset.locationName);
+            Bitmap icon = mIconGenerator.makeIcon(Asset.locationName);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
 
         @Override
         protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
+
+            title = String.valueOf(cluster.getSize()) + " Items";
 
             cluster_lat = 0;
             cluster_lng = 0;
@@ -826,6 +831,8 @@ public class MainActivity extends AppCompatActivity
             lyft_south = 0;
 
             for (Asset p : cluster.getItems()) {
+
+
 
                 uber_east = uber_east + p.getUber_east();
                 uber_west = uber_west + p.getUber_west();
@@ -848,12 +855,12 @@ public class MainActivity extends AppCompatActivity
             lyft_north = lyft_north / cluster.getItems().size();
             lyft_south = lyft_south / cluster.getItems().size();
 
-            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
+            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title);
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mClusterCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
             mClusterIconGenerator.setContentView(mClusterCharts);
 
-            Bitmap icon = mClusterIconGenerator.makeIcon();
+            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(String.valueOf(cluster.getItems().size()));
         }
 
@@ -1009,9 +1016,10 @@ public class MainActivity extends AppCompatActivity
         return mRandom.nextDouble() * (max - min) + min;
     }
     private String randomLocation() {
-        int i = (int)Math.random() * 100000;
+        double i = Math.random() * 10000;
+        int i1 = (int)i;
 
-        return "Test-" + i;
+        return "Test-" + i1;
     }
 //    private int randomImage() {
 //        return (int)Math.random() * 10;
