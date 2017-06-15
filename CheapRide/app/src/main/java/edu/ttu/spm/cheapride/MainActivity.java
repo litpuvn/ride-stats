@@ -14,6 +14,7 @@ import android.icu.util.Calendar;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,6 +58,10 @@ import com.google.maps.android.ui.IconGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -71,6 +76,7 @@ import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
 //import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
+import edu.ttu.spm.cheapride.model.HistoryRecordEntity;
 import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
@@ -88,10 +94,15 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xclcharts.chart.RoseChart;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import static edu.ttu.spm.cheapride.AbstractNetworkRequest.CONNECTION_TIMEOUT;
+import static edu.ttu.spm.cheapride.AbstractNetworkRequest.READ_TIMEOUT;
 import static edu.ttu.spm.cheapride.R.id.ad_image_view;
 
 
@@ -224,6 +235,8 @@ public class MainActivity extends AppCompatActivity
 
     private SeekBar seekBar;
     private TextView textView_seekBar;
+
+    private MainActivity.UserSetputTime mAuthTask = null;
 
 
     @Override
@@ -961,6 +974,9 @@ public class MainActivity extends AppCompatActivity
                 textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(progress_value));
                 textView_seekBar.setTextSize(20);
 
+                mAuthTask = new ActivityRideHistory.UserSetputTime(convertTime(progress_value));
+                mAuthTask.execute((Void) null);
+
 
 
             }
@@ -997,6 +1013,101 @@ public class MainActivity extends AppCompatActivity
 
         time = hoursS + ":" + minsS + ":" + secsS;
         return time;
+    }
+
+    /**
+     * Represents an asynchronous user history task used to authenticate
+     * the user.
+     */
+    public class UserSetputTime extends AsyncTask<Void, Void, Boolean> {
+
+        private  String mTime;
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(c.getTime());
+
+        UserSetputTime(String time) {
+            mTime = time;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String serverUrl = MainActivity.BASE_URL + "/popularEstimation?date=" + formattedDate + " " + mTime;
+
+            // TODO: submit the request here.
+            return performGetCall(serverUrl)!=null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                Toast.makeText(MainActivity.this, "loading data", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
+
+
+
+        public List<HistoryRecordEntity> performGetCall(String requestURL) {
+
+            URL url;
+            // ArrayList<HistoryRecordEntity> historyRecordEntityArrayList = new ArrayList<HistoryRecordEntity>();
+
+            try {
+                System.out.println("set time: " + requestURL);
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("GET");
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+
+
+
+                    String inputLine;
+                    while ((inputLine = reader.readLine()) != null) {
+                        JSONArray ja = new JSONArray(inputLine);
+
+                        for(int i = 0; i < ja.length(); i++){
+                            JSONObject jo = (JSONObject) ja.get(i);
+
+                            Long date = jo.getLong("date");
+                            String SDate = getDate(date,"MM/dd/yyyy hh:mm");
+                            String provider = jo.getString("provider");
+                            String pickup = jo.getString("pickup");
+                            String destination = jo.getString("destination");
+                            String fee = jo.getString("fee");
+
+                            HistoryRecordEntity historyRecordEntity = new HistoryRecordEntity(SDate,provider,pickup,destination,fee);
+                            historyRecordArrayList.add(historyRecordEntity);
+                        }
+                    }
+
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    historyRecordArrayList = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return historyRecordArrayList;
+        }
     }
 }
 
