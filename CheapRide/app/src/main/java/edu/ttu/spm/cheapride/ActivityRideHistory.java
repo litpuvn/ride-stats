@@ -134,19 +134,6 @@ public class ActivityRideHistory extends AppCompatActivity {
         date_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                //submit some fake data to test
-//                for(int i = 0; i <= 100; i++) {
-//                    //TODO Auto-generated method stub
-//                    String username = "john";
-//                    String date = "09/09/2017";
-//                    String pick = "broadway avenue";
-//                    String destination = "University avenue";
-//                    String fee = "$20";
-//                    String provider = "uber";
-//
-//                    mTestTask = new SetHistoryDateTask(username, date, pick, destination, fee, provider);
-//                    mTestTask.execute((Void) null);
-//                }
 
                 //submit the request to get history data
                 if(showStartTime == null){

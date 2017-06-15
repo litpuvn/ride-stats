@@ -1,6 +1,8 @@
 package edu.ttu.spm.cheapride;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,6 +32,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -132,6 +138,7 @@ public class MainActivity extends AppCompatActivity
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+    private int DIALOG_ID = 0;
     // A default location Texas Tech University and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(33.5842591, -101.8782822);
@@ -238,6 +245,14 @@ public class MainActivity extends AppCompatActivity
 
     private MainActivity.UserSetputTime mAuthTask = null;
 
+    private List<Asset> assetList;
+
+    int year_picker;
+    int month_picker;
+    int day_picker;
+    private Button date_submit;
+
+    String showDate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,6 +307,7 @@ public class MainActivity extends AppCompatActivity
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
         uberCost = (TextView) findViewById(R.id.uber_cost);
         lyftCost = (TextView) findViewById(R.id.lyft_cost);
+        textView_seekBar = (EditText)findViewById(R.id.textView_seekBar);
 
 
         carTypeSelection = (Spinner)findViewById(R.id.carType);
@@ -315,6 +331,9 @@ public class MainActivity extends AppCompatActivity
 
         main = this;
 
+        setDefaultDate();
+
+        showDialogOnTextViewClick();
 
     }
 
@@ -943,12 +962,11 @@ public class MainActivity extends AppCompatActivity
         int hours = c.get(Calendar.HOUR_OF_DAY);
         int mins = c.get(Calendar.MINUTE);
 
+        //seekBar.getTickMark();
+
 
         seekBar = (SeekBar)findViewById(R.id.seek_Bar);
-        textView_seekBar = (TextView)findViewById(R.id.textView_seekBar);
-        textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(seekBar.getProgress()));
-        textView_seekBar.setTextSize(20);
-        seekBar.setMax(100*(hours * 60 + mins)/1440);
+        textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(seekBar.getProgress()));
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             Calendar c = Calendar.getInstance();
@@ -958,8 +976,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress_value = progress;
-                textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(progress));
-                textView_seekBar.setTextSize(20);
+                textView_seekBar.setText("Selected Time :  " + showDate + "    " + convertTime(progress));
+                //textView_seekBar.setTextSize(20);
 
 
             }
@@ -971,10 +989,10 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                textView_seekBar.setText("Select Time : " + formattedDate + "  " + convertTime(progress_value));
-                textView_seekBar.setTextSize(20);
+                textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(progress_value));
+                //textView_seekBar.setTextSize(20);
 
-                mAuthTask = new ActivityRideHistory.UserSetputTime(convertTime(progress_value));
+                mAuthTask = new UserSetputTime(convertTime(progress_value));
                 mAuthTask.execute((Void) null);
 
 
@@ -1087,28 +1105,78 @@ public class MainActivity extends AppCompatActivity
                         for(int i = 0; i < ja.length(); i++){
                             JSONObject jo = (JSONObject) ja.get(i);
 
-                            Long date = jo.getLong("date");
-                            String SDate = getDate(date,"MM/dd/yyyy hh:mm");
-                            String provider = jo.getString("provider");
-                            String pickup = jo.getString("pickup");
-                            String destination = jo.getString("destination");
-                            String fee = jo.getString("fee");
-
-                            HistoryRecordEntity historyRecordEntity = new HistoryRecordEntity(SDate,provider,pickup,destination,fee);
-                            historyRecordArrayList.add(historyRecordEntity);
                         }
                     }
 
                 } else {
                     Log.e(TAG, "14 - False - HTTP_OK");
-                    historyRecordArrayList = null;
+                    assetList = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return historyRecordArrayList;
+            //return assetList;
+            return null;
         }
     }
+
+    public void setDefaultDate(){
+
+        //get current date
+        final java.util.Calendar cal = java.util.Calendar.getInstance();
+
+        year_picker = cal.get(java.util.Calendar.YEAR);
+        month_picker = cal.get(java.util.Calendar.MONTH) + 1;
+        day_picker = cal.get(java.util.Calendar.DAY_OF_MONTH);
+        showDate= year_picker + "/" + month_picker + "/" + day_picker;
+
+        textView_seekBar.setText("Selected Time :  " + showDate);
+
+    }
+
+    public void showDialogOnTextViewClick(){
+
+        textView_seekBar.setInputType(InputType.TYPE_NULL);
+
+        textView_seekBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DIALOG_ID = 1;
+                showDialog(DIALOG_ID);
+            }
+        });
+
+    }
+
+    //@Override
+    protected Dialog onCreateDialog(int id){
+        if (id == 1)
+            return new DatePickerDialog(this,datePickerListener,year_picker,month_picker,day_picker);
+        else
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener
+            = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            if(DIALOG_ID == 1) {
+                year_picker = year;
+                month_picker = month + 1;
+                day_picker = day;
+                showDate= year_picker + "/" + month_picker + "/" + day_picker;
+
+                //show date on the text view
+                textView_seekBar.setText("Selected Time :  " + showDate);
+                return;
+            }
+            else {
+                Toast.makeText(MainActivity.this, "Date Picker Error", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+    };
+
 }
 
 
