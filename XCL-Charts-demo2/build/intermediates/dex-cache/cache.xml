@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="E:\project\ride-stats\ride-stats\XCL-Charts-demo2\app\libs\xcl-charts.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="123db96349684a0d29a139c7d2953bba27f2d25d">
+        <dex dex="E:\project\ride-stats\ride-stats\XCL-Charts-demo2\app\build\intermediates\pre-dexed\debug\xcl-charts_231be955c275043dfdd8de58750103769c1730d6.jar" />
+    </item>
+
+</items>

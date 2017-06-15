@@ -1,30 +1,50 @@
 package edu.ttu.spm.cheapride;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -34,29 +54,62 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.google.maps.android.ui.IconGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
 import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
+//import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
+import edu.ttu.spm.cheapride.model.HistoryRecordEntity;
+import edu.ttu.spm.cheapride.model.NightingaleRoseChart;
 import edu.ttu.spm.cheapride.model.RideEstimate;
 import edu.ttu.spm.cheapride.model.RideEstimateDTO;
 import edu.ttu.spm.cheapride.model.RideEstimateRequest;
+import edu.ttu.spm.cheapride.model.item.Asset;
 import edu.ttu.spm.cheapride.model.item.Driver;
+import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
+import edu.ttu.spm.cheapride.model.item.clusterItem;
 import edu.ttu.spm.cheapride.service.TrackGPS;
+import edu.ttu.spm.cheapride.view.DemoView;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xclcharts.chart.RoseChart;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import static edu.ttu.spm.cheapride.AbstractNetworkRequest.CONNECTION_TIMEOUT;
+import static edu.ttu.spm.cheapride.AbstractNetworkRequest.READ_TIMEOUT;
+import static edu.ttu.spm.cheapride.R.id.ad_image_view;
 
 
 public class MainActivity extends AppCompatActivity
@@ -64,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         LocationListener,
         AdapterView.OnItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,ClusterManager.OnClusterClickListener<Asset>, ClusterManager.OnClusterInfoWindowClickListener<Asset>, ClusterManager.OnClusterItemClickListener<Asset>, ClusterManager.OnClusterItemInfoWindowClickListener<Asset> {
 
     public static final String PROVIDER_UBER = "uber";
     public static final String PROVIDER_LYFT = "lyft";
@@ -85,6 +138,7 @@ public class MainActivity extends AppCompatActivity
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+    private int DIALOG_ID = 0;
     // A default location Texas Tech University and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(33.5842591, -101.8782822);
@@ -106,6 +160,7 @@ public class MainActivity extends AppCompatActivity
     private static final int LOGIN_REQUEST = 0;
     private static final String[] CAR_TYPES = {"4 seats", "Share", "6 or more seats", "Luxury 4 seats"};
     private static final Map<Integer, String> CAR_TYPE_MAP;
+    private Context main;
 
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
@@ -160,6 +215,45 @@ public class MainActivity extends AppCompatActivity
 
     public static Geocoder geocoder;
 
+    private DemoView mCharts;
+    private DemoView mClusterCharts;
+    private LinearLayout RoseChart;
+
+    //private ClusterManager<clusterItem> mClusterManager;
+
+    private ClusterManager<Asset> mClusterManager;
+    private Random mRandom = new Random(1984);
+    private Origin fakeOrigin1;
+
+    double uber_east;
+    double uber_west;
+    double uber_south;
+    double uber_north;
+
+    double lyft_east;
+    double lyft_west;
+    double lyft_north;
+    double lyft_south;
+
+    double cluster_lat;
+    double cluster_lng;
+
+    String title;
+
+    private SeekBar seekBar;
+    private TextView textView_seekBar;
+
+    private MainActivity.UserSetputTime mAuthTask = null;
+
+    private List<Asset> assetList;
+
+    int year_picker;
+    int month_picker;
+    int day_picker;
+    private Button date_submit;
+
+    String showDate = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -187,8 +281,8 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.connect();
 
 
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//        autocompleteFragment = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         loginTextView = (TextView) findViewById(R.id.login);
         registerTextView = (TextView) findViewById(R.id.register);
@@ -213,6 +307,7 @@ public class MainActivity extends AppCompatActivity
         lyftArrivalTime = (TextView) findViewById(R.id.lyft_arrival);
         uberCost = (TextView) findViewById(R.id.uber_cost);
         lyftCost = (TextView) findViewById(R.id.lyft_cost);
+        textView_seekBar = (EditText)findViewById(R.id.textView_seekBar);
 
 
         carTypeSelection = (Spinner)findViewById(R.id.carType);
@@ -233,6 +328,13 @@ public class MainActivity extends AppCompatActivity
 
 
         geocoder = new Geocoder(this, Locale.getDefault());
+
+        main = this;
+
+        setDefaultDate();
+
+        showDialogOnTextViewClick();
+
     }
 
     /**
@@ -256,24 +358,29 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-
-
-        // Get the current location of the device and set the position of the map.
+//         //Get the current location of the device and set the position of the map.
 //        getDeviceLocation();
 
-        estimateManager = new EstimateHandler(this);
+//        estimateManager = new EstimateHandler(this);
+//
+//        if (!canAccessLocation()) {
+//            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+//        }
+//        else {
+//            gps = new TrackGPS(this);
+//            this.displayLocation(gps.getLatitude(), gps.getLongitude());
+//        }
 
-        if (!canAccessLocation()) {
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        }
-        else {
-            gps = new TrackGPS(this);
-            this.displayLocation(gps.getLatitude(), gps.getLongitude());
-        }
+//        setUpClustering();
+        seekbarer();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
+        startDemo();
+
+        //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
+
 
     }
+
 
     public void activateComparisonChart(RideEstimateDTO rideEstimateDto) {
 
@@ -321,7 +428,6 @@ public class MainActivity extends AppCompatActivity
     public double getLyftTimeWidth(RideEstimateDTO rideEstimateDto) {
         return rideEstimateDto.getTotalArrivalTime() != 0 ? (CHART_MAX_WIDTH * (1.0 * rideEstimateDto.getLyftArrivalTime() / rideEstimateDto.getTotalArrivalTime())) : 0;
     }
-
 
 
 
@@ -439,6 +545,11 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
         startActivity(intent);
+
+//        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+//        startActivity(intent);
+
+        //initRoseChart();
     }
 
     public LatLng getCurrentLocation() {
@@ -467,15 +578,17 @@ public class MainActivity extends AppCompatActivity
         mCurrentLocation =  new LatLng(gps.getLatitude(), gps.getLongitude());
 
         this.displayLocation(gps.getLatitude(), gps.getLongitude());
+
     }
 
     private void displayLocation(double lat, double lng) {
         mCurrentLocation =  new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+        //mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
 
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
         mMap.animateCamera(zoom);
+
     }
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -491,25 +604,25 @@ public class MainActivity extends AppCompatActivity
             //Not in api-23, no need to prompt
             mMap.setMyLocationEnabled(true);
         }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            double lat = mLastLocation.getLatitude();
-            double lng = mLastLocation.getLongitude();
-
-            mCurrentLocation =  new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
-
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
-            mMap.animateCamera(zoom);
-
-        }
-        else
-        {
-            Toast.makeText(this, "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
-        }
+//        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                mGoogleApiClient);
+//
+//        if (mLastLocation != null) {
+//            double lat = mLastLocation.getLatitude();
+//            double lng = mLastLocation.getLongitude();
+//
+//            mCurrentLocation =  new LatLng(lat, lng);
+//            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+//
+//            CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+//            mMap.animateCamera(zoom);
+//
+//        }
+//        else
+//        {
+//            Toast.makeText(this, "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
@@ -592,6 +705,478 @@ public class MainActivity extends AppCompatActivity
 
         return CAR_TYPE_MAP.get(this.selectedCarType);
     }
+
+
+    /**
+     * Draws Rose Chart inside markers (using IconGenerator).
+     * When there are multiple Chart in the cluster, draw multiple Chart (using MultiDrawable ).
+     */
+    private class AssetRenderer extends DefaultClusterRenderer<Asset> {
+        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
+        private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
+        private LinearLayout mLinearLayout;
+        private LinearLayout mClusterImageView;
+        private int mDimension;
+
+
+        public AssetRenderer() {
+            super(getApplicationContext(), mMap,mClusterManager);
+
+            //fakeOrigin1 = Origin.createMe("Lubbock");
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+//            mCharts = new NightingaleRoseChart(main, fakeOrigin1);
+//            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+
+            //View multiProfile = getLayoutInflater().inflate(R.layout.popwindow, null);
+            //mClusterImageView = (LinearLayout) multiProfile.findViewById(R.id.rose_chart);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(Asset Asset, MarkerOptions markerOptions) {
+            // Draw a single Asset.
+            // Set the info window to show their name.
+            title = Asset.getLocationName();
+            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south(),title);
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+            mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mIconGenerator.setContentView(mCharts);
+
+            Bitmap icon = mIconGenerator.makeIcon(Asset.locationName);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+        }
+
+        @Override
+        protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
+
+            title = String.valueOf(cluster.getSize()) + " Items";
+
+            cluster_lat = 0;
+            cluster_lng = 0;
+
+            uber_east = 0;
+            uber_west = 0;
+            uber_south = 0;
+            uber_north = 0;
+
+            lyft_east = 0;
+            lyft_west = 0;
+            lyft_north = 0;
+            lyft_south = 0;
+
+            for (Asset p : cluster.getItems()) {
+
+
+
+                uber_east = uber_east + p.getUber_east();
+                uber_west = uber_west + p.getUber_west();
+                uber_south = uber_south + p.getUber_south();
+                uber_north = uber_north + p.getUber_north();
+
+                lyft_east = lyft_east + p.getLyft_east();
+                lyft_west = lyft_west + p.getLyft_west();
+                lyft_north = lyft_north + p.getLyft_north();
+                lyft_south = lyft_south + p.getUber_south();
+            }
+
+            uber_east = uber_east / cluster.getItems().size();
+            uber_west = uber_west / cluster.getItems().size();
+            uber_south = uber_south / cluster.getItems().size();
+            uber_north = uber_north / cluster.getItems().size();
+
+            lyft_east = lyft_east / cluster.getItems().size();
+            lyft_west = lyft_west / cluster.getItems().size();
+            lyft_north = lyft_north / cluster.getItems().size();
+            lyft_south = lyft_south / cluster.getItems().size();
+
+            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title);
+            mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
+            mClusterCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mClusterIconGenerator.setContentView(mClusterCharts);
+
+            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(String.valueOf(cluster.getItems().size()));
+        }
+
+        @Override
+        protected boolean shouldRenderAsCluster(Cluster cluster) {
+            // Always render clusters.
+            return cluster.getSize() > 1;
+        }
+
+    }
+    @Override
+    public boolean onClusterClick(Cluster<Asset> cluster) {
+
+        uber_east = 0;
+        uber_west = 0;
+        uber_south = 0;
+        uber_north = 0;
+
+        lyft_east = 0;
+        lyft_west = 0;
+        lyft_north = 0;
+        lyft_south = 0;
+
+        for (Asset p : cluster.getItems()) {
+
+            uber_east = uber_east + p.getUber_east();
+            uber_west = uber_west + p.getUber_west();
+            uber_south = uber_south + p.getUber_south();
+            uber_north = uber_north + p.getUber_north();
+
+            lyft_east = lyft_east + p.getLyft_east();
+            lyft_west = lyft_west + p.getLyft_west();
+            lyft_north = lyft_north + p.getLyft_north();
+            lyft_south = lyft_south + p.getUber_south();
+        }
+
+        uber_east = uber_east / cluster.getItems().size();
+        uber_west = uber_west / cluster.getItems().size();
+        uber_south = uber_south / cluster.getItems().size();
+        uber_north = uber_north / cluster.getItems().size();
+
+        lyft_east = lyft_east / cluster.getItems().size();
+        lyft_west = lyft_west / cluster.getItems().size();
+        lyft_north = lyft_north / cluster.getItems().size();
+        lyft_south = lyft_south / cluster.getItems().size();
+
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("uber_east",uber_east);
+            jsonObject.put("uber_west",uber_west);
+            jsonObject.put("uber_south",uber_south);
+            jsonObject.put("uber_north",uber_north);
+
+            jsonObject.put("lyft_east",lyft_east);
+            jsonObject.put("lyft_west",lyft_west);
+            jsonObject.put("lyft_north",lyft_north);
+            jsonObject.put("lyft_south",lyft_south);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String str = jsonObject.toString();
+        intent.putExtra("cluster", str);
+        startActivity(intent);
+//
+        return true;
+    }
+
+    @Override
+    public void onClusterInfoWindowClick(Cluster<Asset> cluster) {
+
+    }
+
+    @Override
+    public boolean onClusterItemClick(Asset asset) {
+        uber_east = 0;
+        uber_west = 0;
+        uber_south = 0;
+        uber_north = 0;
+
+        lyft_east = 0;
+        lyft_west = 0;
+        lyft_north = 0;
+        lyft_south = 0;
+
+        uber_east = asset.getUber_east();
+        uber_west = asset.getUber_west();
+        uber_south = asset.getUber_south();
+        uber_north = asset.getUber_north();
+
+        lyft_east = asset.getLyft_east();
+        lyft_west = asset.getLyft_west();
+        lyft_north = asset.getLyft_north();
+        lyft_south = asset.getLyft_south()
+        ;
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("uber_east",uber_east);
+            jsonObject.put("uber_west",uber_west);
+            jsonObject.put("uber_south",uber_south);
+            jsonObject.put("uber_north",uber_north);
+
+            jsonObject.put("lyft_east",lyft_east);
+            jsonObject.put("lyft_west",lyft_west);
+            jsonObject.put("lyft_north",lyft_north);
+            jsonObject.put("lyft_south",lyft_south);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String str = jsonObject.toString();
+        intent.putExtra("cluster", str);
+        startActivity(intent);
+
+        return true;
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(Asset asset) {
+
+    }
+
+    protected void startDemo() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.988612, 53.459411), 3.5f));
+
+        mClusterManager = new ClusterManager<>(this, mMap);
+        mClusterManager.setRenderer(new AssetRenderer());
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mClusterManager.setOnClusterClickListener(this);
+        mClusterManager.setOnClusterInfoWindowClickListener(this);
+        mClusterManager.setOnClusterItemClickListener(this);
+        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+
+        addItems();
+        mClusterManager.cluster();
+    }
+
+    private void addItems() {
+
+        for (int i = 0; i < 100; i++) {
+            mClusterManager.addItem(new Asset(randomLocation(), position()));
+        }
+    }
+    private LatLng position() {
+        return new LatLng(random(30.325877, 36.615905), random(60.648976, 47.465382));
+    }
+    private double random(double min, double max) {
+        return mRandom.nextDouble() * (max - min) + min;
+    }
+    private String randomLocation() {
+        double i = Math.random() * 10000;
+        int i1 = (int)i;
+
+        return "Test-" + i1;
+    }
+
+    public void seekbarer(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c.getTime());
+        int hours = c.get(Calendar.HOUR_OF_DAY);
+        int mins = c.get(Calendar.MINUTE);
+
+        //seekBar.getTickMark();
+
+
+        seekBar = (SeekBar)findViewById(R.id.seek_Bar);
+        textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(seekBar.getProgress()));
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c.getTime());
+            int progress_value;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress_value = progress;
+                textView_seekBar.setText("Selected Time :  " + showDate + "    " + convertTime(progress));
+                //textView_seekBar.setTextSize(20);
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(progress_value));
+                //textView_seekBar.setTextSize(20);
+
+                mAuthTask = new UserSetputTime(convertTime(progress_value));
+                mAuthTask.execute((Void) null);
+
+
+
+            }
+        });
+    }
+
+    public String convertTime(int progress){
+        String time = null;
+        double totalSec = 864 * progress;
+        String hoursS = null;
+        String minsS = null;
+        String secsS = null;
+
+        int hours = (int)(totalSec / 3600);
+        int remainder = (int)(totalSec - hours * 3600);
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        if(hours < 10)
+            hoursS = "0" + String.valueOf(hours);
+        else
+            hoursS = String.valueOf(hours);
+
+        if(mins < 10)
+            minsS = "0" + String.valueOf(mins);
+        else
+            minsS = String.valueOf(mins);
+
+        if (secs < 10)
+            secsS = "0" + String.valueOf(secs);
+        else
+            secsS = String.valueOf(secs);
+
+        time = hoursS + ":" + minsS + ":" + secsS;
+        return time;
+    }
+
+    /**
+     * Represents an asynchronous user history task used to authenticate
+     * the user.
+     */
+    public class UserSetputTime extends AsyncTask<Void, Void, Boolean> {
+
+        private  String mTime;
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(c.getTime());
+
+        UserSetputTime(String time) {
+            mTime = time;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String serverUrl = MainActivity.BASE_URL + "/popularEstimation?date=" + formattedDate + " " + mTime;
+
+            // TODO: submit the request here.
+            return performGetCall(serverUrl)!=null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                Toast.makeText(MainActivity.this, "loading data", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
+
+
+
+        public List<HistoryRecordEntity> performGetCall(String requestURL) {
+
+            URL url;
+            // ArrayList<HistoryRecordEntity> historyRecordEntityArrayList = new ArrayList<HistoryRecordEntity>();
+
+            try {
+                System.out.println("set time: " + requestURL);
+                url = new URL(requestURL);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("GET");
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+
+
+
+                    String inputLine;
+                    while ((inputLine = reader.readLine()) != null) {
+                        JSONArray ja = new JSONArray(inputLine);
+
+                        for(int i = 0; i < ja.length(); i++){
+                            JSONObject jo = (JSONObject) ja.get(i);
+
+                        }
+                    }
+
+                } else {
+                    Log.e(TAG, "14 - False - HTTP_OK");
+                    assetList = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //return assetList;
+            return null;
+        }
+    }
+
+    public void setDefaultDate(){
+
+        //get current date
+        final java.util.Calendar cal = java.util.Calendar.getInstance();
+
+        year_picker = cal.get(java.util.Calendar.YEAR);
+        month_picker = cal.get(java.util.Calendar.MONTH) + 1;
+        day_picker = cal.get(java.util.Calendar.DAY_OF_MONTH);
+        showDate= year_picker + "/" + month_picker + "/" + day_picker;
+
+        textView_seekBar.setText("Selected Time :  " + showDate);
+
+    }
+
+    public void showDialogOnTextViewClick(){
+
+        textView_seekBar.setInputType(InputType.TYPE_NULL);
+
+        textView_seekBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DIALOG_ID = 1;
+                showDialog(DIALOG_ID);
+            }
+        });
+
+    }
+
+    //@Override
+    protected Dialog onCreateDialog(int id){
+        if (id == 1)
+            return new DatePickerDialog(this,datePickerListener,year_picker,month_picker,day_picker);
+        else
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener
+            = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            if(DIALOG_ID == 1) {
+                year_picker = year;
+                month_picker = month + 1;
+                day_picker = day;
+                showDate= year_picker + "/" + month_picker + "/" + day_picker;
+
+                //show date on the text view
+                textView_seekBar.setText("Selected Time :  " + showDate);
+                return;
+            }
+            else {
+                Toast.makeText(MainActivity.this, "Date Picker Error", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+    };
+
 }
 
 

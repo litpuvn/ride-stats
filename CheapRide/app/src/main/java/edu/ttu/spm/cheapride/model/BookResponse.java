@@ -73,13 +73,13 @@ public class BookResponse {
         try {
             String bStatus = bookResponse.getString("status");
             String rideRequestId = bookResponse.getString("rideId");
-//            Address origin = Address.createFromJson(bookResponse.getJSONObject("origin"));
+//            Address Origin = Address.createFromJson(bookResponse.getJSONObject("Origin"));
 //            Passenger p = Passenger.createFromJson(bookResponse.getJSONObject("passenger"));
 //            Address destination = Address.createFromJson(bookResponse.getJSONObject("destination"));
             Driver dr = Driver.createFromJson(bookResponse.getJSONObject("driver"));
 //            String requestedTime = bookResponse.getString("requestedTime");
             Vehicle v = Vehicle.createFromJson(bookResponse.getJSONObject("car"));
-//            response = new BookResponse(bStatus, origin, p, destination, dr, requestedTime, v);
+//            response = new BookResponse(bStatus, Origin, p, destination, dr, requestedTime, v);
             response = new BookResponse(bStatus, rideRequestId, dr,  v);
 
         }
