@@ -190,7 +190,6 @@ public class NightingaleRoseChart extends DemoView {
             subTitle = "(" + String.valueOf(lat) + ", " + String.valueOf(lon) + ")";
 
             chartRoseLyft.setTitle(title);
-            chartRoseLyft.setTitle(title);
             chartRoseLyft.addSubtitle(subTitle);
             chartRoseLyft.setTitleVerticalAlign(XEnum.VerticalAlign.BOTTOM);
 
@@ -208,6 +207,14 @@ public class NightingaleRoseChart extends DemoView {
 //        this.bindTouch(this,chartRoseLyft);
 //        this.bindTouch(this,chartRoseUber);
 //        this.bindTouch(this,chartRose1);
+
+    }
+
+    public void setTitleOffset(int xOffSet, int yOffSet) {
+
+        chartRoseLyft.setTitleOffset(xOffSet, yOffSet);
+
+        chartRoseLyft.getPlotTitle().getTitlePaint().setTextSize(textSize);
 
     }
 

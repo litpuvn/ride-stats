@@ -12,6 +12,8 @@ import org.xclcharts.chart.RoseChart;
 import org.xclcharts.common.DrawHelper;
 import org.xclcharts.common.MathHelper;
 import org.xclcharts.renderer.XEnum;
+import org.xclcharts.renderer.plot.PlotTitle;
+import org.xclcharts.renderer.plot.PlotTitleRender;
 
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +39,9 @@ public class CustomizedRoseChart extends RoseChart {
     private int mBgLines = 0;
     private float labelOffSetX = 0;
     private float labelOffSetY = 0;
+
+    private float titleOffSetX = 0;
+    private float titleOffSetY = 0;
 
     public CustomizedRoseChart() {
         super();
@@ -230,6 +235,28 @@ public class CustomizedRoseChart extends RoseChart {
 
     public void setLabelOffsetY(float y) {
         this.labelOffSetY = y;
+    }
+
+    public void setTitleOffset(float x, float y) {
+        this.titleOffSetX = x;
+        this.titleOffSetY = y;
+    }
+
+    public void setTitleSize(int size) {
+        PlotTitleRender plotTitle = (PlotTitleRender) super.getPlotTitle();
+        if (plotTitle != null) {
+
+        }
+    }
+
+
+    protected void renderTitle(Canvas canvas) {
+        int borderWidth = this.getBorderWidth();
+        PlotTitleRender plotTitle = (PlotTitleRender) super.getPlotTitle();
+
+        if(plotTitle != null) {
+            plotTitle.renderTitle(super.getLeft() + (float)borderWidth + this.titleOffSetX, super.getRight() - (float)borderWidth, super.getTop() + (float)borderWidth + this.titleOffSetY, super.getWidth(), this.plotArea.getTop() + this.titleOffSetY, canvas);
+        }
     }
 
 }

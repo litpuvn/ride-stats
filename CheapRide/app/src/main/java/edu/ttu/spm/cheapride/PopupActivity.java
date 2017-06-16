@@ -49,6 +49,8 @@ public class PopupActivity extends AppCompatActivity {
     double lyft_north;
     double lyft_south;
 
+    int width;
+    int height;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +60,10 @@ public class PopupActivity extends AppCompatActivity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
+        width = (int)(dm.widthPixels * 0.8);
+        height = (int)(dm.heightPixels * 0.6);
         
-        getWindow().setLayout((int)(width * 0.8),(int)(height * 0.6));
+        getWindow().setLayout(width, height);
 
         initRoseChart();
     }
@@ -132,8 +134,8 @@ public class PopupActivity extends AppCompatActivity {
 
         //图表显示范围在占屏幕大小的90%的区域内
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int scrWidth = (int) (dm.widthPixels * 0.55);
-        int scrHeight = (int) (dm.heightPixels * 0.55);
+        int scrWidth = width;
+        int scrHeight = height;
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 scrWidth, scrHeight);
 
@@ -144,7 +146,11 @@ public class PopupActivity extends AppCompatActivity {
         RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
         mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title,lat,lon);
+        mCharts.setSize(scrWidth, scrHeight);
+        mCharts.setTitleOffset(0, 30);
+
         mCharts.initView();
+
         RoseChart.addView( mCharts, layoutParams);
 
         //增加控件
