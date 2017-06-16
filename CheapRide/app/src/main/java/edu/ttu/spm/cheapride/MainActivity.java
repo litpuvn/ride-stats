@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.location.Geocoder;
@@ -26,8 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,16 +30,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -68,9 +60,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -79,7 +69,6 @@ import java.util.Random;
 
 import edu.ttu.spm.cheapride.handler.BookingHandler;
 import edu.ttu.spm.cheapride.handler.EstimateHandler;
-import edu.ttu.spm.cheapride.listener.MyPlaceSelectionListener;
 import edu.ttu.spm.cheapride.model.BookResponse;
 //import edu.ttu.spm.cheapride.model.ClusteringDemoActivity;
 import edu.ttu.spm.cheapride.model.HistoryRecordEntity;
@@ -91,25 +80,19 @@ import edu.ttu.spm.cheapride.model.item.Asset;
 import edu.ttu.spm.cheapride.model.item.Driver;
 import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.model.item.Vehicle;
-import edu.ttu.spm.cheapride.model.item.clusterItem;
 import edu.ttu.spm.cheapride.service.TrackGPS;
 import edu.ttu.spm.cheapride.view.DemoView;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
-import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xclcharts.chart.RoseChart;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import static edu.ttu.spm.cheapride.AbstractNetworkRequest.CONNECTION_TIMEOUT;
 import static edu.ttu.spm.cheapride.AbstractNetworkRequest.READ_TIMEOUT;
-import static edu.ttu.spm.cheapride.R.id.ad_image_view;
 
 
 public class MainActivity extends AppCompatActivity
@@ -243,7 +226,7 @@ public class MainActivity extends AppCompatActivity
     private SeekBar seekBar;
     private TextView textView_seekBar;
 
-    private MainActivity.UserSetputTime mAuthTask = null;
+    private MainActivity.UserSetputTime mRideCostComparisonTask = null;
 
     private List<Asset> assetList;
 
@@ -992,8 +975,8 @@ public class MainActivity extends AppCompatActivity
                 textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(progress_value));
                 //textView_seekBar.setTextSize(20);
 
-                mAuthTask = new UserSetputTime(convertTime(progress_value));
-                mAuthTask.execute((Void) null);
+                mRideCostComparisonTask = new UserSetputTime(convertTime(progress_value));
+                mRideCostComparisonTask.execute((Void) null);
 
 
 
@@ -1059,7 +1042,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+            mRideCostComparisonTask = null;
 
             if (success) {
                 Toast.makeText(MainActivity.this, "loading data", Toast.LENGTH_SHORT).show();
@@ -1070,7 +1053,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            mRideCostComparisonTask = null;
         }
 
 
