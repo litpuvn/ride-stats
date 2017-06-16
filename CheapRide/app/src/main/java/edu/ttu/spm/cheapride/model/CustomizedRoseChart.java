@@ -231,4 +231,5 @@ public class CustomizedRoseChart extends RoseChart {
     public void setLabelOffsetY(float y) {
         this.labelOffSetY = y;
     }
+
 }

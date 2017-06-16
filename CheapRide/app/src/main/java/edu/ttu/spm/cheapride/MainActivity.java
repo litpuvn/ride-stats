@@ -804,6 +804,8 @@ public class MainActivity extends AppCompatActivity
         lyft_north = 0;
         lyft_south = 0;
 
+        title = String.valueOf(cluster.getSize()) + " Items";
+
         for (Asset p : cluster.getItems()) {
 
             uber_east = uber_east + p.getUber_east();
@@ -831,6 +833,7 @@ public class MainActivity extends AppCompatActivity
 
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("title",title);
             jsonObject.put("uber_east",uber_east);
             jsonObject.put("uber_west",uber_west);
             jsonObject.put("uber_south",uber_south);

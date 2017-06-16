@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.xclcharts.chart.PieData;
+import org.xclcharts.renderer.XEnum;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -175,10 +176,11 @@ public class NightingaleRoseChart extends DemoView {
 
     private void initView()
     {
-//        if(title != null) {
-//            chartRoseLyft.setTitle(title);
-//        }
-//        chartRoseLyft.addSubtitle("(Uber vs. Lyft)");
+        if(title != null) {
+            chartRoseLyft.setTitle(title);
+            chartRoseLyft.setTitleVerticalAlign(XEnum.VerticalAlign.MIDDLE);
+        }
+        //chartRoseLyft.addSubtitle("(Uber vs. Lyft)");
 ////
         chartDataSetLyft();
         chartLyftRender();

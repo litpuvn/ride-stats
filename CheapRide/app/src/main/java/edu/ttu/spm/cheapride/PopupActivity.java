@@ -33,7 +33,7 @@ public class PopupActivity extends AppCompatActivity {
 
     private Origin fakeOrigin1;
 
-    String title;
+    String title = null;
 
     double uber_east;
     double uber_west;
@@ -125,8 +125,8 @@ public class PopupActivity extends AppCompatActivity {
 
         //图表显示范围在占屏幕大小的90%的区域内
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int scrWidth = (int) (dm.widthPixels * 0.6);
-        int scrHeight = (int) (dm.heightPixels * 0.6);
+        int scrWidth = (int) (dm.widthPixels * 0.5);
+        int scrHeight = (int) (dm.heightPixels * 0.5);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 scrWidth, scrHeight);
 
