@@ -60,6 +60,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -145,6 +146,9 @@ public class MainActivity extends AppCompatActivity
     private static final Map<Integer, String> CAR_TYPE_MAP;
     private Context main;
 
+    private double totalLat = 0;
+    private double totalLng = 0;
+
     static {
         Hashtable<Integer, String> tmp = new Hashtable<>();
 //        tmp.put(0, "");
@@ -228,7 +232,7 @@ public class MainActivity extends AppCompatActivity
 
     private MainActivity.UserSetputTime mRideCostComparisonTask = null;
 
-    private List<Asset> assetList;
+    private List<Asset> assetList = new ArrayList<>();
 
     int year_picker;
     int month_picker;
@@ -355,9 +359,9 @@ public class MainActivity extends AppCompatActivity
 //        }
 
 //        setUpClustering();
-        seekbarer();
+        initTimeSeekBar();
 
-        startDemo();
+        initRideEstimationCluster();
 
         //autocompleteFragment.setOnPlaceSelectedListener(new MyPlaceSelectionListener(this, this.estimateManager, mMap, mCurrentLocation, DEFAULT_ZOOM));
 
@@ -902,9 +906,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    protected void startDemo() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.988612, 53.459411), 3.5f));
-
+    protected void initRideEstimationCluster() {
         mClusterManager = new ClusterManager<>(this, mMap);
         mClusterManager.setRenderer(new AssetRenderer());
         mMap.setOnCameraIdleListener(mClusterManager);
@@ -915,14 +917,30 @@ public class MainActivity extends AppCompatActivity
         mClusterManager.setOnClusterItemClickListener(this);
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
 
+
+    }
+
+    private void startClusters() {
         addItems();
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(totalLat / assetList.size(), totalLng / assetList.size()), 3.5f));
+
+
         mClusterManager.cluster();
     }
 
     private void addItems() {
+        if (assetList != null && assetList.size() > 0) {
+            Asset tmp;
+            totalLat = 0;
+            totalLng = 0;
 
-        for (int i = 0; i < 100; i++) {
-            mClusterManager.addItem(new Asset(randomLocation(), position()));
+            for (int i = 0; i < assetList.size(); i++) {
+                tmp = assetList.get(i);
+                totalLat += tmp.getLat();
+                totalLng += tmp.getLng();
+                mClusterManager.addItem(tmp);
+            }
         }
     }
     private LatLng position() {
@@ -938,7 +956,7 @@ public class MainActivity extends AppCompatActivity
         return "Test-" + i1;
     }
 
-    public void seekbarer(){
+    public void initTimeSeekBar(){
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c.getTime());
@@ -1025,7 +1043,7 @@ public class MainActivity extends AppCompatActivity
         private  String mTime;
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = df.format(c.getTime());
 
         UserSetputTime(String time) {
@@ -1034,10 +1052,11 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String serverUrl = MainActivity.BASE_URL + "/popularEstimation?date=" + formattedDate + " " + mTime;
+//            String serverUrl = MainActivity.BASE_URL + "/popularEstimation?date=" + formattedDate + " " + mTime;
+            String serverUrl = "http://129.118.162.163:8080/popularEstimation?date=" + formattedDate + " " + mTime;
 
             // TODO: submit the request here.
-            return performGetCall(serverUrl)!=null;
+            return performGetCall(serverUrl);
         }
 
         @Override
@@ -1045,7 +1064,10 @@ public class MainActivity extends AppCompatActivity
             mRideCostComparisonTask = null;
 
             if (success) {
-                Toast.makeText(MainActivity.this, "loading data", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "loading data", Toast.LENGTH_SHORT).show();
+
+                startClusters();
+
             } else {
                 Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
@@ -1058,7 +1080,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        public List<HistoryRecordEntity> performGetCall(String requestURL) {
+        public boolean performGetCall(String requestURL) {
 
             URL url;
             // ArrayList<HistoryRecordEntity> historyRecordEntityArrayList = new ArrayList<HistoryRecordEntity>();
@@ -1082,12 +1104,18 @@ public class MainActivity extends AppCompatActivity
 
 
                     String inputLine;
+                    Origin tmp;
+
+                    assetList.clear();
+
                     while ((inputLine = reader.readLine()) != null) {
                         JSONArray ja = new JSONArray(inputLine);
 
                         for(int i = 0; i < ja.length(); i++){
                             JSONObject jo = (JSONObject) ja.get(i);
+                            tmp = Origin.createFromJsonObject(jo);
 
+                            assetList.add(Asset.createFromOrigin(tmp));
                         }
                     }
 
@@ -1098,8 +1126,8 @@ public class MainActivity extends AppCompatActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //return assetList;
-            return null;
+
+            return assetList.size() > 0;
         }
     }
 

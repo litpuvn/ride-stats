@@ -9,14 +9,14 @@ import org.json.JSONObject;
 
 public class rideCompany {
     private String companyName;
-    private int cost;
-    private int pickupTime;
+    private double cost;
+    private double pickupTime;
 
     public rideCompany(String companyName) {
         this.companyName = companyName;
     }
 
-    public rideCompany(String companyName, int cost, int pickupTime) {
+    public rideCompany(String companyName, double cost, double pickupTime) {
         this.companyName = companyName;
         this.cost = cost;
         this.pickupTime = pickupTime;
@@ -26,11 +26,11 @@ public class rideCompany {
         return companyName;
     }
 
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 
-    public int getPickupTime() {
+    public double getPickupTime() {
         return pickupTime;
     }
 
@@ -70,14 +70,13 @@ public class rideCompany {
     }
 
 
-    public static rideCompany createFromJSONObject(JSONObject jsonObject){
+    public static rideCompany createFromJSONObject(String cname, JSONObject jsonObject){
         rideCompany rideCompany = null;
         try{
-            String companyName = jsonObject.getString("companyName");
-            int cost = jsonObject.getInt("cost");
-            int pickupTime = jsonObject.getInt("pickupTime");
+            double cost = jsonObject.getDouble("cost");
+            double pickupTime = jsonObject.getDouble("pickupTime");
 
-            rideCompany = new rideCompany(companyName,cost,pickupTime);
+            rideCompany = new rideCompany(cname,cost,pickupTime);
         }
         catch (JSONException je) {
             je.printStackTrace();

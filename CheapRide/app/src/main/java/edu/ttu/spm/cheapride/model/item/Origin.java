@@ -113,34 +113,28 @@ public class Origin {
         return jsonObj.toString();
     }
 
-    public static Origin createFromJsonString(String json) {
+    public static Origin createFromJsonObject(JSONObject obj) {
 
-        JSONObject obj = null;
         Origin origin = null;
 
-        try {
-            obj = new JSONObject(json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         try{
 
             Double lat = obj.getDouble("lat");
-            Double lng = obj.getDouble("lng");
+            Double lng = obj.getDouble("lon");
             String name = obj.getString("name");
 
             JSONObject eastJson = (JSONObject)obj.get("east");
-            direction east = direction.createFromJSONObject(eastJson);
+            direction east = direction.createFromJSONObject("east", eastJson);
 
             JSONObject westJson = (JSONObject)obj.get("west");
-            direction west = direction.createFromJSONObject(westJson);
+            direction west = direction.createFromJSONObject("west", westJson);
 
             JSONObject northJson = (JSONObject)obj.get("north");
-            direction north = direction.createFromJSONObject(northJson);
+            direction north = direction.createFromJSONObject("north", northJson);
 
             JSONObject southJson = (JSONObject)obj.get("south");
-            direction south = direction.createFromJSONObject(southJson);
+            direction south = direction.createFromJSONObject("south", southJson);
 
             origin = new Origin(lat,lng,name,east,west,north,south);
 

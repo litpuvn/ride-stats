@@ -28,7 +28,9 @@ public class Asset implements ClusterItem {
     public static final int MIN_SCALE = 20;
     public static final int MAX_SCALE = 100;
     public static final int RANGE = MAX_SCALE-MIN_SCALE;
+    Asset() {
 
+    }
     public Asset(String locationName) {
         this.locationName = locationName;
     }
@@ -59,6 +61,27 @@ public class Asset implements ClusterItem {
          this.lyft_west = MIN + Math.random() * VALUE;
          this.lyft_north = MIN + Math.random() * VALUE;
          this.lyft_south = MIN + Math.random() * VALUE;
+    }
+
+    public static Asset createFromOrigin(Origin origin) {
+        Asset asset = new Asset();
+        asset.setLocationName(origin.getName());
+        asset.setLyft_east(origin.getEast().getLyft().getCost());
+        asset.setLyft_west(origin.getWest().getLyft().getCost());
+        asset.setLyft_north(origin.getNorth().getLyft().getCost());
+        asset.setLyft_south(origin.getSouth().getLyft().getCost());
+
+        asset.setUber_east(origin.getEast().getUber().getCost());
+        asset.setUber_west(origin.getWest().getUber().getCost());
+        asset.setUber_north(origin.getNorth().getUber().getCost());
+        asset.setUber_south(origin.getSouth().getUber().getCost());
+
+        asset.setmPosition(new LatLng(origin.getLat(), origin.getLng()));
+        return asset;
+    }
+
+    public void setLocationName(String name) {
+        this.locationName = name;
     }
 
     public void setmPosition(LatLng pos) {

@@ -69,18 +69,16 @@ public class direction {
         return direction;
     }
 
-    public static direction createFromJSONObject(JSONObject jsonObject){
+    public static direction createFromJSONObject(String di, JSONObject jsonObject){
         direction direction = null;
         try{
-            String directionName = jsonObject.getString("direction");
+            JSONObject UberJson = (JSONObject)jsonObject.get("uber");
+            rideCompany Uber= rideCompany.createFromJSONObject("uber", UberJson);
 
-            JSONObject UberJson = (JSONObject)jsonObject.get("Uber");
-            rideCompany Uber= rideCompany.createFromJSONObject(UberJson);
+            JSONObject LyftJson = (JSONObject)jsonObject.get("lyft");
+            rideCompany Lyft = rideCompany.createFromJSONObject("lyft", LyftJson);
 
-            JSONObject LyftJson = (JSONObject)jsonObject.get("Lyft");
-            rideCompany Lyft = rideCompany.createFromJSONObject(LyftJson);
-
-            direction = new direction(directionName,Uber,Lyft);
+            direction = new direction(di,Uber,Lyft);
         }
         catch (JSONException je) {
             je.printStackTrace();
