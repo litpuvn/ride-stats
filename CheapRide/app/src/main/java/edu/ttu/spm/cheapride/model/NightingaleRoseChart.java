@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 
+import edu.ttu.spm.cheapride.model.item.MyCustomPieData;
 import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.view.DemoView;
 
@@ -34,9 +35,9 @@ import static org.xclcharts.renderer.XEnum.SliceLabelStyle.OUTSIDE;
 public class NightingaleRoseChart extends DemoView {
 
     private String TAG = "RadarChart03View";
-    private RoseChart chartRose = new RoseChart();
+    private CustomizedRoseChart chartRose = new CustomizedRoseChart();
     LinkedList<PieData> roseData = new LinkedList<PieData>();
-    private RoseChart chartRose3 = new RoseChart();
+    private CustomizedRoseChart chartRose3 = new CustomizedRoseChart();
     LinkedList<PieData> roseData3 = new LinkedList<PieData>();
     private List<String> labels = new LinkedList<String>();
     private double eastUber;
@@ -47,14 +48,16 @@ public class NightingaleRoseChart extends DemoView {
     private double northLyft;
     private double southUber;
     private double southLyft;
-    private int eastUberScaled;
-    private int eastLyftScaled;
-    private int westUberScaled;
-    private int westLyftScaled;
-    private int northUberScaled;
-    private int northLyftScaled;
-    private int southUberScaled;
-    private int southLyftScaled;
+
+    private double eastUberScaled;
+    private double eastLyftScaled;
+    private double westUberScaled;
+    private double westLyftScaled;
+    private double northUberScaled;
+    private double northLyftScaled;
+    private double southUberScaled;
+    private double southLyftScaled;
+
     private int textSize = 30;
     private int x = -0;
     private int y = 10;
@@ -143,20 +146,19 @@ public class NightingaleRoseChart extends DemoView {
         initView();
     }
 
-    private int scale(double price) {
+    private double scale(double price) {
         double scaledPrice;
-        int temp;
+        double temp;
 
         if(price >= MIN && price <MAX) {
-            temp = (int)((MIN_SCALE +  RANGE * ((price)/VALUE))/10);
+            temp = ((MIN_SCALE +  RANGE * ((price)/VALUE))/10);
             scaledPrice = 10 * temp;
         }
         else {
             scaledPrice = 100;
         }
 
-        int correctPrice = (int) scaledPrice;
-        return correctPrice;
+        return scaledPrice;
     }
 
 //    public NightingaleRoseChart(Context context,Origin origin){
@@ -213,45 +215,44 @@ public class NightingaleRoseChart extends DemoView {
         //设置图表数据源
         //PieData(标签，百分比，在饼图中对应的颜色)
         if(eastUber <= eastLyft) {
-            PieData pie = new PieData( "$" + (int)eastUber + "/",eastUberScaled,Color.argb(ALPHA, 20, 32, 43));
-            //pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(eastUber) + "/",eastUberScaled,Color.argb(ALPHA, 20, 32, 43));
             roseData3.add(pie);
         }
         else {
-            PieData pie = new PieData( "$" + (int)eastUber + "/", eastLyftScaled, Color.argb(ALPHA, 252, 45, 166));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(eastUber) + "/", eastLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
             roseData3.add(pie);
         }
 
         if(southUber <= southLyft) {
-            PieData pie = new PieData( "$" + (int)southUber + "/", southUberScaled, Color.argb(ALPHA, 20, 32, 43));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(southUber) + "/", southUberScaled, Color.argb(ALPHA, 20, 32, 43));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
             roseData3.add(pie);
         }
         else {
-            PieData pie = new PieData( "$" + (int)southUber + "/", southLyftScaled, Color.argb(ALPHA, 252, 45, 166));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(southUber) + "/", southLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
             roseData3.add(pie);
         }
 
         if(westUber <= westLyft) {
-            PieData pie = new PieData( "$" + (int)westUber + "/" + space, westUberScaled, Color.argb(ALPHA, 20, 32, 43));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(westUber) + "/" + space, westUberScaled, Color.argb(ALPHA, 20, 32, 43));
             pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
             roseData3.add(pie);
         }
         else {
-            PieData pie = new PieData( "$" + (int)westUber + "/" + space, westLyftScaled, Color.argb(ALPHA, 252, 45, 166));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(westUber) + "/" + space, westLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
             roseData3.add(pie);
         }
 
         if(northUber <= northLyft) {
-            PieData pie = new PieData( "$" + (int)northUber + "/", northUberScaled, Color.argb(ALPHA, 20, 32, 43));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(northUber) + "/", northUberScaled, Color.argb(ALPHA, 20, 32, 43));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
             roseData3.add(pie);
         }
         else {
-            PieData pie = new PieData( "$" + (int)northUber + "/", northLyftScaled, Color.argb(ALPHA, 252, 45, 166));
+            PieData pie = new MyCustomPieData( "$" + formatNumber(northUber) + "/", northLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
             roseData3.add(pie);
         }
@@ -288,14 +289,14 @@ public class NightingaleRoseChart extends DemoView {
 
             chartRose.showOuterLabels();
 
-
+            chartRose.setLabelOffsetY(10);
+            chartRose.setLabelOffsetX(2);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.e(TAG, e.toString());
         }
     }
-
 
     private void chartDataSet()
     {
@@ -305,24 +306,24 @@ public class NightingaleRoseChart extends DemoView {
         //PieData(标签，百分比，在饼图中对应的颜色)
 
         if(eastUber > eastLyft)
-            roseData.add(new PieData("            " + (int)eastLyft,eastUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
+            roseData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
         else
-            roseData.add(new PieData("            " + (int)eastLyft,eastLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
+            roseData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
 
         if(southUber > southLyft)
-            roseData.add(new PieData("            " + (int)southLyft,southUberScaled,Color.argb(ALPHA, 20, 32, 43)));
+            roseData.add(new MyCustomPieData("            " + formatNumber(southLyft),southUberScaled,Color.argb(ALPHA, 20, 32, 43)));
         else
-            roseData.add(new PieData("            " + (int)southLyft,southLyftScaled,Color.argb(ALPHA, 252,45, 166)));
+            roseData.add(new MyCustomPieData("            " + formatNumber(southLyft),southLyftScaled,Color.argb(ALPHA, 252,45, 166)));
 
         if(westUber > westLyft)
-            roseData.add(new PieData("            " + (int)westLyft + space,westUberScaled,Color.argb(ALPHA, 20, 32, 43)));
+            roseData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westUberScaled,Color.argb(ALPHA, 20, 32, 43)));
         else
-            roseData.add(new PieData("            " + (int)westLyft + space,westLyftScaled,Color.argb(ALPHA, 252,45, 166)));
+            roseData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westLyftScaled,Color.argb(ALPHA, 252,45, 166)));
 
         if(northUber > northLyft)
-            roseData.add(new PieData("            " + (int)northLyft,northUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
+            roseData.add(new MyCustomPieData("            " + formatNumber(northLyft), northUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
         else
-            roseData.add(new PieData("            " + (int)northLyft,northLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
+            roseData.add(new MyCustomPieData("            " + formatNumber(northLyft), northLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
     }
 
     private void chartRender3()
@@ -350,6 +351,8 @@ public class NightingaleRoseChart extends DemoView {
 
             chartRose3.showOuterLabels();
 
+            chartRose3.setLabelOffsetY(-3);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.e(TAG, e.toString());
@@ -369,4 +372,9 @@ public class NightingaleRoseChart extends DemoView {
             Log.e(TAG, e.toString());
         }
     }
+
+    private String formatNumber(double val) {
+        return String.format("%.1f", val);
+    }
+
 }
