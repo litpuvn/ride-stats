@@ -963,7 +963,7 @@ public class MainActivity extends AppCompatActivity
         int mins = c.get(Calendar.MINUTE);
 
         //seekBar.getTickMark();
-
+        //seekBar.setProgress();
 
         seekBar = (SeekBar)findViewById(R.id.seek_Bar);
         textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(seekBar.getProgress()));
