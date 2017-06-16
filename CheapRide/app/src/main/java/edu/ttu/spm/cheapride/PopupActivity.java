@@ -33,6 +33,8 @@ public class PopupActivity extends AppCompatActivity {
 
     private Origin fakeOrigin1;
 
+    String title;
+
     double uber_east;
     double uber_west;
     double uber_south;
@@ -70,6 +72,7 @@ public class PopupActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         try{
+            title = obj.getString("title");
          uber_east = obj.getDouble("uber_east");
          uber_west = obj.getDouble("uber_west");
          uber_south = obj.getDouble("uber_south");
@@ -133,7 +136,7 @@ public class PopupActivity extends AppCompatActivity {
         //final RelativeLayout chartLayout = new RelativeLayout(this);
         RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
-        mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
+        mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title);
 
         RoseChart.addView( mCharts, layoutParams);
 

@@ -858,6 +858,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onClusterItemClick(Asset asset) {
+        title = null;
         uber_east = 0;
         uber_west = 0;
         uber_south = 0;
@@ -868,6 +869,7 @@ public class MainActivity extends AppCompatActivity
         lyft_north = 0;
         lyft_south = 0;
 
+        title = asset.getLocationName();
         uber_east = asset.getUber_east();
         uber_west = asset.getUber_west();
         uber_south = asset.getUber_south();
@@ -881,6 +883,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("title",title);
             jsonObject.put("uber_east",uber_east);
             jsonObject.put("uber_west",uber_west);
             jsonObject.put("uber_south",uber_south);
