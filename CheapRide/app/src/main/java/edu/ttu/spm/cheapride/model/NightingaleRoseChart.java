@@ -62,7 +62,7 @@ public class NightingaleRoseChart extends DemoView {
     private String space = "         ";
     private String title = null;
 
-    private static int ALPHA = 100;
+    private static int ALPHA = 150;
 
 
     public NightingaleRoseChart(Context context) {
@@ -178,11 +178,11 @@ public class NightingaleRoseChart extends DemoView {
 
     private void initView()
     {
-        if(title != null) {
-            chartRose.setTitle(title);
-        }
-        //chartRose.addSubtitle("(Uber vs. Lyft)");
-//
+//        if(title != null) {
+//            chartRose.setTitle(title);
+//        }
+//        chartRose.addSubtitle("(Uber vs. Lyft)");
+////
         chartDataSet();
         chartRender();
 
