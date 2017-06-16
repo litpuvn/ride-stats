@@ -1014,6 +1014,7 @@ public class MainActivity extends AppCompatActivity
             public void onStopTrackingTouch(SeekBar seekBar) {
                 textView_seekBar.setText("Selected Time :  " + showDate +  "    " + convertTime(progress_value));
                 //textView_seekBar.setTextSize(20);
+                mMap.clear();
 
                 mRideCostComparisonTask = new UserSetputTime(convertTime(progress_value));
                 mRideCostComparisonTask.execute((Void) null);
