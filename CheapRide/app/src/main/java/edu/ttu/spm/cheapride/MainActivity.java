@@ -225,7 +225,8 @@ public class MainActivity extends AppCompatActivity
     double cluster_lat;
     double cluster_lng;
 
-    String title;
+    String title = "";
+    LatLng position;
 
     private SeekBar seekBar;
     private TextView textView_seekBar;
@@ -240,6 +241,9 @@ public class MainActivity extends AppCompatActivity
     private Button date_submit;
 
     String showDate = null;
+
+    double lat = 0;
+    double lon = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -723,7 +727,8 @@ public class MainActivity extends AppCompatActivity
             // Draw a single Asset.
             // Set the info window to show their name.
             title = Asset.getLocationName();
-            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south(),title);
+//            position = Asset.getPosition()''
+            mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south());
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
             mIconGenerator.setContentView(mCharts);
@@ -735,7 +740,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onBeforeClusterRendered(Cluster<Asset> cluster, MarkerOptions markerOptions) {
 
-            title = String.valueOf(cluster.getSize()) + " Items";
+            //title = String.valueOf(cluster.getSize()) + " Items";
 
             cluster_lat = 0;
             cluster_lng = 0;
@@ -775,7 +780,7 @@ public class MainActivity extends AppCompatActivity
             lyft_north = lyft_north / cluster.getItems().size();
             lyft_south = lyft_south / cluster.getItems().size();
 
-            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title);
+            mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mClusterCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
             mClusterIconGenerator.setContentView(mClusterCharts);
@@ -804,7 +809,7 @@ public class MainActivity extends AppCompatActivity
         lyft_north = 0;
         lyft_south = 0;
 
-        title = String.valueOf(cluster.getSize()) + " Items";
+        //title = String.valueOf(cluster.getSize()) + " Items";
 
         for (Asset p : cluster.getItems()) {
 
@@ -834,6 +839,8 @@ public class MainActivity extends AppCompatActivity
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("title",title);
+            jsonObject.put("lat",lat);
+            jsonObject.put("lon",lon);
             jsonObject.put("uber_east",uber_east);
             jsonObject.put("uber_west",uber_west);
             jsonObject.put("uber_south",uber_south);
@@ -873,6 +880,9 @@ public class MainActivity extends AppCompatActivity
         lyft_south = 0;
 
         title = asset.getLocationName();
+        position = asset.getPosition();
+
+
         uber_east = asset.getUber_east();
         uber_west = asset.getUber_west();
         uber_south = asset.getUber_south();
@@ -887,6 +897,8 @@ public class MainActivity extends AppCompatActivity
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("title",title);
+            jsonObject.put("lat",position.latitude);
+            jsonObject.put("lon",position.longitude);
             jsonObject.put("uber_east",uber_east);
             jsonObject.put("uber_west",uber_west);
             jsonObject.put("uber_south",uber_south);

@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xclcharts.chart.RoseChart;
@@ -34,6 +36,8 @@ public class PopupActivity extends AppCompatActivity {
     private Origin fakeOrigin1;
 
     String title = null;
+    double lat ;
+    double lon ;
 
     double uber_east;
     double uber_west;
@@ -73,6 +77,9 @@ public class PopupActivity extends AppCompatActivity {
         }
         try{
             title = obj.getString("title");
+            lat = obj.getDouble("lat");
+            lon = obj.getDouble("lon");
+
          uber_east = obj.getDouble("uber_east");
          uber_west = obj.getDouble("uber_west");
          uber_south = obj.getDouble("uber_south");
@@ -125,8 +132,8 @@ public class PopupActivity extends AppCompatActivity {
 
         //图表显示范围在占屏幕大小的90%的区域内
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int scrWidth = (int) (dm.widthPixels * 0.5);
-        int scrHeight = (int) (dm.heightPixels * 0.5);
+        int scrWidth = (int) (dm.widthPixels * 0.55);
+        int scrHeight = (int) (dm.heightPixels * 0.55);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 scrWidth, scrHeight);
 
@@ -136,7 +143,7 @@ public class PopupActivity extends AppCompatActivity {
         //final RelativeLayout chartLayout = new RelativeLayout(this);
         RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
-        mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title);
+        mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title,lat,lon);
 
         RoseChart.addView( mCharts, layoutParams);
 

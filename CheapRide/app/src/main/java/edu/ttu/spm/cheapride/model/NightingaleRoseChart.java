@@ -15,6 +15,8 @@ import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import edu.ttu.spm.cheapride.model.item.MyCustomPieData;
 import edu.ttu.spm.cheapride.view.DemoView;
 
@@ -60,6 +62,9 @@ public class NightingaleRoseChart extends DemoView {
     private int padding = 100;
 //    private String space = "         ";
     private String title = null;
+    private double lat;
+    private double lon;
+    private String subTitle = null;
 
     private static int ALPHA = 150;
 
@@ -80,10 +85,12 @@ public class NightingaleRoseChart extends DemoView {
         initView();
     }
 
-    public NightingaleRoseChart(Context context,double eastUber,double eastLyft,double westUber,double westLyft,double northUber,double northLyft,double southUber,double southLyft,String title){
+    public NightingaleRoseChart(Context context,double eastUber,double eastLyft,double westUber,double westLyft,double northUber,double northLyft,double southUber,double southLyft,String title,double lat,double lon){
         super(context);
 
         this.title = title;
+        this.lat = lat;
+        this.lon = lon;
 
         this.eastUber = eastUber;
         this.eastUberScaled = scale(this.eastUber);
@@ -176,9 +183,13 @@ public class NightingaleRoseChart extends DemoView {
 
     private void initView()
     {
-        if(title != null) {
+        if(title != null && title.length() > 0) {
+            subTitle = "(" + String.valueOf(lat) + ", " + String.valueOf(lon) + ")";
+
             chartRoseLyft.setTitle(title);
-            chartRoseLyft.setTitleVerticalAlign(XEnum.VerticalAlign.MIDDLE);
+            chartRoseLyft.addSubtitle(subTitle);
+            chartRoseLyft.setTitleVerticalAlign(XEnum.VerticalAlign.BOTTOM);
+
         }
         //chartRoseLyft.addSubtitle("(Uber vs. Lyft)");
 ////
