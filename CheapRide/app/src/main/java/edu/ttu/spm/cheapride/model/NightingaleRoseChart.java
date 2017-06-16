@@ -6,19 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.xclcharts.chart.PieData;
-import org.xclcharts.chart.RoseChart;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 
 import edu.ttu.spm.cheapride.model.item.MyCustomPieData;
-import edu.ttu.spm.cheapride.model.item.Origin;
 import edu.ttu.spm.cheapride.view.DemoView;
 
 import static edu.ttu.spm.cheapride.model.item.Asset.MAX;
@@ -35,10 +31,10 @@ import static org.xclcharts.renderer.XEnum.SliceLabelStyle.OUTSIDE;
 public class NightingaleRoseChart extends DemoView {
 
     private String TAG = "RadarChart03View";
-    private CustomizedRoseChart chartRose = new CustomizedRoseChart();
-    LinkedList<PieData> roseData = new LinkedList<PieData>();
-    private CustomizedRoseChart chartRose3 = new CustomizedRoseChart();
-    LinkedList<PieData> roseData3 = new LinkedList<PieData>();
+    private CustomizedRoseChart chartRoseLyft = new CustomizedRoseChart();
+    LinkedList<PieData> roseLyftData = new LinkedList<PieData>();
+    private CustomizedRoseChart chartRoseUber = new CustomizedRoseChart();
+    LinkedList<PieData> roseUberData = new LinkedList<PieData>();
     private List<String> labels = new LinkedList<String>();
     private double eastUber;
     private double eastLyft;
@@ -181,20 +177,20 @@ public class NightingaleRoseChart extends DemoView {
     private void initView()
     {
 //        if(title != null) {
-//            chartRose.setTitle(title);
+//            chartRoseLyft.setTitle(title);
 //        }
-//        chartRose.addSubtitle("(Uber vs. Lyft)");
+//        chartRoseLyft.addSubtitle("(Uber vs. Lyft)");
 ////
-        chartDataSet();
+        chartDataSetLyft();
         chartRender();
 
-        chartDataSet3();
-        chartRender3();
+        chartDataSetUber();
+        chartRenderUber();
 
 
         //綁定手势滑动事件
-//        this.bindTouch(this,chartRose);
-//        this.bindTouch(this,chartRose3);
+//        this.bindTouch(this,chartRoseLyft);
+//        this.bindTouch(this,chartRoseUber);
 //        this.bindTouch(this,chartRose1);
 
     }
@@ -204,57 +200,57 @@ public class NightingaleRoseChart extends DemoView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         //图所占范围大小
-        chartRose.setChartRange(w,h);
-        chartRose3.setChartRange(w,h);
+        chartRoseLyft.setChartRange(w,h);
+        chartRoseUber.setChartRange(w,h);
         //chartRose1.setChartRange(w,h);
     }
 
-    private void chartDataSet3()
+    private void chartDataSetUber()
     {
         //front rose chart
         //设置图表数据源
         //PieData(标签，百分比，在饼图中对应的颜色)
         if(eastUber <= eastLyft) {
             PieData pie = new MyCustomPieData( "$" + formatNumber(eastUber) + "/",eastUberScaled,Color.argb(ALPHA, 20, 32, 43));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
         else {
             PieData pie = new MyCustomPieData( "$" + formatNumber(eastUber) + "/", eastLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
 
         if(southUber <= southLyft) {
             PieData pie = new MyCustomPieData( "$" + formatNumber(southUber) + "/", southUberScaled, Color.argb(ALPHA, 20, 32, 43));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
         else {
             PieData pie = new MyCustomPieData( "$" + formatNumber(southUber) + "/", southLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
 
         if(westUber <= westLyft) {
             PieData pie = new MyCustomPieData( "$" + formatNumber(westUber) + "/" + space, westUberScaled, Color.argb(ALPHA, 20, 32, 43));
             pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
         else {
             PieData pie = new MyCustomPieData( "$" + formatNumber(westUber) + "/" + space, westLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
 
         if(northUber <= northLyft) {
             PieData pie = new MyCustomPieData( "$" + formatNumber(northUber) + "/", northUberScaled, Color.argb(ALPHA, 20, 32, 43));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(20, 32, 43));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
         else {
             PieData pie = new MyCustomPieData( "$" + formatNumber(northUber) + "/", northLyftScaled, Color.argb(ALPHA, 252, 45, 166));
             //pie.setCustLabelStyle(OUTSIDE,Color.rgb(252, 45, 166));
-            roseData3.add(pie);
+            roseUberData.add(pie);
         }
     }
 
@@ -264,33 +260,33 @@ public class NightingaleRoseChart extends DemoView {
 
             //设置绘图区默认缩进px值
             int [] ltrb = getPieDefaultSpadding();
-            chartRose.setPadding(padding, padding, padding, padding);
-            chartRose.setTranslateXY(x, y);
+            chartRoseLyft.setPadding(padding, padding, padding, padding);
+            chartRoseLyft.setTranslateXY(x, y);
 
             //数据源
-            chartRose.setDataSource(roseData);
+            chartRoseLyft.setDataSource(roseLyftData);
 
-            chartRose.getInnerPaint().setStyle(Style.STROKE);
-            chartRose.setInitialAngle(315 - 1);
+            chartRoseLyft.getInnerPaint().setStyle(Style.STROKE);
+            chartRoseLyft.setInitialAngle(315 - 1);
 
             //设置标签显示位置,当前设置标签显示在扇区中间
-            chartRose.getLabelPaint().setColor( Color.rgb(252,45, 166));
-            chartRose.getLabelPaint().setTextSize(textSize);
-            chartRose.setIntervalAngle(3);
+            chartRoseLyft.getLabelPaint().setColor( Color.rgb(252,45, 166));
+            chartRoseLyft.getLabelPaint().setTextSize(textSize);
+            chartRoseLyft.setIntervalAngle(3);
 
             //--------------------------------------
             Map<Float,Integer>  mapBgSeg = new HashMap<Float,Integer>();
             mapBgSeg.put(0.8f, Color.rgb(39, 161, 237));
             mapBgSeg.put(0.6f, Color.rgb(246, 137, 31));
-            chartRose.showBgCircle(mapBgSeg);
+            chartRoseLyft.showBgCircle(mapBgSeg);
 
-            chartRose.showBgLines(Color.BLUE);
-            //chartRose.setLabelStyle(XEnum.SliceLabelStyle.OUTSIDE);
+            chartRoseLyft.showBgLines(Color.BLUE);
+            //chartRoseLyft.setLabelStyle(XEnum.SliceLabelStyle.OUTSIDE);
 
-            chartRose.showOuterLabels();
+            chartRoseLyft.showOuterLabels();
 
-            chartRose.setLabelOffsetY(10);
-            chartRose.setLabelOffsetX(2);
+            chartRoseLyft.setLabelOffsetY(10);
+            chartRoseLyft.setLabelOffsetX(2);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -298,7 +294,7 @@ public class NightingaleRoseChart extends DemoView {
         }
     }
 
-    private void chartDataSet()
+    private void chartDataSetLyft()
     {
         //back rose chart
         //设置图表数据源
@@ -306,52 +302,52 @@ public class NightingaleRoseChart extends DemoView {
         //PieData(标签，百分比，在饼图中对应的颜色)
 
         if(eastUber > eastLyft)
-            roseData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
         else
-            roseData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(eastLyft),eastLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
 
         if(southUber > southLyft)
-            roseData.add(new MyCustomPieData("            " + formatNumber(southLyft),southUberScaled,Color.argb(ALPHA, 20, 32, 43)));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(southLyft),southUberScaled,Color.argb(ALPHA, 20, 32, 43)));
         else
-            roseData.add(new MyCustomPieData("            " + formatNumber(southLyft),southLyftScaled,Color.argb(ALPHA, 252,45, 166)));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(southLyft),southLyftScaled,Color.argb(ALPHA, 252,45, 166)));
 
         if(westUber > westLyft)
-            roseData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westUberScaled,Color.argb(ALPHA, 20, 32, 43)));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westUberScaled,Color.argb(ALPHA, 20, 32, 43)));
         else
-            roseData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westLyftScaled,Color.argb(ALPHA, 252,45, 166)));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(westLyft) + space,westLyftScaled,Color.argb(ALPHA, 252,45, 166)));
 
         if(northUber > northLyft)
-            roseData.add(new MyCustomPieData("            " + formatNumber(northLyft), northUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(northLyft), northUberScaled,Color.argb(ALPHA, 20, 32, 43) ));
         else
-            roseData.add(new MyCustomPieData("            " + formatNumber(northLyft), northLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
+            roseLyftData.add(new MyCustomPieData("            " + formatNumber(northLyft), northLyftScaled,Color.argb(ALPHA, 252,45, 166) ));
     }
 
-    private void chartRender3()
+    private void chartRenderUber()
     {
         try {
 
             //设置绘图区默认缩进px值
             //int [] ltrb = getPieDefaultSpadding();
-            chartRose3.setPadding(padding, padding, padding, padding);
-            chartRose3.setTranslateXY(x, y);
+            chartRoseUber.setPadding(padding, padding, padding, padding);
+            chartRoseUber.setTranslateXY(x, y);
             //数据源
-            chartRose3.setDataSource(roseData3);
-            chartRose3.getInnerPaint().setStyle(Style.STROKE);
-            chartRose3.setInitialAngle(315 - 1);
+            chartRoseUber.setDataSource(roseUberData);
+            chartRoseUber.getInnerPaint().setStyle(Style.STROKE);
+            chartRoseUber.setInitialAngle(315 - 1);
 
             //设置标签显示位置,当前设置标签显示在扇区中间
-            //chartRose3.setLabelStyle(XEnum.SliceLabelStyle.INSIDE);
+            //chartRoseUber.setLabelStyle(XEnum.SliceLabelStyle.INSIDE);
 
-           // chartRose3.getLabelPaint().setColor(Color.parseColor("#D92222"));
-            chartRose3.getLabelPaint().setColor( Color.rgb(20, 32, 43));
-            chartRose3.getLabelPaint().setTextSize(textSize);
+           // chartRoseUber.getLabelPaint().setColor(Color.parseColor("#D92222"));
+            chartRoseUber.getLabelPaint().setColor( Color.rgb(20, 32, 43));
+            chartRoseUber.getLabelPaint().setTextSize(textSize);
 
-            chartRose3.setIntervalAngle(3);
-            //chartRose3.setLabelStyle(XEnum.SliceLabelStyle.OUTSIDE);
+            chartRoseUber.setIntervalAngle(3);
+            //chartRoseUber.setLabelStyle(XEnum.SliceLabelStyle.OUTSIDE);
 
-            chartRose3.showOuterLabels();
+            chartRoseUber.showOuterLabels();
 
-            chartRose3.setLabelOffsetY(-3);
+            chartRoseUber.setLabelOffsetY(-3);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -364,9 +360,9 @@ public class NightingaleRoseChart extends DemoView {
     @Override
     public void render(Canvas canvas) {
         try{
-            chartRose.setBgLines(roseData.size());
-            chartRose.render(canvas);//label is here
-            chartRose3.render(canvas);
+            chartRoseLyft.setBgLines(roseLyftData.size());
+            chartRoseLyft.render(canvas);//label is here
+            chartRoseUber.render(canvas);
 //            chartRose1.render(canvas);
         } catch (Exception e){
             Log.e(TAG, e.toString());
