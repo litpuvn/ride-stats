@@ -202,8 +202,8 @@ public class MainActivity extends AppCompatActivity
 
     public static Geocoder geocoder;
 
-    private DemoView mCharts;
-    private DemoView mClusterCharts;
+    private NightingaleRoseChart mCharts;
+    private NightingaleRoseChart mClusterCharts;
     private LinearLayout RoseChart;
 
     //private ClusterManager<clusterItem> mClusterManager;
@@ -731,6 +731,8 @@ public class MainActivity extends AppCompatActivity
             mCharts = new NightingaleRoseChart(main,Asset.getUber_east(),Asset.getLyft_east(),Asset.getUber_west(),Asset.getLyft_west(),Asset.getUber_north(),Asset.getLyft_north(),Asset.getUber_south(),Asset.getLyft_south());
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+            mCharts.initView();
+
             mIconGenerator.setContentView(mCharts);
 
             Bitmap icon = mIconGenerator.makeIcon(Asset.locationName);
@@ -783,6 +785,8 @@ public class MainActivity extends AppCompatActivity
             mClusterCharts = new NightingaleRoseChart(main,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south);
             mDimension = (int)getResources().getDimension(R.dimen.custom_profile_image);
             mClusterCharts.setLayoutParams(new ViewGroup.LayoutParams(mDimension,mDimension));
+
+            mClusterCharts.initView();
             mClusterIconGenerator.setContentView(mClusterCharts);
 
             Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));

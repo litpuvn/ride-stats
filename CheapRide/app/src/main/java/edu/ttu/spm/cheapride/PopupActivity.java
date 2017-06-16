@@ -29,7 +29,7 @@ import edu.ttu.spm.cheapride.view.DemoView;
 
 public class PopupActivity extends AppCompatActivity {
 
-    private DemoView mCharts;
+    private NightingaleRoseChart mCharts;
     private LinearLayout RoseChart;
     private JSONObject obj = null;
 
@@ -144,7 +144,7 @@ public class PopupActivity extends AppCompatActivity {
         RoseChart = (LinearLayout) findViewById(R.id.rose_chart);
 
         mCharts = new NightingaleRoseChart(this,uber_east,lyft_east,uber_west,lyft_west,uber_north,lyft_north,uber_south,lyft_south,title,lat,lon);
-
+        mCharts.initView();
         RoseChart.addView( mCharts, layoutParams);
 
         //增加控件

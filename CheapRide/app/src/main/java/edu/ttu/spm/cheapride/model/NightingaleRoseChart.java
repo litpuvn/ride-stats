@@ -68,11 +68,14 @@ public class NightingaleRoseChart extends DemoView {
 
     private static int ALPHA = 150;
 
+    private int cWidth = 0;
+    private int cHeight = 0;
+
 
     public NightingaleRoseChart(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        initView();
+//        initView();
     }
 //
 //    public NightingaleRoseChart(Context context, Origin attrs){
@@ -82,7 +85,7 @@ public class NightingaleRoseChart extends DemoView {
 
     public NightingaleRoseChart(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initView();
+//        initView();
     }
 
     public NightingaleRoseChart(Context context,double eastUber,double eastLyft,double westUber,double westLyft,double northUber,double northLyft,double southUber,double southLyft,String title,double lat,double lon){
@@ -116,7 +119,7 @@ public class NightingaleRoseChart extends DemoView {
         this.southLyft = southLyft;
         this.southLyftScaled = scale(this.southLyft);
 
-        initView();
+//        initView();
     }
 
     public NightingaleRoseChart(Context context,double eastUber,double eastLyft,double westUber,double westLyft,double northUber,double northLyft,double southUber,double southLyft){
@@ -146,7 +149,7 @@ public class NightingaleRoseChart extends DemoView {
         this.southLyft = southLyft;
         this.southLyftScaled = scale(this.southLyft);
 
-        initView();
+//        initView();
     }
 
     private double scale(double price) {
@@ -181,11 +184,12 @@ public class NightingaleRoseChart extends DemoView {
 //        initView();
 //    }
 
-    private void initView()
+    public void initView()
     {
         if(title != null && title.length() > 0) {
             subTitle = "(" + String.valueOf(lat) + ", " + String.valueOf(lon) + ")";
 
+            chartRoseLyft.setTitle(title);
             chartRoseLyft.setTitle(title);
             chartRoseLyft.addSubtitle(subTitle);
             chartRoseLyft.setTitleVerticalAlign(XEnum.VerticalAlign.BOTTOM);
@@ -215,6 +219,9 @@ public class NightingaleRoseChart extends DemoView {
         chartRoseLyft.setChartRange(w,h);
         chartRoseUber.setChartRange(w,h);
         //chartRose1.setChartRange(w,h);
+
+        this.cWidth = w;
+        this.cHeight = h;
     }
 
     private void chartDataSetUber()
@@ -338,5 +345,15 @@ public class NightingaleRoseChart extends DemoView {
 
     private String formatNumberAsCurrency(double val, boolean includeDollarSign) {
         return includeDollarSign ? "$" + String.format("%.1f", val) : String.format("%.1f", val) ;
+    }
+
+    public void setSize(int width, int height) {
+        super.onSizeChanged(width, height, this.cWidth, this.cHeight);
+        //图所占范围大小
+        chartRoseLyft.setChartRange(width, height);
+        chartRoseUber.setChartRange(width, height);
+
+        this.cWidth = width;
+        this.cHeight = height;
     }
 }
