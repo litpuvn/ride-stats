@@ -54,7 +54,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
     }
 
     public String performPostCall(String requestURL, HashMap<Object, Object> params) {
-        LatLng pickup = (LatLng)params.get("origin");
+        LatLng pickup = (LatLng)params.get("Origin");
         LatLng destination = (LatLng)params.get("destination");
         String carType = (String)params.get("carType");
 
@@ -133,7 +133,7 @@ public class EstimateHandler extends AbstractNetworkRequest {
         protected Boolean doInBackground(Void... params) {
             HashMap<Object, Object> postParams = new HashMap<>();
 
-            postParams.put("origin", this.request.getOrigin());
+            postParams.put("Origin", this.request.getOrigin());
             postParams.put("destination", this.request.getDestination());
             postParams.put("carType", this.request.getCarType());
 
